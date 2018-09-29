@@ -1,27 +1,22 @@
-Welcome to Glitch
+Welcome to Discordia
 =================
 
-Click `Show` in the header to see your app live. Updates to your code will instantly deploy and update live.
+![Luvit <3](https://raw.githubusercontent.com/luvit/logo/master/logo-blue.png)
 
-**Glitch** is the friendly community where you'll build the app of your dreams. Glitch lets you instantly create, remix, edit, and host an app, bot or site, and you can invite collaborators or helpers to simultaneously edit code with you.
+Luvit is an open-source, asynchronous I/O Lua runtime environment. It is a combination of LuaJIT and libuv, layered with various libraries to provide server-side functionality similar to that of Node.js, but with Lua instead of JavaScript. Luvit's companion package manager, lit, makes it easy to set up the Luvit runtime and its published libraries.
 
-Find out more [about Glitch](https://glitch.com/about).
+Discordia is a Lua wrapper for the official Discord API, and provides a high-level, object-oriented, event-driven interface for developing Discord bots. By using Lua's native coroutines, asynchronous HTTP and WebSocket communication is internally abstracted in a way that allows end-users to write blocking-style code without blocking I/O operations.
 
+## Getting Started
 
-Your Project
-------------
-
-On the front-end,
-- edit `public/client.js`, `public/style.css` and `views/index.html`
-- drag in `assets`, like images or music, to add them to your project
-
-On the back-end,
-- your app starts at `server.js`
-- add frameworks and packages in `package.json`
-- safely store app secrets in `.env` (nobody can see this but you and people you invite)
+1. Remix this project
+2. After remixing it, put your project in Private Mode.
+3. Fill config.lua with your ``token`` and ``prefix``.
+4. ?
+5. Profit!
 
 
-Made by [Glitch](https://glitch.com/)
+Made by [mrtnpwn](https://mrtnpwn.club/)
 -------------------
 
 \ ゜o゜)ノ
