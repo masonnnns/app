@@ -1,6 +1,5 @@
 local config = {
   prefix = '!',
-  token = 'NDg3ODUyOTUyNDgwOTA3MjY1.DpFQtQ.nxJLwZ2QjdrzDnCXfiTjhbhTDrU'
+  token = 'TOKEN_HERE'
 }
-
 return config
