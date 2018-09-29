@@ -1,6 +1,6 @@
 local config = {
   prefix = '!',
-  config.
+  token = 'NDg3ODUyOTUyNDgwOTA3MjY1.DpFQtQ.nxJLwZ2QjdrzDnCXfiTjhbhTDrU'
 }
 
 return config

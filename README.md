@@ -16,6 +16,8 @@ Discordia is a Lua wrapper for the official Discord API, and provides a high-lev
 5. Profit!
 
 
+More information and usage at [SinisterRectus/Discordia](https://github.com/SinisterRectus/Discordia)
+
 Made by [mrtnpwn](https://mrtnpwn.club/)
 -------------------
 
