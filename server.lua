@@ -19,7 +19,7 @@ end)
 bot:run('Bot '..token)
 
 app:use(function (req, res)
-  res:finish('Bot is running!')
+  res:finish('Check server.lua and remove the Utopia part (if you want)')
 end)
 
 app:listen(8080)
