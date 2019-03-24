@@ -7,13 +7,13 @@ local Utopia = require('utopia')
 local app = Utopia:new()
 
 client:on('ready', function()
-  client:setGame("Lua")
+  client:setGame("stuff as Lua Rocks!")
 	p('Logged in as '.. client.user.username)
 end)
 
 client:on('messageCreate', function(message)
 	if message.content == pp..'pingdev' then
-		message.channel:send('Pong! The bot itself was created by Mobile Gaming, who was little to no coding skills on Lua though he')
+		message.channel:send('Pong! The bot itself was created by Mobile Gaming, who was little to no coding skills though he is interested in understanding Lua and Python')
 	end
 end)
 
