@@ -12,8 +12,8 @@ client:on('ready', function()
 end)
 
 client:on('messageCreate', function(message)
-	if message.content == pp..'ping' then
-		message.channel:send('Pong!')
+	if message.content == pp..'pingdev' then
+		message.channel:send('Pong! The bot itself was created by Mobile Gaming, who was little to no coding skills on Lua though he')
 	end
 end)
 

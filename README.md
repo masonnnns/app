@@ -1,7 +1,9 @@
 This is a forked project of the one by Mrtnpwn. All credit goes to him. Here are the changes:
 
 - I was able to add playing status on here. Read the docs is confusing and hard to comprehend and understand at least for me as it can be confusing. :p
-- Added .env file, explaining why you now see _process.env_
+- Added .env file, explaining why you now see `process.env["TOKEN"]` in the line where `local token` is as well as the reason the why it is now open source. ~~~Might go closed source but 'till then, it'll remain open source~~~
+
+Down below is the original by Mrtnpwn. :)
 
 Welcome to Discordia
 =================
