@@ -9,6 +9,7 @@ local app = Utopia:new()
 bot:on('ready', function()
 	p('Logged in as '.. bot.user.username)
 end)
+bot:setGame('Lua Rocks!')
 
 bot:on('messageCreate', function(message)
 	if message.content == pp..'ping' then
