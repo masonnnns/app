@@ -7,6 +7,7 @@ local Utopia = require('utopia')
 local app = Utopia:new()
 
 bot:on('ready', function()
+  bot:setStatus(idle)
 	p('Logged in as '.. bot.user.username)
 end)
 
