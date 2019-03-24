@@ -1,25 +1,23 @@
 local discordia = require('discordia')
-local bot = discordia.Client()
+local client = discordia.Client()
 local config = require('config')
 local pp = config.prefix
 local token = config.token
 local Utopia = require('utopia')
 local app = Utopia:new()
 
-bot:on('ready', function()
-  bot:setStatus(idle)
-	p('Logged in as '.. bot.user.username)
+client:on('ready', client()
+  client:setGame("Lua")
+	p('Logged in as '.. client.user.username)
 end)
 
-bot:on('messageCreate', function(message)
+client:on('messageCreateclientfunction(message)
 	if message.content == pp..'ping' then
 		message.channel:send('Pong!')
 	end
 end)
 
-bot:run('Bot '..token)
-
-app:use(function (req, res)
+client:run('Bot '..tokenclientapp:use(function (req, res)
   res:finish('Check server.lua and remove the Utopia part (if you want)')
 end)
 
