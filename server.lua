@@ -1,8 +1,8 @@
 local discordia = require('discordia')
 local client = discordia.Client()
 local config = require('config')
-local pp = config.prefix --process.env["TOKEN"]
-local token = config.token --process.env[]
+local pp = config.prefix
+local token = process.env["TOKEN"]
 local Utopia = require('utopia')
 local app = Utopia:new()
 

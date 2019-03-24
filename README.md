@@ -1,3 +1,8 @@
+This is a forked project of the one by Mrtnpwn. All credit goes to him. Here are the changes:
+
+- I was able to add playing status on here. Read the docs is confusing and hard to understand for me. :p
+- 
+
 Welcome to Discordia
 =================
 
