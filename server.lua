@@ -7,6 +7,7 @@ local Utopia = require('utopia')
 local app = Utopia:new()
 
 client:on('ready', function()
+  client:setStatus(dnd)
   client:setGame("stuff as Lua Rocks!")
 	p('Logged in as '.. client.user.username)
 end)
