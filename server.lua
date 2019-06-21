@@ -1,3 +1,5 @@
+print('Loading...')
+
 local discordia = require('discordia')
 local client = discordia.Client()
 local config = require('config')
