@@ -25,4 +25,4 @@ client:run('Bot '..token)
   res:finish('Check server.lua and remove the Utopia part (if you want)')
 end)
 
-app:listen(8080)
+app:listen(3000)
