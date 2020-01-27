@@ -338,7 +338,8 @@ local commands = {
       if #message.mentionedRoles == 0 then
         return {success = false, msg = "You must mention a new muted role."}
       else
-        return {success = true, msg = "Set the **muted role** to **"..message.guild:getChannel(message.mentionedRoles[1][1]).name.."**."}
+        serverData.mutedRole = message.mentionedRoles[1][1]
+        return {success = true, msg = "Set the **muted role** to **"..message.guild:getRole(message.mentionedRoles[1][1]).name.."**."}
       end
     else
       return {success=true,msg="xd"}
