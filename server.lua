@@ -103,13 +103,11 @@ config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases
       else
         color = 2067276
       end
-      print('xd')
       local reply = message.guild:getChannel(config[message.guild.id].modlog):send{embed = {
         title = "**CAS3 "..#config[message.guild.id].modData.cases.."** - "..case.type:upper(),
         description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
         color = color
       }}
-      
   end
 end
 
@@ -301,9 +299,22 @@ local commands = {
         return {success = "stfu", msg = "xd"}
     end
 	end};
-  {command = "reason", desc = "Changes the reason of a specific case.", usage = "reason <new reason>", shorthand = {}, execute = function(message,args) 
-		return {success = true, msg = "Pong!", emoji = "ping"}
-	end};
+  {command = "warn", desc = "Warn a user.", usage = "warn <@mention> <reason>", shorthand = {}, execute = function(message,args)
+    if getPermission(message) < 1 then
+			return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}
+		elseif #message.mentionedUsers == 0 or not args[2] == "<@!"..tostring(message.mentionedUsers[1][1])..">" or not args[2] == "<@"..tostring(message.mentionedUsers [1][1])..">" then
+			return {success = false, msg = "You must mention a user in argument 2."}
+		elseif message.guild.members:get(message.mentionedUsers[1][1]).id == client.user.id then
+			return {success = false, msg = "I cannot warn myself!"}
+		elseif getPermission(message,message.guild.members:get(message.mentionedUsers[1][1]).id) >= getPermission(message) then
+			return {success = false, msg = "You cannot warn people with a higher permission level than you."}
+		else
+      local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
+      addModlog(message,{type = "Warn", duration = "", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
+      message.guild.members:get(message.mentionedUsers[1][1]):getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\n*Please do not continue to break the rules.*\n\nReason: "..reason)
+      return {success = true, msg = "Successfully warned **"..message.guild.members:get(message.mentionedUsers[1][1]).name.."**."}
+    end   
+end};
 }
 
 function checkMany(check,content,id)
