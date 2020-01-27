@@ -68,15 +68,9 @@ end
 local function addConfig(id)
 	config[id] = {
 		prefix = "a!",
-		filter = true,
-		terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse","🖕","discordgg.ga"},
-		invites = true,
-		massmentions = true,
-		spoilers = true,
-		maxSpoilers = 2,
-		maxMentions = 3,
-		newline = true,
-		maxNewline = 10,
+		plugins = {
+      automod = {enabled = true, types = {invites = {true,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
+    },
 		modlog = "nil",
 		modrole = "nil",
     auditlog = "nil",
@@ -231,11 +225,15 @@ local commands = {
 		end
 	end};
 	{command = "restart", desc = "restart the bot", usage = "restart", shorthand = {}, execute = function(message,args) 
-		
-    os.exit()
-		os.exit()
-		os.exit()
-		return {success = true, msg = "restart", emoji = "thumbs-up"}
+		if getPermission(message) >= 5 then
+      message:reply(":ok_hand: restarting bot!")
+      os.exit()
+      os.exit()
+      os.exit()
+      return {success = true, msg = "restart", emoji = "thumbs-up"}
+    else
+      return {success = "stfu", msg = "xd"}
+    end
 	end};
 	{command = "mute", desc = "Suspend a user's ability to talk in your server.", usage = "mute <@mention> <duration> <optional reason>", shorthand = {"shutup"}, execute = function(message,args) 
 		if getPermission(message) < 1 then
@@ -387,7 +385,7 @@ local commands = {
 function checkMany(check,content,id)
 local detect = false
 	if check == "curse" then
-		for _,items in pairs(config[id].terms) do
+		for _,items in pairs(config[id].plugins.automod.terms) do
 			if string.match(content,items) then
 				detect = true
 			end
@@ -419,15 +417,15 @@ function autoMod(msg)
 local message = msg
 local a, b = string.gsub(message.content,"\n","")
 local c, d = string.gsub(message.content,"||","")
-if message.author.bot == false then
-	if (b + 1 >= tonumber(config[message.guild.id].maxNewline) == true) and config[message.guild.id].newline then
+if message.author.bot == false  then
+	if (b + 1 >= tonumber(config[message.guild.id].plugins.automod.types.newline[2]) == true) and config[message.guild.id].plugins.automod.types.newline[1] and config[message.guild.id].plugins.automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", too many lines.")
 		--message.author:getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\nPlease do not exceed the newline limit of 5 in "..message.guild.name..".\n\nHere's your message if you wish to edit it:```"..message.content.."```")
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif checkMany("curse",string.lower(msg.content),message.guild.id) == true and config[message.guild.id].filter == true then
+	elseif checkMany("curse",string.lower(msg.content),message.guild.id) == true and config[message.guild.id].plugins.automod.types.filte[1] and config[message.guild.id].plugins.automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", watch your language.")
 		if config[message.guild.id].modlog ~= "nil" then
@@ -443,19 +441,19 @@ if message.author.bot == false then
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif checkMany("invites",msg.content,msg.guild.id) == true and config[message.guild.id].invites == true or string.match(message.content,"discord.gg") and client:getInvite(xd) and config[message.guild.id].invites == true then
+	elseif checkMany("invites",msg.content,msg.guild.id) == true and config[message.guild.id].plugins.automod.types.invites[1] and config[message.guild.id].plugins.automod.enabled or string.match(message.content,"discord.gg") and client:getInvite(xd) and config[message.guild.id].plugins.automod.types.invites[1] and config[message.guild.id].plugins.automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", no invites.")
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif d/2 >= config[message.guild.id].maxSpoilers and config[message.guild.id].spoilers == true then
+	elseif d/2 >= config[message.guild.id].plugins.automod.types.spoilers[2] and config[message.guild.id].plugins.automod.types.spoilers[1] and config[message.guild.id].plugins.automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", too many spoilers.")
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif #msg.mentionedRoles + #msg.mentionedUsers >= config[message.guild.id].maxMentions and config[message.guild.id].massmentions == true then
+	elseif #msg.mentionedRoles + #msg.mentionedUsers >= config[message.guild.id].plugins.automod.mentions[2] and config[message.guild.id].plugins.automod.mentions[1] and config[message.guild.id].plugins.automod.enabled  then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", no mass-mentioning.")
 		timer.sleep(3000)
