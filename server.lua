@@ -328,8 +328,18 @@ local commands = {
       serverData.deletecmd = not serverData.deletecmd
       return {success = true, msg = "Set the **delete invocation message** setting to **"..tostring(serverData.deletecmd).."**!"}
     elseif arg == "modlog" then 
-      serverData.modlog = message.mentionedChannels[1][1]
-      return {success = true, msg = "Set the "}
+      if #message.mentionedChannels == 0 then
+        return {success = false, msg = "You must mention a new modlog channel."}
+      else
+        serverData.modlog = message.mentionedChannels[1][1]
+        return {success = true, msg = "Set the **modlog channel** to **"..message.guild:getChannel(message.mentionedChannels[1][1]).name.."**."}
+      end
+    elseif arg == "mutedrole" then
+      if #message.mentionedRoles == 0 then
+        return {success = false, msg = "You must mention a new muted role."}
+      else
+        return {success = true, msg = "Set the **muted role** to **"..message.guild:getChannel(message.mentionedRoles[1][1]).name.."**."}
+      end
     else
       return {success=true,msg="xd"}
     end    
