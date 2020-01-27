@@ -319,9 +319,17 @@ local commands = {
 		local arg = (args[2] == nil and "7BBED07D913F65BACA2E07D1498AD3280559D30C87A7DA56AC7E8C6D33BE1E60" or string.lower(args[2]))
     local serverData = config[message.guild.id]
     print(arg)
-    if arg == "modonly" then
+    if getPermission(message) < 2 then
+      return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}
+    elseif arg == "modonly" then
       serverData.modonly = not serverData.modonly
       return {success = true, msg = "Set the **mod-only** setting to **"..tostring(serverData.modonly).."**!"}
+    elseif arg == "delmsg" then
+      serverData.deletecmd = not serverData.deletecmd
+      return {success = true, msg = "Set the **delete invocation message** setting to **"..tostring(serverData.deletecmd).."**!"}
+    elseif arg == "modlog" then 
+      serverData.modlog = message.mentionedChannels[1][1]
+      return {success = true, msg = "Set the "}
     else
       return {success=true,msg="xd"}
     end    
@@ -600,21 +608,21 @@ client:on('messageCreate', function(message)
 					["tools"] = ":tools:",
 					["thumbs-up"] = ":thumbsup:"
  				}
-        if 
-          local commandExecute = cmd.execute(message,isCommand)
-          if config[message.guild.id].deletecmd then message:delete() end
-          if commandExecute == nil or type(commandExecute) ~= "table" then message:reply(":no_entry: An unkown error occured!") return end
-          if commandExecute.emoji == nil or emojis[commandExecute.emoji] == nil then commandExecute.emoji = "ok" end
-          if commandExecute.success == "stfu" then return end
-          if commandExecute.success then
-            message:reply(emojis[commandExecute.emoji].." "..commandExecute.msg)
-          else
-            local reply = message:reply(":no_entry: "..commandExecute.msg)
-            if commandExecute.timer ~= nil then
-              timer.sleep(commandExecute.timer)
-              reply:delete()
-            end
-          end
+				if config[message.guild.id].modonly and getPermission(message) < 1 then return end
+        local commandExecute = cmd.execute(message,isCommand)
+				if config[message.guild.id].deletecmd then message:delete() end
+				if commandExecute == nil or type(commandExecute) ~= "table" then message:reply(":no_entry: An unkown error occured!") return end
+				if commandExecute.emoji == nil or emojis[commandExecute.emoji] == nil then commandExecute.emoji = "ok" end
+				if commandExecute.success == "stfu" then return end
+				if commandExecute.success then
+					message:reply(emojis[commandExecute.emoji].." "..commandExecute.msg)
+				else
+					local reply = message:reply(":no_entry: "..commandExecute.msg)
+					if commandExecute.timer ~= nil then
+						timer.sleep(commandExecute.timer)
+						reply:delete()
+					end
+				end
 			end 
 		end
 	end
