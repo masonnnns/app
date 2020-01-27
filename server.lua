@@ -88,12 +88,9 @@ local function addConfig(id)
 end
 
 local function addModlog(message,table)
-local guild
-if message.id == nil then guild = message.guild message = message.guild.id else guild = message message = message.id end
-print(message,guild)
-config[guild.id].modData.cases[1+#config[guild.id].modData.cases] = table
+config[message.guild.id].modData.cases[1+#config[message.guild.id]].modData.cases] = table
  print('lol') 
- if config[guild.id].modlog == "nil" or guild:getChannel(config[guild.id].modlog) == nil then else
+ if config[message.guild.id].modlog == "nil" or message.guild:getChannel(config[message.guild.id]].modlog) == nil then else
       local case = table
       local color 
       if string.lower(case.type) == "ban" then
@@ -108,8 +105,8 @@ config[guild.id].modData.cases[1+#config[guild.id].modData.cases] = table
         color = 2067276
       end
       print('xd')
-      guild:getChannel(config[guild.id].modlog):send{embed = {
-        title = "**CAS3 "..#config[guild.id].modData.cases.."** - "..case.type:upper(),
+      message.guild:getChannel(config[message.guild.id].modlog):send{embed = {
+        title = "**CAS3 "..#config[message.guild.id].modData.cases.."** - "..case.type:upper(),
         description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
         color = color
       }}
@@ -471,7 +468,12 @@ client:on('ready', function()
 						end
 					end
           print('[DEBUG] [UNMUTE]: '..itemz.user.." has been unmuted in "..id)
-          addModlog(client:getGuild(id),{type = "Auto-Unmute", duration = "", user = itemz.user, mod = client.user.id, reason = "Mute duration expired."})
+          
+          client:getGuild(id):getChannel(config[message.guild.id].modlog):send{embed = {
+            title = "**CAS3 "..#config[message.guild.id].modData.cases.."** - "..case.type:upper(),
+            description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
+            color = 2067276
+          }}
 					table.remove(items.modData.actions,num)
 				end
 			end
