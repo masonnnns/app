@@ -157,6 +157,7 @@ local commands = {
 				message.guild:getMember((message.mentionedUsers[1][1])):kick(reason)
 			end)
 			if success then
+        config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "Kick", duration = "", reason = reason, user = message.mentionedUsers[1][1], mod = message.author.id}
 				return {success = true, msg = "Successfully kicked **"..user.name.."**!"}
 			else
 				return {success = false, msg = "An unexpected error occured, **please report this to our support team!**```"..msg.."```"}
@@ -229,7 +230,7 @@ local commands = {
 				local reason = "No Reason Provided."
 				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", reason = reason, duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
 				message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
-        config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
+        config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "Mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
 				return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."**!"}
 			end
 			local duration = getDuration(args)
@@ -237,13 +238,13 @@ local commands = {
 				local reason = (table.concat(args," ",3))
 				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
 				message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
-        config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
+        config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "Mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
         return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."**!"}
 			else
 				local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
 				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], mod = message.author.id, user = message.mentionedUsers[1][1]}
 				message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
-				config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "mute", duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
+				config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "Mute", duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
         return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."** for **"..table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s").."**!"}
 			end
 		end
@@ -257,9 +258,10 @@ local commands = {
       return {success = false, msg = "Invalid case number provided."}
     else
       local case = config[message.guild.id].modData.cases[tonumber(args[2])] 
+      if case.type == "warn" then action = "Warning" elseif string.lower(case.type) == "kick" then action = "Kick" elseif string.lower(case.duration) == "permanent" then action = "Permanent "..case.type.."" else action = case.type.." for "..case.duration end
       message:reply{embed = {
-				title = "**CAS3 INF0RMAT10N - CAS3 "..args[2].."**",
-        description = "**Username:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** ",
+				title = "**CAS3 "..args[2].."**",
+        description = "**Action:** "..action.."\n**Username:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)\n**Reason:** "..case.reason,
 				footer = {
 					text = "Responding to "..message.author.name,
 				},
