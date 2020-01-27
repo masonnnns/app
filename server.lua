@@ -230,11 +230,12 @@ local commands = {
 			return {success = true, msg = "I choose **no!**"}
 		end
 	end};
-	{command = "test", desc = "test", usage = "test", shorthand = {}, execute = function(message,args) 
-		newNum = tonumber(args[2])
-		config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = os.time() + newNum, mod = 1, user = message.mentionedUsers[1][1]}
-		message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
-		return {success = true, msg = "result: "..os.time()+newNum, emoji = "thumbs-up"}
+	{command = "restart", desc = "restart the bot", usage = "restart", shorthand = {}, execute = function(message,args) 
+		
+    os.exit()
+		os.exit()
+		os.exit()
+		return {success = true, msg = "restart", emoji = "thumbs-up"}
 	end};
 	{command = "mute", desc = "Suspend a user's ability to talk in your server.", usage = "mute <@mention> <duration> <optional reason>", shorthand = {"shutup"}, execute = function(message,args) 
 		if getPermission(message) < 1 then
@@ -361,13 +362,18 @@ local commands = {
         title = "**Configuration Settings**",
         fields = { -- array of fields
 					{
+						name = "General Settings",
+						value = "**Command Prefix:** "..configs.prefix.."\n**Delete Invocation Message:** "..tostring(configs.deletecmd).."\n**Mod-Only Commands:** "..tostring(configs.modonly),
+						inline = false,
+					},
+          {
 						name = "Role Settings",
 						value = "**Moderator Role:** "..(configs.modrole == "nil" and "None Set!" or message.guild:getRole(configs.modrole).mentionString).."\n**Muted Role:** "..(configs.mutedRole == "nil" and "None Set!" or message.guild:getRole(configs.mutedRole).mentionString),
 						inline = true,
 					},
           {
 						name = "Channel Settings",
-						value = "**Audit Log:** "..(config.auditlog == "nil" and "None Set!" or message.guild:getChannel(configs.auditlog).mentionString).."\n**Mod Log:** "..(config.modlog == "nil"),
+						value = "**Audit Log:** "..(configs.auditlog == "nil" and "None Set!" or message.guild:getChannel(configs.auditlog).mentionString).."\n**Mod Log:** "..(configs.modlog == "nil" and "None Set!" or message.guild:getChannel(configs.modlog).mentionString),
 						inline = true,
 					},
         },
