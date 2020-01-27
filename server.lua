@@ -69,7 +69,7 @@ local function addConfig(id)
 	config[id] = {
 		prefix = "a!",
 		plugins = {
-      automod = {enabled = true, types = {invites = {true,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}}    },
+      automod = {enabled = false, types = {invites = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}}    },
 		terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
     modlog = "nil",
 		modrole = "nil",
@@ -357,24 +357,28 @@ local commands = {
       end
     else
       local configs = config[message.guild.id]
+      local xd 
+      for _,items in pairs(configs.plugins) do if items.enabled then xd [1+#xd] = configs
       message:reply{embed = {
         title = "**Configuration Settings**",
         fields = { -- array of fields
 					{
 						name = "General Settings",
-						value = "**Command Prefix:** "..configs.prefix.."\n**Delete Invocation Message:** "..tostring(configs.deletecmd).."\n**Mod-Only Commands:** "..tostring(configs.modonly),
+						value = "**Command Prefix:** "..configs.prefix.."\n**Delete Invocation Message:** "..tostring(configs.deletecmd).."\n**Mod-Only Commands:** "..tostring(configs.modonly).."\n**Moderator Role:** "..(configs.modrole == "nil" and "None Set!" or message.guild:getRole(configs.modrole).mentionString).."\n**Muted Role:** "..(configs.mutedRole == "nil" and "None Set!" or message.guild:getRole(configs.mutedRole).mentionString).."\n**Audit Log:** "..(configs.auditlog == "nil" and "None Set!" or message.guild:getChannel(configs.auditlog).mentionString).."\n**Mod Log:** "..(configs.modlog == "nil" and "None Set!" or message.guild:getChannel(configs.modlog).mentionString),
 						inline = false,
 					},
+          if configs.plugins.automod.enabled then
+            {
+              name = "Automod Settings",
+              value = "**Enabled:** "..tostring(configs.plugins.automod.enabled),
+              inline = true,
+            },
+          end
           {
-						name = "Role Settings",
-						value = "**Moderator Role:** "..(configs.modrole == "nil" and "None Set!" or message.guild:getRole(configs.modrole).mentionString).."\n**Muted Role:** "..(configs.mutedRole == "nil" and "None Set!" or message.guild:getRole(configs.mutedRole).mentionString),
-						inline = true,
-					},
-          {
-						name = "Channel Settings",
-						value = "**Audit Log:** "..(configs.auditlog == "nil" and "None Set!" or message.guild:getChannel(configs.auditlog).mentionString).."\n**Mod Log:** "..(configs.modlog == "nil" and "None Set!" or message.guild:getChannel(configs.modlog).mentionString),
-						inline = true,
-					},
+            name = "Disabled Plugins",
+            value = (onfigs.plugins.automod.enabled and "Automod" or ""),
+            inline = true,
+          },
         },
         color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
       }}
@@ -386,7 +390,7 @@ local commands = {
 function checkMany(check,content,id)
 local detect = false
 	if check == "curse" then
-		for _,items in pairs(config[id].plugins.automod.terms) do
+		for _,items in pairs(config[id].terms) do
 			if string.match(content,items) then
 				detect = true
 			end
@@ -455,7 +459,7 @@ if message.author.bot == false  then
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif #msg.mentionedRoles + #msg.mentionedUsers >= config[message.guild.id].plugins.automod.mentions[2] and config[message.guild.id].plugins.automod.mentions[1] and config[message.guild.id].plugins.automod.enabled  then
+	elseif #msg.mentionedRoles + #msg.mentionedUsers >= config[message.guild.id].plugins.automod.types.mentions[2] and config[message.guild.id].plugins.automod.types.mentions[1] and config[message.guild.id].plugins.automod.enabled  then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", no mass-mentioning.")
 		timer.sleep(3000)
