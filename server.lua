@@ -314,7 +314,11 @@ local commands = {
       message.guild.members:get(message.mentionedUsers[1][1]):getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\n*Please do not continue to break the rules.*\n\nReason: "..reason)
       return {success = true, msg = "Successfully warned **"..message.guild.members:get(message.mentionedUsers[1][1]).name.."**."}
     end   
-end};
+  end};
+  {command = "config", desc = "Edit your guild's configuration settings.", usage = "config <type> <value>", shorthand = {}, execute = function(message,args) 
+		local arg = string.lower(args[2])
+    if arg == ""
+	end};
 }
 
 function checkMany(check,content,id)
