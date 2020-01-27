@@ -7,7 +7,7 @@
     "start": "./luvit server.lua"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.17.1"
   },
   "engines": {
     "node": "8.x"
