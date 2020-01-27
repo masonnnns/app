@@ -90,7 +90,12 @@ end
 local function addModlog(message,table)
   config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = table
   if config[message.guild.id].modlog == "nil" or message.guild:getChannel(config[message.guild.id].modlog) == nil then else
-    message.guild:getChannel(config[message.guild.id].modlog):send('xdxd!! '..#config[message.guild.id].modData.cases)
+      local case = table
+      message.guild:getChannel(config[message.guild.id].modlog):send{embed = {
+        title = "**CAS3 "..#config[message.guild.id].modData.cases.."** - "..case.type:upper(),
+        description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
+        color = 
+      }}
   end
 end
 
@@ -236,7 +241,7 @@ local commands = {
 		else
 			if args[3] == nil then
 				local reason = "No Reason Provided."
-				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", reason = reason, duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
+				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
 				message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
         addModlog(message,{type = "Mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
 				return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."**!"}
@@ -269,7 +274,7 @@ local commands = {
       if case.type == "warn" then action = "Warning" elseif string.lower(case.type) == "kick" then action = "Kick" elseif string.lower(case.duration) == "permanent" then action = "Permanent "..case.type.."" else action = case.type.." for "..case.duration end
       message:reply{embed = {
 				title = "**CAS3 "..args[2].."**",
-        description = "**Action:** "..action.."\n**Username:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)\n**Reason:** "..case.reason,
+        description = "**Action:** "..action.."\n**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)\n**Reason:** "..case.reason,
 				footer = {
 					text = "Responding to "..message.author.name,
 				},
