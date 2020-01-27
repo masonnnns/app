@@ -88,9 +88,8 @@ local function addConfig(id)
 end
 
 local function addModlog(message,table)
-config[message.guild.id].modData.cases[1+#config[message.guild.id]].modData.cases] = table
- print('lol') 
- if config[message.guild.id].modlog == "nil" or message.guild:getChannel(config[message.guild.id]].modlog) == nil then else
+config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = table
+ if config[message.guild.id].modlog == "nil" or message.guild:getChannel(config[message.guild.id].modlog) == nil then else
       local case = table
       local color 
       if string.lower(case.type) == "ban" then
@@ -285,7 +284,7 @@ local commands = {
       return {success = false, msg = "Invalid case number provided."}
     else
       local case = config[message.guild.id].modData.cases[tonumber(args[2])] 
-      if case.type == "warn" then action = "Warning" elseif string.lower(case.type) == "kick" then action = "Kick" elseif string.lower(case.duration) == "permanent" then action = "Permanent "..case.type.."" else action = case.type..(case.duration ~= "" and "for "..case.duration or "") end
+      if case.type == "warn" then action = "Warning" elseif string.lower(case.type) == "kick" then action = "Kick" elseif string.lower(case.duration) == "permanent" then action = "Permanent "..case.type.."" else action = case.type..(case.duration ~= "" and " for "..case.duration or "") end
       message:reply{embed = {
 				title = "**CAS3 "..args[2].."**",
         description = "**Action:** "..action.."\n**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)\n**Reason:** "..case.reason,
@@ -468,12 +467,15 @@ client:on('ready', function()
 						end
 					end
           print('[DEBUG] [UNMUTE]: '..itemz.user.." has been unmuted in "..id)
-          
-          client:getGuild(id):getChannel(config[message.guild.id].modlog):send{embed = {
-            title = "**CAS3 "..#config[message.guild.id].modData.cases.."** - "..case.type:upper(),
-            description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
-            color = 2067276
-          }}
+          local case = {type = "Auto-Unmute", duration = "", reason = "Mute duration expired.", user = itemz.user, mod = client.user.id}
+          config[id].modData.cases[1+#config[id].modData.cases] = case
+          if config[id].modlog ~= nil and client:getGuild(id):getChannel(config[id].modlog) then
+            client:getGuild(id):getChannel(config[id].modlog):send{embed = {
+              title = "**CAS3 "..#config[id].modData.cases.."** - "..case.type:upper(),
+              description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
+              color = 2067276
+            }}
+          end
 					table.remove(items.modData.actions,num)
 				end
 			end
