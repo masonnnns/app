@@ -229,21 +229,33 @@ local commands = {
 				local reason = "No Reason Provided."
 				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", reason = reason, duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
 				message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
+        config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
 				return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."**!"}
 			end
 			local duration = getDuration(args)
 			if durationTable[table.concat(duration.char,"")] == nil then
 				local reason = (table.concat(args," ",3))
-				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", reason = reason, duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
+				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
 				message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
-				return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."**!"}
+        config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
+        return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."**!"}
 			else
 				local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
-				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", reason = reason, duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], mod = message.author.id, user = message.mentionedUsers[1][1]}
+				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], mod = message.author.id, user = message.mentionedUsers[1][1]}
 				message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
-				return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."** for **"..table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s").."**!"}
+				config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "mute", duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
+        return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."** for **"..table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s").."**!"}
 			end
 		end
+	end};
+{command = "case", desc = "View a specific modlog.", usage = "case <number>", shorthand = {}, execute = function(message,args) 
+		if getPermission(message) < 1 then
+			return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}
+    elseif args[2] == nil or tonumber(args[2]) == nil then
+      return {success = false, msg = "Argument 2 must be a case number."}
+    elseif config[message.guild.id].modData.cases[args[2]] == nil then
+        
+    end
 	end};
 }
 
