@@ -87,6 +87,13 @@ local function addConfig(id)
 	
 end
 
+local function addModlog(message,table)
+  config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = table
+  if config[message.guild.id].modlog == "nil" or message.guild:getChannel(config[message.guild.id].modlog) == nil then else
+    message.guild:getChannel(config[message.guild.id].modlog):send('xdxd!! '..#config[message.guild.id].modData.cases)
+  end
+end
+
 print("[DB]: Starting Data Loading Process.")
 local decode = json.decode(io.open("./data.txt","r"):read())
 for a,b in pairs(decode) do
@@ -151,13 +158,14 @@ local commands = {
 			return {success = false, msg = "I need the **Kick Members** permission to do this."}
 		else
 			local user
+      local reason
 			local success,msg = pcall(function()
-				local reason = (args[3] == nil and "No Reason Provided" or table.concat(args," ",3))
+				reason = (args[3] == nil and "No Reason Provided" or table.concat(args," ",3))
 				user = message.guild.members:get(message.mentionedUsers[1][1])
 				message.guild:getMember((message.mentionedUsers[1][1])):kick(reason)
 			end)
 			if success then
-        config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "Kick", duration = "", reason = reason, user = message.mentionedUsers[1][1], mod = message.author.id}
+        addModlog(message,{type = "Kick", duration = "", reason = reason, user = message.mentionedUsers[1][1], mod = message.author.id})
 				return {success = true, msg = "Successfully kicked **"..user.name.."**!"}
 			else
 				return {success = false, msg = "An unexpected error occured, **please report this to our support team!**```"..msg.."```"}
@@ -230,7 +238,7 @@ local commands = {
 				local reason = "No Reason Provided."
 				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", reason = reason, duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
 				message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
-        config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "Mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
+        addModlog(message,{type = "Mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
 				return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."**!"}
 			end
 			local duration = getDuration(args)
@@ -238,13 +246,13 @@ local commands = {
 				local reason = (table.concat(args," ",3))
 				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
 				message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
-        config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "Mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
+        addModlog(message,{type = "Mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
         return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."**!"}
 			else
 				local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
 				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], mod = message.author.id, user = message.mentionedUsers[1][1]}
 				message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
-				config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "Mute", duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason}
+				addModlog(message,{type = "Mute", duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
         return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."** for **"..table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s").."**!"}
 			end
 		end
