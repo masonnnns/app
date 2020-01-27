@@ -358,12 +358,17 @@ local commands = {
     else
       local configs = config[message.guild.id]
       message:reply{embed = {
-        title = "**Configuration Settings**"
+        title = "**Configuration Settings**",
         fields = { -- array of fields
 					{
 						name = "Role Settings",
-						value = "**Moderator Role:** "..(configs.modrole == "nil" and "None Set!" or message.,
-						inline = true
+						value = "**Moderator Role:** "..(configs.modrole == "nil" and "None Set!" or message.guild:getRole(configs.modrole).mentionString).."\n**Muted Role:** "..(configs.mutedRole == "nil" and "None Set!" or message.guild:getRole(configs.mutedRole).mentionString),
+						inline = true,
+					},
+          {
+						name = "Channel Settings",
+						value = "**Audit Log:** "..(config.auditlog == "nil" and "None Set!" or message.guild:getChannel(configs.auditlog).mentionString).."\n**Mod Log:** "..(config.modlog == "nil"),
+						inline = true,
 					},
         },
         color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
