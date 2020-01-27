@@ -67,7 +67,7 @@ end
 
 local function addConfig(id)
 	config[id] = {
-		prefix = "!!",
+		prefix = "a!",
 		filter = true,
 		terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse","🖕","discordgg.ga"},
 		invites = true,
@@ -267,12 +267,16 @@ local commands = {
         addModlog(message,{type = "Mute", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
         return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."**!"}
 			else
-				local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
-				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], mod = message.author.id, user = message.mentionedUsers[1][1]}
-				message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
-				addModlog(message,{type = "Mute", duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
-        return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."** for **"..table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s").."**!"}
-			end
+				if tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1] <= 0 then
+          return {success = false, msg = "Invalid duration."}
+        else
+          local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
+          config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], mod = message.author.id, user = message.mentionedUsers[1][1]}
+          message.guild:getMember(message.mentionedUsers[1][1]):addRole(config[message.guild.id].mutedRole)
+          addModlog(message,{type = "Mute", duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
+          return {success = true, msg = "Successfully muted **"..message.guild:getMember(message.mentionedUsers[1][1]).name.."** for **"..table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s").."**!"}
+			  end
+      end
 		end
 	end};
 {command = "case", desc = "View a specific modlog.", usage = "case <number>", shorthand = {}, execute = function(message,args) 
@@ -453,7 +457,7 @@ end
 
 client:on('ready', function()
 	print('Logged in as '.. client.user.username)
-	client:setGame("!!help | AA-R0N")
+	client:setGame("a!help | AA-R0N")
 	print('starting temp action loop')
 	while true do
 		for id,items in pairs(config) do
