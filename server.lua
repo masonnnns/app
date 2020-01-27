@@ -79,6 +79,7 @@ local function addConfig(id)
 		maxNewline = 10,
 		modlog = "nil",
 		modrole = "nil",
+    auditlog = "nil",
 		modData = {cases = {}, actions = {}}, -- {type = "mute", reason = "", duration = os.time() / "perm", mod = userID, user = userID}
 		deletecmd = true,
 		modonly = false,
@@ -104,7 +105,7 @@ config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases
         color = 2067276
       end
       local reply = message.guild:getChannel(config[message.guild.id].modlog):send{embed = {
-        title = "**CAS3 "..#config[message.guild.id].modData.cases.."** - "..case.type:upper(),
+        title = "**Case "..#config[message.guild.id].modData.cases.."** - "..case.type:upper(),
         description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
         color = color
       }}
@@ -206,7 +207,7 @@ local commands = {
 			local roles = {}
 			for _,items in pairs(message.guild:getMember(user.id).roles) do roles[1 + #roles] = message.guild:getRole(items).mentionString end
 			message:reply{embed = {
-				title = "**WH01S L00KUP R3SULTS**",
+				title = "**Whois Lookup Results**",
 				description = "**Mention:** "..user.mentionString.."\n**Username:** "..user.username.."#"..user.discriminator.." (`"..user.id.."`)"..(message.guild:getMember(user.id).nickname ~= nil and "\n**Nickname:** "..message.guild:getMember(user.id).nickname or "").."\n**Created At:** "..Date.fromSnowflake(user.id):toISO(' ', '').."\n**Joined At:** "..(message.guild:getMember(user.id).joinedAt and message.guild:getMember(user.id).joinedAt:gsub('%..*', ''):gsub('T', ' ') or "ERROR").."\n**Status:** "..message.guild:getMember(user.id).status.."\n**Roles ["..#message.guild:getMember(user.id).roles.."]:** "..(#message.guild:getMember(user.id).roles == 0 and "No roles to list!" or table.concat(roles,", ")),
 				thumbnail = {
 					url = user:getAvatarURL()
@@ -289,7 +290,7 @@ local commands = {
       local case = config[message.guild.id].modData.cases[tonumber(args[2])] 
       if case.type == "warn" then action = "Warning" elseif string.lower(case.type) == "kick" then action = "Kick" elseif string.lower(case.duration) == "permanent" then action = "Permanent "..case.type.."" else action = case.type..(case.duration ~= "" and " for "..case.duration or "") end
       message:reply{embed = {
-				title = "**CAS3 "..args[2].."**",
+				title = "**Case "..args[2].."**",
         description = "**Action:** "..action.."\n**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)\n**Reason:** "..case.reason,
 				footer = {
 					text = "Responding to "..message.author.name,
@@ -318,7 +319,6 @@ local commands = {
   {command = "config", desc = "Edit your guild's configuration settings.", usage = "config <type> <value>", shorthand = {}, execute = function(message,args) 
 		local arg = (args[2] == nil and "7BBED07D913F65BACA2E07D1498AD3280559D30C87A7DA56AC7E8C6D33BE1E60" or string.lower(args[2]))
     local serverData = config[message.guild.id]
-    print(arg)
     if getPermission(message) < 2 then
       return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}
     elseif arg == "modonly" then
@@ -333,6 +333,13 @@ local commands = {
       else
         serverData.modlog = message.mentionedChannels[1][1]
         return {success = true, msg = "Set the **modlog channel** to **"..message.guild:getChannel(message.mentionedChannels[1][1]).name.."**."}
+      end
+    elseif arg == "auditlog" then 
+      if #message.mentionedChannels == 0 then
+        return {success = false, msg = "You must mention a new auditlog channel."}
+      else
+        serverData.auditlog = message.mentionedChannels[1][1]
+        return {success = true, msg = "Set the **audit channel** to **"..message.guild:getChannel(message.mentionedChannels[1][1]).name.."**."}
       end
     elseif arg == "mutedrole" then
       if #message.mentionedRoles == 0 then
@@ -349,7 +356,19 @@ local commands = {
         return {success = true, msg = "Set the **mod role** to **"..message.guild:getRole(message.mentionedRoles[1][1]).name.."**."}
       end
     else
-      return {success=true,msg="xd"}
+      local configs = config[message.guild.id]
+      message:reply{embed = {
+        title = "**Configuration Settings**"
+        fields = { -- array of fields
+					{
+						name = "Role Settings",
+						value = "**Moderator Role:** "..(configs.modrole == "nil" and "None Set!" or message.,
+						inline = true
+					},
+        },
+        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      }}
+      return {success="stfu",msg="xd"}
     end    
 	end};
 }
@@ -525,9 +544,9 @@ client:on('ready', function()
           print('[DEBUG] [UNMUTE]: '..itemz.user.." has been unmuted in "..id)
           local case = {type = "Auto-Unmute", duration = "", reason = "Mute duration expired.", user = itemz.user, mod = client.user.id}
           config[id].modData.cases[1+#config[id].modData.cases] = case
-          if config[id].modlog ~= nil and client:getGuild(id):getChannel(config[id].modlog) then
+          if config[id].modlog ~= "nil" and client:getGuild(id):getChannel(config[id].modlog) then
             client:getGuild(id):getChannel(config[id].modlog):send{embed = {
-              title = "**CAS3 "..#config[id].modData.cases.."** - "..case.type:upper(),
+              title = "**CA53 "..#config[id].modData.cases.."** - "..case.type:upper(),
               description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
               color = 2067276
             }}
