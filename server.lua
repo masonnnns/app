@@ -69,9 +69,9 @@ local function addConfig(id)
 	config[id] = {
 		prefix = "a!",
 		plugins = {
-      automod = {enabled = true, types = {invites = {true,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
-    },
-		modlog = "nil",
+      automod = {enabled = true, types = {invites = {true,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}}    },
+		terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
+    modlog = "nil",
 		modrole = "nil",
     auditlog = "nil",
 		modData = {cases = {}, actions = {}}, -- {type = "mute", reason = "", duration = os.time() / "perm", mod = userID, user = userID}
@@ -226,6 +226,7 @@ local commands = {
 	end};
 	{command = "restart", desc = "restart the bot", usage = "restart", shorthand = {}, execute = function(message,args) 
 		if getPermission(message) >= 5 then
+      if args[2] ~= nil then client:stop() return {success = "stfu", msg = ""} end
       message:reply(":ok_hand: restarting bot!")
       os.exit()
       os.exit()
@@ -414,6 +415,7 @@ local detect = false
 end
 
 function autoMod(msg)
+--if "x" == "x" then return end
 local message = msg
 local a, b = string.gsub(message.content,"\n","")
 local c, d = string.gsub(message.content,"||","")
