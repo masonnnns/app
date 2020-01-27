@@ -341,6 +341,13 @@ local commands = {
         serverData.mutedRole = message.mentionedRoles[1][1]
         return {success = true, msg = "Set the **muted role** to **"..message.guild:getRole(message.mentionedRoles[1][1]).name.."**."}
       end
+    elseif arg == "modrole" then
+      if #message.mentionedRoles == 0 then
+        return {success = false, msg = "You must mention a new mod role."}
+      else
+        serverData.modrole = message.mentionedRoles[1][1]
+        return {success = true, msg = "Set the **mod role** to **"..message.guild:getRole(message.mentionedRoles[1][1]).name.."**."}
+      end
     else
       return {success=true,msg="xd"}
     end    
