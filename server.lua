@@ -357,8 +357,6 @@ local commands = {
       end
     else
       local configs = config[message.guild.id]
-      local xd 
-      for _,items in pairs(configs.plugins) do if items.enabled then xd [1+#xd] = configs
       message:reply{embed = {
         title = "**Configuration Settings**",
         fields = { -- array of fields
@@ -367,16 +365,9 @@ local commands = {
 						value = "**Command Prefix:** "..configs.prefix.."\n**Delete Invocation Message:** "..tostring(configs.deletecmd).."\n**Mod-Only Commands:** "..tostring(configs.modonly).."\n**Moderator Role:** "..(configs.modrole == "nil" and "None Set!" or message.guild:getRole(configs.modrole).mentionString).."\n**Muted Role:** "..(configs.mutedRole == "nil" and "None Set!" or message.guild:getRole(configs.mutedRole).mentionString).."\n**Audit Log:** "..(configs.auditlog == "nil" and "None Set!" or message.guild:getChannel(configs.auditlog).mentionString).."\n**Mod Log:** "..(configs.modlog == "nil" and "None Set!" or message.guild:getChannel(configs.modlog).mentionString),
 						inline = false,
 					},
-          if configs.plugins.automod.enabled then
-            {
-              name = "Automod Settings",
-              value = "**Enabled:** "..tostring(configs.plugins.automod.enabled),
-              inline = true,
-            },
-          end
           {
-            name = "Disabled Plugins",
-            value = (onfigs.plugins.automod.enabled and "Automod" or ""),
+            name = "Automod Settings",
+            value = "**Enabled:** "..tostring(configs.plugins.automod.enabled).."\n**Words Filter:** "..(configs.plugins.automod.types.filter[1] and "Enabled. (Terms: "..#configs.terms..")" or "Disabled.").."\n**Newline Filter:** "..(configs.plugins.automod.types.newline[1] and "Enabled. (Limit: "..#configs.plugins.automod.types.newline[2]..")" or "Disabled."),
             inline = true,
           },
         },
