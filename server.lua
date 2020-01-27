@@ -253,8 +253,19 @@ local commands = {
 			return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}
     elseif args[2] == nil or tonumber(args[2]) == nil then
       return {success = false, msg = "Argument 2 must be a case number."}
-    elseif config[message.guild.id].modData.cases[args[2]] == nil then
-        
+    elseif config[message.guild.id].modData.cases[tonumber(args[2])] == nil then
+      return {success = false, msg = "Invalid case number provided."}
+    else
+      local case = config[message.guild.id].modData.cases[tonumber(args[2])] 
+      message:reply{embed = {
+				title = "**CAS3 INF0RMAT10N - CAS3 "..args[2].."**",
+        description = "**Username:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** ",
+				footer = {
+					text = "Responding to "..message.author.name,
+				},
+				color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+			}}
+        return {success = "stfu", msg = "xd"}
     end
 	end};
 }
