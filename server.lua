@@ -104,11 +104,12 @@ config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases
         color = 2067276
       end
       print('xd')
-      message.guild:getChannel(config[message.guild.id].modlog):send{embed = {
+      local reply = message.guild:getChannel(config[message.guild.id].modlog):send{embed = {
         title = "**CAS3 "..#config[message.guild.id].modData.cases.."** - "..case.type:upper(),
         description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
         color = color
       }}
+      
   end
 end
 
@@ -299,6 +300,9 @@ local commands = {
 			}}
         return {success = "stfu", msg = "xd"}
     end
+	end};
+  {command = "reason", desc = "Changes the reason of a specific case.", usage = "reason <new reason>", shorthand = {}, execute = function(message,args) 
+		return {success = true, msg = "Pong!", emoji = "ping"}
 	end};
 }
 
