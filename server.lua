@@ -776,16 +776,18 @@ client:on('ready', function()
 								client:getGuild(id):getMember(itemz.user):removeRole(items.mutedRole)
 							end
 						end
-					end
-          print('[DEBUG] [UNMUTE]: '..itemz.user.." has been unmuted in "..id)
-          local case = {type = "Auto-Unmute", duration = "", reason = "Mute duration expired.", user = itemz.user, mod = client.user.id}
-          config[id].modData.cases[1+#config[id].modData.cases] = case
-          if config[id].modlog ~= "nil" and client:getGuild(id):getChannel(config[id].modlog) then
-            client:getGuild(id):getChannel(config[id].modlog):send{embed = {
-              title = "**CA53 "..#config[id].modData.cases.."** - "..case.type:upper(),
-              description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
-              color = 2067276
-            }}
+            print('[DEBUG] [UNMUTE]: '..itemz.user.." has been unmuted in "..id)
+            local case = {type = "Auto-Unmute", duration = "", reason = "Mute duration expired.", user = itemz.user, mod = client.user.id}
+            config[id].modData.cases[1+#config[id].modData.cases] = case
+            if config[id].modlog ~= "nil" and client:getGuild(id):getChannel(config[id].modlog) then
+              client:getGuild(id):getChannel(config[id].modlog):send{embed = {
+                title = "**Case "..#config[id].modData.cases.."** - "..case.type:upper(),
+                description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
+                color = 2067276
+              }}
+            end
+          elseif itemz.type == "ban" then
+            print('xd')
           end
 					table.remove(items.modData.actions,num)
 				end
