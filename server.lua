@@ -178,7 +178,7 @@ local commands = {
 	end};
   --]]
 	{command = "test", desc = "x.", usage = "test", shorthand = {}, execute = function(message,args) 
-    local xd = http.request("GET","https://pastebin.com/api/api_post.php")
+    local xd = http.request("POST","https://pastebin.com/api/api_post",{api_dev_key = "13791d55520a8b1d687fab4d679f6540", api_option = "psate", api_paste_code = "xdd"})
     for a,b in pairs(xd) do print(a,b) if type(b) == "table" then for c,d in pairs(b) do print(c,d) end end end
 	end};
   {command = "ping", desc = "Tests the bot's connection to Discord.", usage = "ping", shorthand = {}, execute = function(message,args) 
