@@ -488,7 +488,7 @@ local commands = {
     elseif args[3] == "add" then
       for _,items in pairs(serverData.tags.tags) do if string.lower(items.term) == string.lower(args[4]) then return {success = false, msg = "A tag already exists with that name, try editing it."} end end
       if args[5] == nil then return {success = false, msg = "You must provide content for the tag."} end
-      serverData.tags.tags[1+#serverData.tags.tags] = {term = string.lower(args[4]), response = table.concat(args," ",5)}
+      serverData.tags.tags[1+#serverData.tags.tags] = {term = string.lower(args[4]), response = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+string.len(args[4])+6))}
       return {success = true, msg = "Added the **"..args[4].."** tag."}
     elseif args[3] == "view" then
       if #serverData.tags.tags == 0 then return {success = false, msg = "There are no tags to display."} end
