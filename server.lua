@@ -154,6 +154,7 @@ for a,b in pairs(decode) do
 		end
 	end
 	--config[a] = b
+  config[a].purgeignore = {}
 	print("[DB]: Guild "..a.."'s data was successfully loaded.")
 end
 print("[DB]: All guilds have been successfully loaded.")
@@ -198,6 +199,7 @@ local commands = {
       local msgs = message.channel:getMessages(tonumber(args[2]))
       config[message.guild.id].purgeignore[message.channel.id] = 0
       for _,items in pairs(msgs) do if not message.author.bot then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1 end end
+      config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] - 1
       local purge = message.channel:bulkDelete(msgs)
       if purge then
         return {success = true, msg = "Purged **"..args[2].."** messages."}
@@ -894,8 +896,8 @@ client:on('memberUpdate', function(member)
 end)
 
 client:on("messageDelete",function(message)
-  if message.guild == nil or message.author.bot then return end
   if config[message.guild.id].purgeignore[message.channel.id] ~= nil and config[message.guild.id].purgeignore[message.channel.id] >= 1 then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] - 1 return end
+  if message.guild == nil or message.author.bot then return end
   if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
     message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
       title = "Message Deleted",
