@@ -279,7 +279,7 @@ local commands = {
       return {success = "stfu", msg = "xd"}
     end
 	end};
-	{command = "mute", desc = "Suspend a user's ability to talk in your server.", usage = "mute <@mention> <duration> <optional reason>", shorthand = {"shutup"}, execute = function(message,args) 
+	{command = "mute", desc = "Suspend a user's ability to talk in your server.", usage = "mute <@mention> <optional duration> <optional reason>", shorthand = {"shutup"}, execute = function(message,args) 
 		if getPermission(message) < 1 then
 			return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}
 		elseif config[message.guild.id].mutedRole == "nil" or message.guild:getRole(config[message.guild.id].mutedRole) == nil then
@@ -586,7 +586,7 @@ local commands = {
     local moderations = ""
     for _,items in pairs(config[message.guild.id].modData.actions) do 
         if items.duration == "permanent" or tonumber(items.duration) ~= nil and os.time() <= items.duration then 
-            moderations = moderations.."\n**"..message.guild:getMember(items.user).tag.."** (`"..message.guild:getMember(items.user).id.."`) - "..(items.duration == "permanent" and "Permanent" or getTimeString(items.duration - os.time())) 
+            moderations = moderations.."\n**"..client:getUser(items.user).tag.."** (`"..client:getUser(items.user).id.."`) - "..(items.duration == "permanent" and "Permanent" or getTimeString(items.duration - os.time())) 
         end 
     end
     if moderations == "" then return {success = false, msg = "There are no active moderations in the server."} end
@@ -598,6 +598,48 @@ local commands = {
     }}
     return {success = "stfu", msg = ""}
   end};
+  {command = "ban", desc = "Ban a user from your server.", usage = "mute <@mention> <optional duration> <optional reason>", shorthand = {"banish"}, execute = function(message,args) 
+		if getPermission(message) < 1 then
+			return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}
+		elseif #message.mentionedUsers == 0 or not args[2] == "<@!"..tostring(message.mentionedUsers[1][1])..">" or not args[2] == "<@"..tostring(message.mentionedUsers [1][1])..">" then
+			return {success = false, msg = "You must mention a user in argument 2."}
+		elseif message.guild.members:get(message.mentionedUsers[1][1]).id == client.user.id then
+			return {success = false, msg = "I cannot ban myself!"}
+		elseif getPermission(message,message.guild.members:get(message.mentionedUsers[1][1]).id) >= getPermission(message) then
+			return {success = false, msg = "You cannot ban people with a higher permission level than you."}
+		elseif message.guild:getMember(client.user.id):hasPermission("kickMembers") ~= true then
+			return {success = false, msg = "I need the **Ban Members** permission to do this."}
+		else
+			if args[3] == nil then
+				local reason = "No Reason Provided."
+				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "ban", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
+				local member = message.guild:getMember(message.mentionedUsers[1][1])
+        message.guild:banUser(message.mentionedUsers[1][1],reason,7)
+        addModlog(message,{type = "Ban", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
+				return {success = true, msg = "Successfully banned **"..member.name.."**!"}
+			end
+			local duration = getDuration(args)
+			if durationTable[table.concat(duration.char,"")] == nil then
+				local reason = (table.concat(args," ",3))
+				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "ban", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
+				local member = message.guild:getMember(message.mentionedUsers[1][1])
+        message.guild:banUser(message.mentionedUsers[1][1],reason,7)
+        addModlog(message,{type = "Ban", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
+        return {success = true, msg = "Successfully banned **"..member.name.."**!"}
+			else
+				if tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1] <= 0 then
+          return {success = false, msg = "Invalid duration."}
+        else
+          local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
+          config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "ban", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], mod = message.author.id, user = message.mentionedUsers[1][1]}
+          local member = message.guild:getMember(message.mentionedUsers[1][1])
+          message.guild:banUser(message.mentionedUsers[1][1],reason,7)
+          addModlog(message,{type = "Ban", duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
+          return {success = true, msg = "Successfully banned **"..member.name.."** for **"..table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s").."**!"}
+			  end
+      end
+		end
+	end};
 }
 
 function checkMany(check,content,id)
