@@ -103,7 +103,8 @@ local function addConfig(id)
 	config[id] = {
 		prefix = "a!",
     automod = {enabled = false, types = {invites = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
-	  starboard = {enabled = false, channel = "nil", emoji = "⭐"},
+	  autoresponder = {enabled = false, responders = {}},
+    tags = {enabled = false, tags = {}},
     terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
     modlog = "nil",
 		modrole = "nil",
@@ -471,12 +472,14 @@ local commands = {
       elseif tonumber(args[4]) == nil then
         return {success = false, msg = "The **mention limit** must be a **number**."}
       else
-        serverData.automod.types.mentions[2] = tonumber(args[4] <= 0 and 1 or tonumber(args[4]))
+        serverData.automod.types.mentions[2] = (tonumber(args[4]) <= 0 and 1 or tonumber(args[4]))
         return {success = true, msg = "Set the **mention limit** to **"..tostring(serverData.automod.types.mentions[2]).."**."}
       end
+    elseif args[3] == "invites" then
+       serverData.automod.types.invites[1] = not serverData.automod.types.invites[1]
+       return {success = true, msg = "**"..(serverData.automod.types.invites[1] and "Enabled" or "Disabled").."** the **invites filter**."}
     else
-       serverData.automod.enabled = not serverData.automod.enabled
-       return {success = true, msg = "**"..(serverData.automod.enabled and "Enabled" or "Disabled").."** the **automod** plugin."}
+       return {success = false, msg = "Invalid **second argument**."}
     end
   else
       local configs = config[message.guild.id]
@@ -494,8 +497,8 @@ local commands = {
             inline = true,
           },
           {
-            name = "Starboard Settings",
-            value = "**Enabled:** "..tostring(configs.starboard.enabled).."\n**Channel:** "..(configs.starboard.channel == "nil" and "None Set!" or message.guild:getChannel(configs.starboard.channel).mentionString),
+            name = "Auto Responder Settings",
+            value = "**Enabled:** "..tostring(configs.autoresponder.enabled).."\n**Terms:** "..#configs.autoresponder.responders.."\n*Say "..configs.prefix.."config autoresponder view to view all responses.*",
             inline = true      
           },
         },
