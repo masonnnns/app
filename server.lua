@@ -584,14 +584,16 @@ local commands = {
   {command = "moderations", desc = "Views all active moderations in the server.", usage = "moderations", shorthand = {}, execute = function(message,args) 
 		if getPermission(message) < 1 then return {success = false, msg = "You don't have permissions to run this command.", timer = 3000} end
     local moderations = ""
+    local num  = 0
     for _,items in pairs(config[message.guild.id].modData.actions) do 
-        if items.duration == "permanent" or tonumber(items.duration) ~= nil and os.time() <= items.duration then 
-            moderations = moderations.."\n**"..client:getUser(items.user).tag.."** (`"..client:getUser(items.user).id.."`) - "..(items.duration == "permanent" and "Permanent" or getTimeString(items.duration - os.time())) 
+        if items.duration == "permanent" or tonumber(items.duration) ~= nil and os.time() <= items.duration then
+            num = num + 1
+            moderations = moderations.."\n**"..client:getUser(items.user).tag.."** (`"..client:getUser(items.user).id.."`) `["..string.upper(items.type).."]` - "..(items.duration == "permanent" and "Permanent" or getTimeString(items.duration - os.time())) 
         end 
     end
     if moderations == "" then return {success = false, msg = "There are no active moderations in the server."} end
 	  message:reply{embed = {
-      title = "**Moderations**",
+      title = "**Moderations** - "..tostring(num),
       description = moderations,
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
       footer = {text = "Responding to "..message.author.name}        
