@@ -492,27 +492,27 @@ local commands = {
       return {success = true, msg = "Added the **"..args[4].."** tag."}
     elseif args[3] == "view" then
       if #serverData.tags.tags == 0 then return {success = false, msg = "There are no tags to display."} end
-      if string.lower(args[4]) == nil then
+      if args[4] == nil then
         local txt = ""
-        for _,items in pairs(serverData.tags.tags) do txt = txt.."\n**"..items.term.."** - "..items.response end
+        for _,items in pairs(serverData.tags.tags) do txt = txt.."\n**"..items.term.."** - "..(string.len(items.response) >= 50 and string.sub(items.response,1,47).."..." or items.response) end
         message:reply{embed = {
           title = "**Tags**",
-          description = (#serverData.tags.tags == 0 and "None set!" or txt),
+          description = (#serverData.tags.tags == 0 and "None set!" or "View a tag's complete content with "..serverData.prefix.."config tags view <name>\n"..txt),
           footer = {text = "Responding to "..message.author.name},
           color =  (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
         }}
       else
           local found
-          for _,items in pairs(serverData.tags.tags) do if string.lower(args[4]) == string.lower(items.term) then items = found break end end
+          for _,items in pairs(serverData.tags.tags) do if string.lower(args[4]) == string.lower(items.term) then found = items break end end
           if found == nil or found == "" then
             return {success = false, msg = "No tag exists with that name."}
           else
               message:reply{embed = {
-              title = "**Tags**",
-              description = (#serverData.tags.tags == 0 and "None set!" or txt),
-                footer = {text = "Responding to "..message.author.name},
+              title = "**"..found.term.." Tag**",
+              description = found.response,
+              footer = {text = "Responding to "..message.author.name},
               color =  (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
-        }}
+            }}
           end
       end
       return {success = "stfu", msg = ""}
