@@ -620,6 +620,7 @@ local commands = {
 				local reason = "No Reason Provided."
 				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "ban", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
 				local member = message.guild:getMember(message.mentionedUsers[1][1])
+        member:getPrivateChannel():send("⛔ **You've been permanently banned in "..message.guild.name.."!**\n\nReason: "..reason)
         message.guild:banUser(message.mentionedUsers[1][1],reason,7)
         addModlog(message,{type = "Ban", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
 				return {success = true, msg = "Successfully banned **"..member.name.."**!"}
