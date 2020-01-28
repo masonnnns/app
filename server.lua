@@ -111,7 +111,9 @@ local function addConfig(id)
 		modData = {cases = {}, actions = {}}, -- {type = "mute", reason = "", duration = os.time() / "perm", mod = userID, user = userID}
 		deletecmd = true,
 		modonly = false,
-		mutedRole = "nil"
+		mutedRole = "nil",
+    auditignore = {},
+    purgeignore = {}
 	}
 	
 end
@@ -182,7 +184,26 @@ local commands = {
     return {success = "stfu", msg = "Pong!", emoji = "ping"}
 	end};
   {command = "purge", desc = "Bulk delete messages from a channel.", usage = "purge <number of messages>", shorthand = {}, execute = function(message,args) 
-	end};
+	  if getPermission(message) < 2 then
+      return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}
+    elseif args[2] == nil then
+      return {success = false, msg = "You must specify how many messages to delete."}
+    elseif tonumber(args[2]) == nil then 
+      return {success = false, msg = "Argument 2 must be a number."}
+    elseif tonumber(args[2]) > 100 or tonumber(args[2]) < 2 then
+      return {success = false, msg = "Argument 2 must be between 2 and 100."}
+    elseif message.guild:getMember(client.user.id):hasPermission("manageMessages") ~= true then
+      return {success = false, msg = "I need the **Manage Messages** permission to do this."}
+    else
+      local msgs = message.channel:getMessages(tonumber(args[2]))
+      local purge = message.channel:bulkDelete(msgs)
+      if purge then
+        return {success = true, msg = "Purged **"..args[2].."** messages."}
+      else
+        return {success = false, msg = "Failed to purge."}
+      end
+    end
+  end};
   {command = "uptime", desc = "Sees how long the bot has been online.", usage = "uptime", shorthand = {"up"}, execute = function(message,args) 
 		message:reply{embed = {
       title = "**Uptime**",
@@ -193,7 +214,9 @@ local commands = {
     return {success = "stfu", msg = "Pong!", emoji = "ping"}
 	end};
 	{command = "prefix", desc = "Change your server's prefix.", usage = "prefix <new prefix>", shorthand = {}, execute = function(message,args)
-		if args[2] == nil then
+		if getPermission(message) < 2 then
+      return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}
+    elseif args[2] == nil then
 			return {success = false, msg = "You must provide a new prefix."}
 		elseif string.len(args[2]) > 15 then
 			return {success = false, msg = "Your prefix must be less than 15 characters."}
