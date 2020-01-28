@@ -580,11 +580,17 @@ client:on("messageDelete",function(message)
 					inline = true,
 				},
         {
-					name = "Message Content",
-					value = message.content,
+					name = "Message Location",
+					value = message.channel.mentionString,
 					inline = true,
 				},
-      }
+        {
+					name = "Message Content",
+					value = message.content,
+					inline = false,
+				},
+      },
+      color = 3447003,
     }}
   end
 end)
@@ -611,7 +617,30 @@ if member.bot then return end
 end)
 
 client:on("messageUpdate", function(message)
-	if message.guild ~= nil or message.author.bot ~= true then
+	 if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
+    message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
+      title = "Message Edited",
+      fields = {
+        {
+					name = "Message Author",
+					value = message.author.mentionString.." (`"..message.author.id.."`)",
+					inline = true,
+				},
+        {
+					name = "Message Location",
+					value = message.channel.mentionString,
+					inline = true,
+				},
+        {
+					name = "New Message Content",
+					value = message.content,
+					inline = false,
+				},
+      },
+      color = 3447003,
+    }}
+  end
+  if message.guild ~= nil or message.author.bot ~= true then
 		autoMod(message)
 	end
 end)
