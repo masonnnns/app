@@ -197,15 +197,16 @@ local commands = {
       return {success = false, msg = "I need the **Manage Messages** permission to do this."}
     else
       local num = 0
+      message:delete()
       local msgs = message.channel:getMessages(tonumber(args[2]))
       config[message.guild.id].purgeignore[message.channel.id] = 0
-      message:delete()
       for a,items in pairs(msgs) do if math.floor(items.createdAt) + 1209600 >= os.time() then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1 else table.remove(msgs,a) end end
       num = config[message.guild.id].purgeignore[message.channel.id]
       local purge = message.channel:bulkDelete(msgs)
       if purge then
-        return {success = true, msg = "Purged **"..(num - 1).."** message"..(num == 1 and "" or "s").."."}
+        return {success = true, msg = "Purged **"..(num).."** message"..(num == 1 and "" or "s").."."}
       else
+        config[message.guild.id].purgeignore[message.channel.id] = 0
         return {success = false, msg = "Failed to purge messages."}
       end
     end
