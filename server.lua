@@ -66,6 +66,39 @@ local function getDuration(Args)
 	return argData
 end
 
+local function plural(num)
+  return num == 1 and "" or "s"
+end
+
+local function getTimeString(seconds)
+	local minutes = math.floor(seconds / 60)
+	seconds = seconds % 60
+	local hours = math.floor(minutes / 60)
+	minutes = minutes % 60
+	local days = math.floor(hours / 24)
+	hours = hours % 24
+	local s
+	if days > 0 then
+		s = days .. " day" .. plural(days)
+		if hours > 0 then
+			s = s .. ", " .. hours .. " hour" .. plural(hours)
+		end
+	elseif hours > 0 then
+		s = hours .. " hour" .. plural(hours)
+		if minutes > 0 then
+			s = s .. ", " .. minutes .. " minute" .. plural(minutes)
+		end
+	elseif minutes > 0 then
+		s = minutes .. " minute" .. plural(minutes)
+		if seconds > 0 then
+			s = s .. ", " .. seconds .. " second" .. plural(seconds)
+		end
+	else
+		s = seconds .. " second" .. plural(seconds)
+	end
+	return s
+end
+
 local function addConfig(id)
 	config[id] = {
 		prefix = "a!",
@@ -142,7 +175,8 @@ local commands = {
 	end};
   {command = "uptime", desc = "Sees how long the bot has been online.", usage = "uptime", shorthand = {"up"}, execute = function(message,args) 
 		message:reply{embed = {
-      description = os.time() - uptimeOS,
+      title = "**Uptime**",
+      description = getTimeString(os.time() - uptimeOS)..".",
       footer = {text = "Responding to "..message.author.name},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
     }}
