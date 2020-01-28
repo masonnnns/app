@@ -408,31 +408,23 @@ local commands = {
         serverData.modrole = message.mentionedRoles[1][1]
         return {success = true, msg = "Set the **mod role** to **"..message.guild:getRole(message.mentionedRoles[1][1]).name.."**."}
       end
-    elseif arg == "starboard" then 
-     if #message.mentionedChannels == 0 then
-       serverData.starboard.enabled = not serverData.starboard.enabled 
-       return {success = true, msg = "**"..(serverData.starboard.enabled and "Enabled" or "Disabled").."** the **starboard** plugin."}
-     else
-       serverData.starboard.channel = message.mentionedChannels[1][1]
-       return {success = true, msg = "Set the **starboard channel** to **"..message.guild:getChannel(message.mentionedChannels[1][1]).name.."**."}
-    end
-  elseif arg == "automod" then
-    if args[3] ~= nil then string.lower(args[3]) end
-    if args[3] == nil then 
-      serverData.automod.enabled = not serverData.automod.enabled
-      return {success = true, msg = "**"..(serverData.automod.enabled and "Enabled" or "Disabled").."** the **automod** plugin."}
-    elseif args[3] == "filter" then
-      if args[4] == nil then
-        serverData.automod.types.filter[1] = not serverData.automod.types.filter[1]
-        return {success = true, msg = "**"..(serverData.automod.types.filter[1] and "Enabled" or "Disabled").."** the **words filter**."}
-      elseif string.lower(args[4]) == "view" then
-        local result
-        local success, error = pcall(function() result = message.author:getPrivateChannel():send{embed = {title = "**Filtered Words in "..message.guild.name.."**", description = "The following could contain sensitive content. Click to view.\n||"..table.concat(serverData.terms,", ").."||", footer = {text = "From "..message.guild.name}, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color)}} end)
-          if success and result ~= nil then
-            return {success = true, msg = "I DMed you the list of filtered words.", "thumbs_up"}
-          else
-            return {success = false, msg = "I couldn't DM you. Adjust your privacy settings and try again."}    
-          end  
+    elseif arg == "automod" then
+      if args[3] ~= nil then string.lower(args[3]) end
+      if args[3] == nil then 
+        serverData.automod.enabled = not serverData.automod.enabled
+        return {success = true, msg = "**"..(serverData.automod.enabled and "Enabled" or "Disabled").."** the **automod** plugin."}
+      elseif args[3] == "filter" then
+        if args[4] == nil then
+          serverData.automod.types.filter[1] = not serverData.automod.types.filter[1]
+          return {success = true, msg = "**"..(serverData.automod.types.filter[1] and "Enabled" or "Disabled").."** the **words filter**."}
+        elseif string.lower(args[4]) == "view" then
+          local result
+          local success, error = pcall(function() result = message.author:getPrivateChannel():send{embed = {title = "**Filtered Words in "..message.guild.name.."**", description = "The following could contain sensitive content. Click to view.\n||"..table.concat(serverData.terms,", ").."||", footer = {text = "From "..message.guild.name}, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color)}} end)
+            if success and result ~= nil then
+              return {success = true, msg = "I DMed you the list of filtered words.", "thumbs_up"}
+            else
+              return {success = false, msg = "I couldn't DM you. Adjust your privacy settings and try again."}    
+            end  
       else
           local found
           for a,items in pairs(serverData.terms) do if string.lower(items) == string.lower(table.concat(args," ",4)) then found = items table.remove(serverData.terms,a) end end
@@ -768,8 +760,8 @@ client:on('ready', function()
 	print('starting temp action loop')
 	while true do
 		for id,items in pairs(config) do
-      if client:getGuild(id) == nil or config[id] == nil
-        print('not in guild')
+      if client:getGuild(id) == nil or config[id] == nil then
+        --//print('not in guild')
       else
         for num,itemz in pairs(items.modData.actions) do
           if tonumber(itemz.duration) ~= nil and os.time() >= itemz.duration then
@@ -790,7 +782,17 @@ client:on('ready', function()
                 }}
               end
             elseif itemz.type == "ban" then
-              print('xd')
+              print('[DEBUG] [UNBAN]: '..itemz.user.." has been unbanned in "..id)
+              if client:getGuild(id):getBan(itemz.user) ~= nil then client:getGuild(id):unbanUser(itemz.user,"Ban duration expired.") end
+              local case = {type = "Auto-Unban", duration = "", reason = "Ban duration expired.", user = itemz.user, mod = client.user.id}
+              config[id].modData.cases[1+#config[id].modData.cases] = case
+              if config[id].modlog ~= "nil" and client:getGuild(id):getChannel(config[id].modlog) then
+                client:getGuild(id):getChannel(config[id].modlog):send{embed = {
+                  title = "**Case "..#config[id].modData.cases.."** - "..case.type:upper(),
+                  description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
+                  color = 2067276
+                }}
+              end
             end
             table.remove(items.modData.actions,num)
           end
