@@ -199,18 +199,11 @@ local commands = {
       local num = 0
       local msgs = message.channel:getMessages(tonumber(args[2]))
       config[message.guild.id].purgeignore[message.channel.id] = 0
-      for _,items in pairs(msgs) do if not message.author.bot and math.floor(items.createdAt) + 1209600 < os.time() then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1 end end
-      config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] - 1
+      for a,items in pairs(msgs) do if math.floor(items.createdAt) + 1209600 >= os.time() then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1 else table.remove(msgs,a) end end
+      config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1
+      num = config[message.guild.id].purgeignore[message.channel.id] - 1
       local purge = message.channel:bulkDelete(msgs)
-      if purge then
-        return {success = true, msg = "Purged **"..args[2].."** messages."}
-      else
-        return {success = false, msg = "Failed to purge."}
-      end
-      timer.sleep(10000)
-      if config[message.guild.id].purgeignore[message.channel.id] <= 5 then
-        config[message.guild.id].purgeignore[message.channel.id] = 0
-      end
+      return {success = true, msg = "Purged **"..num.."** messages."}
     end
   end};
   {command = "uptime", desc = "Sees how long the bot has been online.", usage = "uptime", shorthand = {"up"}, execute = function(message,args) 
