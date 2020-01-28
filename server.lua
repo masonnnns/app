@@ -487,8 +487,30 @@ local commands = {
       return {success = true, msg = "**"..(serverData.tags.enabled and "Enabled" or "Disabled").."** the **tags** plugin."}
     elseif args[3] == "add" then
       for _,items in pairs(serverData.tags.tags) do if string.lower(items.term) == string.lower(args[4]) then return {success = false, msg = "A tag already exists with that name, try editing it."} end end
+      if args[5] == nil then return {success = false, msg = "You must provide content for the tag."} end
       serverData.tags.tags[1+#serverData.tags.tags] = {term = string.lower(args[4]), response = table.concat(args," ",5)}
       return {success = true, msg = "Added the **"..args[4].."** tag."}
+    elseif args[3] == "view" then
+      local txt = ""
+      for _,items in pairs(serverData.tags.tags) do txt = txt.."\n**"..items.term.."** - "..items.response end
+      message:reply{embed = {
+        title = "**Tags**",
+        description = (#serverData.tags.tags == 0 and "None set!" or txt),
+        footer = {text = "Responding to "..message.author.name},
+        color =  (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      }}
+      return {success = "stfu", msg = ""}
+    elseif args[3] == "delmsg" then
+      serverData.tags.delete = not serverData.tags.delete
+      return {success = true, msg = "**"..(serverData.tags.delete and "Enabled" or "Disabled").."** tag **invocation deletion**."}
+    elseif args[3] == "edit" then
+      local found
+      for _,items in pairs(serverData.tags.tags) do if string.lower(args[4]) == string.lower(items.term) then found = items break end end
+      if found == nil or found = "" then
+        return {success = false, "No tag exists with that name."}
+      else
+        found.response = table.concat(args," ")
+      end
     end
   else
       local configs = config[message.guild.id]
@@ -520,6 +542,8 @@ local commands = {
   {command = "tag", desc = "Sends a predefined message in response to a keyword.", usage = "tag <tag name>", shorthand = {}, execute = function(message,args) 
 	  if getPermission(message) < 1 then
         return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}	
+    elseif config[message.guild.id].tags.enabled == false then
+        return {success = "stfu", msg = ""}
     elseif #config[message.guild.id].tags.tags == 0 then
         return {success = false, msg = "There are currently no tags setup."}
     else
