@@ -113,7 +113,7 @@ local function addConfig(id)
 		modonly = false,
 		mutedRole = "nil",
     auditignore = {},
-    purgeignore = {}
+    purgeignore = {["551794917584666625"] = 1000}
 	}
 	
 end
@@ -196,11 +196,17 @@ local commands = {
       return {success = false, msg = "I need the **Manage Messages** permission to do this."}
     else
       local msgs = message.channel:getMessages(tonumber(args[2]))
+      config[message.guild.id].purgeignore[message.channel.id] = 0
+      for _,items in pairs(msgs) do if not message.author.bot then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1 end end
       local purge = message.channel:bulkDelete(msgs)
       if purge then
         return {success = true, msg = "Purged **"..args[2].."** messages."}
       else
         return {success = false, msg = "Failed to purge."}
+      end
+      timer.sleep(10000)
+      if config[message.guild.id].purgeignore[message.channel.id] <= 5 then
+        config[message.guild.id].purgeignore[message.channel.id] = 0
       end
     end
   end};
@@ -889,6 +895,7 @@ end)
 
 client:on("messageDelete",function(message)
   if message.guild == nil or message.author.bot then return end
+  if config[message.guild.id].purgeignore[message.channel.id] ~= nil and config[message.guild.id].purgeignore[message.channel.id] >= 1 then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] - 1 return end
   if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
     message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
       title = "Message Deleted",
