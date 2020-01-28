@@ -96,7 +96,7 @@ local function getTimeString(seconds)
 	else
 		s = seconds .. " second" .. plural(seconds)
 	end
-	return days.." day"..plural(days)..", "..hours.." "
+	return days.." day"..plural(days)..", "..hours.." hour"..plural(hours)..", "..minutes.." minute"..plural(minutes)..", "..seconds.." second"..plural(seconds)
 end
 
 local function addConfig(id)
@@ -589,6 +589,12 @@ local commands = {
         return {success = false, msg = "There is no tag with that name."}
     end
 	end};
+  {command = "moderations", desc = "Views all active moderations in the server.", usage = "moderations", shorthand = {}, execute = function(message,args) 
+		local moderations = ""
+    for _,items in pairs(config[message.guild.id].modData.cases) do if items.duration == "permanent" or tonumber(items.duration) ~= nil and os.time() < items.duration then moderations = moderations.."\n**"..message.guild:getMember(items.user).tag.."** (`"..message.guild:getMember(items.user).id.."`) - "..(items.duration == "permanent" and "Permanent" or getTimeString(items.duration - os.time())) end end 
+	  message:reply(moderations)
+    return {success = "stfu", msg = ""}
+  end};
 }
 
 function checkMany(check,content,id)
