@@ -486,6 +486,7 @@ local commands = {
       serverData.tags.enabled = not serverData.tags.enabled
       return {success = true, msg = "**"..(serverData.tags.enabled and "Enabled" or "Disabled").."** the **tags** plugin."}
     elseif args[3] == "add" then
+      for _,items in pairs(serverData.tags.tags) do if string.lower(items.term) == string.lower(args[4]) then return {success = false, msg = "A tag already exists with that name, try editing it."} end end
       serverData.tags.tags[1+#serverData.tags.tags] = {term = string.lower(args[4]), response = table.concat(args," ",5)}
       return {success = true, msg = "Added the **"..args[4].."** tag."}
     end
@@ -506,7 +507,7 @@ local commands = {
           },
           {
             name = "Tag Settings",
-            value = "**Enabled:** "..tostring(configs.tags.enabled).."\n**Delete Invocation:** "..tostring(config.tags.delete).."\n**Tags:** "..#configs.tags.tags,
+            value = "**Enabled:** "..tostring(configs.tags.enabled).."\n**Delete Invocation:** "..tostring(configs.tags.delete).."\n**Tags:** "..#configs.tags.tags,
             inline = true      
           },
         },
@@ -517,10 +518,20 @@ local commands = {
     end    
 	end};
   {command = "tag", desc = "Sends a predefined message in response to a keyword.", usage = "tag <tag name>", shorthand = {}, execute = function(message,args) 
-	  if getPermission(message) < 2 then
+	  if getPermission(message) < 1 then
         return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}	
     elseif #config[message.guild.id].tags.tags == 0 then
         return {success = false, msg = "There are currently no tags setup."}
+    else
+        for _,items in pairs(config[message.guild.id].tags.tags) do
+          if string.lower(items.term) == string.lower(args[2]) then
+            message:reply(items.response)
+            if config[message.guild.id].tags.delete and not config[message.guild.id].tags.deletecmd then message:delete() end
+            return {success = "stfu", msg = "xd"}
+          end
+        end
+        return {success = false, msg = "There is no tag with that name."}
+    end
 	end};
 }
 
