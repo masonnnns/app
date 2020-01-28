@@ -170,12 +170,18 @@ local function sepMsg(msg)
 end
 
 local commands = {
+  --[[
+  {command = "ping", desc = "Tests the bot's connection to Discord.", usage = "ping", shorthand = {}, execute = function(message,args) 
+	end};
+  --]]
 	{command = "ping", desc = "Tests the bot's connection to Discord.", usage = "ping", shorthand = {}, execute = function(message,args) 
 		--print(discordia.Client.ping)
     local m = message:reply(":ping_pong: Ping?")
     local latency = m.createdAt - message.createdAt
     m:setContent(":ping_pong: Pong! `"..math.max(latency).."ms`")
     return {success = "stfu", msg = "Pong!", emoji = "ping"}
+	end};
+  {command = "purge", desc = "Bulk delete messages from a channel.", usage = "purge <number of messages>", shorthand = {}, execute = function(message,args) 
 	end};
   {command = "uptime", desc = "Sees how long the bot has been online.", usage = "uptime", shorthand = {"up"}, execute = function(message,args) 
 		message:reply{embed = {
