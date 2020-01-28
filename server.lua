@@ -481,6 +481,15 @@ local commands = {
     else
        return {success = false, msg = "Invalid **second argument**."}
     end
+  elseif arg == "autoresponder" then
+    if args[3] ~= nil then args[3] = string.lower(args[3]) end
+    if args[3] == nil then
+      serverData.autoresponder.enabled = not serverData.autoresponder.enabled
+      return {success = true, msg = "**"..(serverData.autoresponder.enabled and "Enabled" or "Disabled").."** the **autoresponder** plugin."}
+    elseif args[3] == "add" then
+      serverData.autoresponder.responders[1+#serverData.autoresponder.responders] = {term = string.lower(args[4]), response = table.concat(args," ",5)}
+      return {success = true, msg = "Added the **"..args[4].."** response."}
+    end
   else
       local configs = config[message.guild.id]
       message:reply{embed = {
@@ -498,7 +507,7 @@ local commands = {
           },
           {
             name = "Auto Responder Settings",
-            value = "**Enabled:** "..tostring(configs.autoresponder.enabled).."\n**Terms:** "..#configs.autoresponder.responders.."\n*Say "..configs.prefix.."config autoresponder view to view all responses.*",
+            value = "**Enabled:** "..tostring(configs.autoresponder.enabled).."\n**Terms:** "..#configs.autoresponder.responders,
             inline = true      
           },
         },
@@ -590,7 +599,15 @@ if message.author.bot == false  then
 		return false
 	else
 		print("[NEW MESSAGE] [AUTHOR: "..string.upper(message.author.username).."] [GUILD: "..string.upper(message.guild.name).."] [CHANNEL: "..string.upper(message.channel.name).."]: "..message.content)
-		return true
+		if config[message.guild.id].autoresponder.enabled then
+      for _,items in pairs(config[message.guild.id].autoresponder.responders) do
+        if string.lower(message.content) == string.lower(items.terms) then
+          message:reply(items.response)
+          break
+        end
+      end
+    end
+    return true
 	end
 end
 end
