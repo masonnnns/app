@@ -6,7 +6,7 @@ local client = discordia.Client {
 	autoReconnect = true,
 }
 
-
+local uptimeOS 
 local timer = require('timer')
 local json = require('json')
 local http = require("coro-http")
@@ -126,7 +126,7 @@ print("[DB]: All guilds have been successfully loaded.")
 local function sepMsg(msg)
 	local Args = {}
 	local Command = msg
-	for Match in Command:gmatch("[^%s,]+") do
+	for Match in Command:gmatch("[^%s]+") do
 	table.insert(Args, Match)
 	end;
 	local Data = {
@@ -139,6 +139,14 @@ end
 local commands = {
 	{command = "ping", desc = "Tests the bot's connection to Discord.", usage = "ping", shorthand = {}, execute = function(message,args) 
 		return {success = true, msg = "Pong!", emoji = "ping"}
+	end};
+  {command = "uptime", desc = "Sees how long the bot has been online.", usage = "uptime", shorthand = {"up"}, execute = function(message,args) 
+		message:reply{embed = {
+      description = os.time() - uptimeOS,
+      footer = {text = "Responding to "..message.author.name},
+      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    }}
+    return {success = "stfu", msg = "Pong!", emoji = "ping"}
 	end};
 	{command = "prefix", desc = "Change your server's prefix.", usage = "prefix <new prefix>", shorthand = {}, execute = function(message,args)
 		if args[2] == nil then
@@ -373,6 +381,7 @@ local commands = {
           },
         },
         color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        footer = {text = "Responding to "..message.author.name}  
       }}
       return {success="stfu",msg="xd"}
     end    
@@ -532,8 +541,8 @@ local function exec(arg, msg)
         
 end 
 
-
 client:on('ready', function()
+  uptimeOS = os.time()
 	print('Logged in as '.. client.user.username)
 	client:setGame("a!help | AA-R0N")
 	print('starting temp action loop')
