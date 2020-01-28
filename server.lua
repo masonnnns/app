@@ -203,7 +203,11 @@ local commands = {
       config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1
       num = config[message.guild.id].purgeignore[message.channel.id] - 1
       local purge = message.channel:bulkDelete(msgs)
-      return {success = true, msg = "Purged **"..num.."** messages."}
+      if purge then
+        return {success = true, msg = "Purged **"..num.."** messages."}
+      else
+        return {success = false, msg = "Failed to purge."}
+      end
     end
   end};
   {command = "uptime", desc = "Sees how long the bot has been online.", usage = "uptime", shorthand = {"up"}, execute = function(message,args) 
