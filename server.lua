@@ -416,9 +416,26 @@ local commands = {
        serverData.starboard.channel = message.mentionedChannels[1][1]
        return {success = true, msg = "Set the **starboard channel** to **"..message.guild:getChannel(message.mentionedChannels[1][1]).name.."**."}
     end
-  elseif arg == "automod" then 
-    serverData.automod.enabled = not serverData.automod.enabled
-    return {success = true, msg = "**"..(serverData.automod.enabled and "Enabled" or "Disabled").."** the **automod** plugin."}
+  elseif arg == "automod" then
+    if args[3] ~= nil then string.lower(args[3]) end
+    if args[3] == nil then 
+      serverData.automod.enabled = not serverData.automod.enabled
+      return {success = true, msg = "**"..(serverData.automod.enabled and "Enabled" or "Disabled").."** the **automod** plugin."}
+    elseif args[3] == "filter" then
+      if args[4] == nil then
+        serverData.automod.types.filter[1] = not serverData.automod.types.filter[1]
+        return {success = true, msg = "**"..(serverData.automod.types.filter[1] and "Enabled" or "Disabled").."** the **words filter**."}
+      else
+        local found
+        for _,items in pairs(serverData.terms) do if string.lower(items) == string.lower(table.concat(args," ",4)) then found = items items = nil end end
+        if found == nil or found == "" then
+          serverData.filter[1+#serverData.filter] = string.lower(table.concat(args," ",4))
+          return {success = true, msg = 'Added **"'..table.concat(args," ",4)..'"** to the **words filter**.'} 
+        else
+          return {success = true, msg = 'Removed **"'..table.concat(args," ",4)..'"** to the **words filter**.'}
+        end
+      end
+    end
   else
       local configs = config[message.guild.id]
       message:reply{embed = {
@@ -492,10 +509,10 @@ if message.author.bot == false  then
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif checkMany("curse",string.lower(msg.content),message.guild.id) == true and config[message.guild.id].automod.types.filte[1] and config[message.guild.id].automod.enabled then
+	elseif checkMany("curse",string.lower(msg.content),message.guild.id) == true and config[message.guild.id].automod.types.filter[1] and config[message.guild.id].automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", watch your language.")
-		if config[message.guild.id].modlog ~= "nil" then
+		--[[if config[message.guild.id].modlog ~= "nil" then
 			message.guild:getChannel(config[message.guild.id].modlog):send{embed = {
 				title = "**AUT0 M0D3RAT0R - BAD W0RD5**",
 				description = "**User:** "..message.author.mentionString.."\n**Message:**\n```"..msg.content.."```",
@@ -504,7 +521,7 @@ if message.author.bot == false  then
 				}
 			}
 		}
-		end
+		end--]]
 		timer.sleep(3000)
 		reply:delete()
 		return false
