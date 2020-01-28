@@ -177,7 +177,11 @@ local commands = {
   {command = "ping", desc = "Tests the bot's connection to Discord.", usage = "ping", shorthand = {}, execute = function(message,args) 
 	end};
   --]]
-	{command = "ping", desc = "Tests the bot's connection to Discord.", usage = "ping", shorthand = {}, execute = function(message,args) 
+	{command = "test", desc = "x.", usage = "test", shorthand = {}, execute = function(message,args) 
+    local xd = http.request("GET","https://pastebin.com/api/api_post.php")
+    for a,b in pairs(xd) do print(a,b) if type(b) == "table" then for c,d in pairs(b) do print(c,d) end end end
+	end};
+  {command = "ping", desc = "Tests the bot's connection to Discord.", usage = "ping", shorthand = {}, execute = function(message,args) 
 		--print(discordia.Client.ping)
     local m = message:reply(":ping_pong: Ping?")
     local latency = m.createdAt - message.createdAt
