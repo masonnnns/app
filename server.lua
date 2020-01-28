@@ -104,7 +104,8 @@ local function addConfig(id)
 		prefix = "a!",
 		plugins = {
       automod = {enabled = false, types = {invites = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}}    },
-		terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
+		  starboard = {enabled = false, channel = "nil", emoji = "⭐"},
+    terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
     modlog = "nil",
 		modrole = "nil",
     auditlog = "nil",
@@ -410,8 +411,13 @@ local commands = {
 					},
           {
             name = "Automod Settings",
-            value = "**Enabled:** "..tostring(configs.plugins.automod.enabled).."\n**Words Filter:** "..(configs.plugins.automod.types.filter[1] and "Enabled. (Terms: "..#configs.terms..")" or "Disabled.").."\n**Newline Filter:** "..(configs.plugins.automod.types.newline[1] and "Enabled. (Limit: "..#configs.plugins.automod.types.newline[2]..")" or "Disabled.").."\n",
+            value = "**Enabled:** "..tostring(configs.plugins.automod.enabled).."\n**Words Filter:** "..(configs.plugins.automod.types.filter[1] and "Enabled. (Terms: "..#configs.terms..")" or "Disabled.").."\n**Newline Filter:** "..(configs.plugins.automod.types.newline[1] and "Enabled. (Limit: "..#configs.plugins.automod.types.newline[2].."d)" or "Disabled.").."\n**Spoiler Filter:** "..(configs.plugins.automod.types.spoilers[1] and "Enabled (Limit: "..configs.plugins.automod.types.spoilers[2]..")" or "Disabled.").."\n**Mentions Filter:** "..(configs.plugins.automod.types.mentions[1] and "Enabled (Limit: "..configs.plugins.automod.types.mentions[2]..")" or "Disabled.").."\n**Invites Filter:** "..(configs.plugins.automod.types.invites[1] and "Enabled." or "Disabled."),
             inline = true,
+          },
+          {
+            name = "Starboard Settings",
+            value = "**Enabled:** "..tostring(configs.plugins.starboard.enabled).."\n**Channel:** "..(configs.plugins.starboard.channel == "nil" and "None Set!" or message.guild:getChannel(configs.plugins.starboard.channel).mentionString).."\n**Emoji:** "..,
+            inline = true      
           },
         },
         color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
