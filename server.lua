@@ -103,8 +103,7 @@ local function addConfig(id)
 	config[id] = {
 		prefix = "a!",
     automod = {enabled = false, types = {invites = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
-	  autoresponder = {enabled = false, responders = {}},
-    tags = {enabled = false, tags = {}},
+    tags = {enabled = false, tags = {}, delete = false},
     terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
     modlog = "nil",
 		modrole = "nil",
@@ -481,14 +480,14 @@ local commands = {
     else
        return {success = false, msg = "Invalid **second argument**."}
     end
-  elseif arg == "autoresponder" then
+  elseif arg == "tags" then
     if args[3] ~= nil then args[3] = string.lower(args[3]) end
     if args[3] == nil then
-      serverData.autoresponder.enabled = not serverData.autoresponder.enabled
-      return {success = true, msg = "**"..(serverData.autoresponder.enabled and "Enabled" or "Disabled").."** the **autoresponder** plugin."}
+      serverData.tags.enabled = not serverData.tags.enabled
+      return {success = true, msg = "**"..(serverData.tags.enabled and "Enabled" or "Disabled").."** the **tags** plugin."}
     elseif args[3] == "add" then
-      serverData.autoresponder.responders[1+#serverData.autoresponder.responders] = {term = string.lower(args[4]), response = table.concat(args," ",5)}
-      return {success = true, msg = "Added the **"..args[4].."** response."}
+      serverData.tags.tags[1+#serverData.tags.tags] = {term = string.lower(args[4]), response = table.concat(args," ",5)}
+      return {success = true, msg = "Added the **"..args[4].."** tag."}
     end
   else
       local configs = config[message.guild.id]
@@ -506,8 +505,8 @@ local commands = {
             inline = true,
           },
           {
-            name = "Auto Responder Settings",
-            value = "**Enabled:** "..tostring(configs.autoresponder.enabled).."\n**Terms:** "..#configs.autoresponder.responders,
+            name = "Tag Settings",
+            value = "**Enabled:** "..tostring(configs.tags.enabled).."\n**Delete Invocation:** "..tostring(config.tags.delete).."\n**Tags:** "..#configs.tags.tags,
             inline = true      
           },
         },
@@ -516,6 +515,12 @@ local commands = {
       }}
       return {success="stfu",msg="xd"}
     end    
+	end};
+  {command = "tag", desc = "Sends a predefined message in response to a keyword.", usage = "tag <tag name>", shorthand = {}, execute = function(message,args) 
+	  if getPermission(message) < 2 then
+        return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}	
+    elseif #config[message.guild.id].tags.tags == 0 then
+        return {success = false, msg = "There are currently no tags setup."}
 	end};
 }
 
@@ -599,14 +604,6 @@ if message.author.bot == false  then
 		return false
 	else
 		print("[NEW MESSAGE] [AUTHOR: "..string.upper(message.author.username).."] [GUILD: "..string.upper(message.guild.name).."] [CHANNEL: "..string.upper(message.channel.name).."]: "..message.content)
-		if config[message.guild.id].autoresponder.enabled then
-      for _,items in pairs(config[message.guild.id].autoresponder.responders) do
-        if string.lower(message.content) == string.lower(items.terms) then
-          message:reply(items.response)
-          break
-        end
-      end
-    end
     return true
 	end
 end
