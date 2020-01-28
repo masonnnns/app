@@ -196,9 +196,10 @@ local commands = {
     elseif message.guild:getMember(client.user.id):hasPermission("manageMessages") ~= true then
       return {success = false, msg = "I need the **Manage Messages** permission to do this."}
     else
+      local num = 0
       local msgs = message.channel:getMessages(tonumber(args[2]))
       config[message.guild.id].purgeignore[message.channel.id] = 0
-      for _,items in pairs(msgs) do if not message.author.bot then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1 end end
+      for _,items in pairs(msgs) do if not message.author.bot and math.floor(items.createdAt) + 1209600 < os.time() then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1 end end
       config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] - 1
       local purge = message.channel:bulkDelete(msgs)
       if purge then
