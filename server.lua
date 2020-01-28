@@ -425,25 +425,26 @@ local commands = {
       if args[4] == nil then
         serverData.automod.types.filter[1] = not serverData.automod.types.filter[1]
         return {success = true, msg = "**"..(serverData.automod.types.filter[1] and "Enabled" or "Disabled").."** the **words filter**."}
-    elseif string.lower(args[4]) == "view" then
-      local success, error = pcall(function() message.author:getPrivateChannel():send{embed = {title = "**Filtered Words in "..message.guild.name.."**", description = table.concat(serverData.terms,", "), footer = {text = "From "..message.guild.name}, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color)}} end)
-      if success then
-        return {success = true, msg = "I DMed you the list of filtered words.", "thumbs-up"}
+      elseif string.lower(args[4]) == "view" then
+        local result
+        local success, error = pcall(function() result = message.author:getPrivateChannel():send{embed = {title = "**Filtered Words in "..message.guild.name.."**", description = "The following could contain sensitive content. Click to view.\n||"..table.concat(serverData.terms,", ").."||", footer = {text = "From "..message.guild.name}, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color)}} end)
+          if success and result ~= nil then
+            return {success = true, msg = "I DMed you the list of filtered words.", "thumbs-up"}
+          else
+            return {success = false, msg = "I couldn't DM you. Adjust your privacy settings and try again."}    
+          end  
       else
-        message:reply(error)
-        return {success = false, msg = "I couldn't DM you. Adjust your privacy settings and try again."}    
-      end  
-    else
-        local found
-        for a,items in pairs(serverData.terms) do if string.lower(items) == string.lower(table.concat(args," ",4)) then found = items table.remove(serverData.terms,a) end end
-        if found == nil or found == "" then
-          serverData.terms[1+#serverData.terms] = string.lower(table.concat(args," ",4))
-          message:delete()
-          return {success = true, msg = 'Added that term to the **words filter**.'} 
-        else
-          return {success = true, msg = 'Removed that term from the **words filter**.'}
+          local found
+          for a,items in pairs(serverData.terms) do if string.lower(items) == string.lower(table.concat(args," ",4)) then found = items table.remove(serverData.terms,a) end end
+          if found == nil or found == "" then
+            serverData.terms[1+#serverData.terms] = string.lower(table.concat(args," ",4))
+            message:delete()
+            return {success = true, msg = 'Added that term to the **words filter**.'} 
+          else
+            return {success = true, msg = 'Removed that term from the **words filter**.'}
+          end
         end
-      end
+    elseif args[3] == "newline" then
     end
   else
       local configs = config[message.guild.id]
@@ -713,7 +714,8 @@ if member.bot then return end
 end)
 
 client:on("messageUpdate", function(message)
-	 if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
+    if message.guild == nil then return end
+	  if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
     if message.channel:getMessage(message.id) == nil or message.channel:getMessage(message.id).oldContent == nil then return end
     local oldMsg
     for a,items in pairs(message.channel:getMessage(message.id).oldContent) do oldMsg = items end
