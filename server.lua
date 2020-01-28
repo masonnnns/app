@@ -171,7 +171,11 @@ end
 
 local commands = {
 	{command = "ping", desc = "Tests the bot's connection to Discord.", usage = "ping", shorthand = {}, execute = function(message,args) 
-		return {success = true, msg = "Pong!", emoji = "ping"}
+		--print(discordia.Client.ping)
+    local m = message:reply(":ping_pong: Ping?")
+    local latency = m.createdAt - message.createdAt
+    m:setContent(":ping_pong: Pong! `"..math.max(latency).."ms`")
+    return {success = "stfu", msg = "Pong!", emoji = "ping"}
 	end};
   {command = "uptime", desc = "Sees how long the bot has been online.", usage = "uptime", shorthand = {"up"}, execute = function(message,args) 
 		message:reply{embed = {
@@ -900,7 +904,7 @@ if member.bot then return end
 end)
 
 client:on("messageUpdate", function(message)
-    if message.guild == nil then return end
+    if message.guild == nil or message.author.bot then return end
 	  if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
     if message.channel:getMessage(message.id) == nil or message.channel:getMessage(message.id).oldContent == nil then return end
     local oldMsg
