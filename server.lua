@@ -199,14 +199,14 @@ local commands = {
       local num = 0
       local msgs = message.channel:getMessages(tonumber(args[2]))
       config[message.guild.id].purgeignore[message.channel.id] = 0
+      message:delete()
       for a,items in pairs(msgs) do if math.floor(items.createdAt) + 1209600 >= os.time() then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1 else table.remove(msgs,a) end end
-      config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1
-      num = config[message.guild.id].purgeignore[message.channel.id] - 1
+      num = config[message.guild.id].purgeignore[message.channel.id]
       local purge = message.channel:bulkDelete(msgs)
       if purge then
-        return {success = true, msg = "Purged **"..num.."** messages."}
+        return {success = true, msg = "Purged **"..(num - 1).."** message"..(num == 1 and "" or "s").."."}
       else
-        return {success = false, msg = "Failed to purge."}
+        return {success = false, msg = "Failed to purge messages."}
       end
     end
   end};
