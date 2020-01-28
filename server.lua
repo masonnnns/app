@@ -768,31 +768,35 @@ client:on('ready', function()
 	print('starting temp action loop')
 	while true do
 		for id,items in pairs(config) do
-			for num,itemz in pairs(items.modData.actions) do
-				if tonumber(itemz.duration) ~= nil and os.time() >= itemz.duration then
-					if itemz.type == "mute" then
-						if items.mutedRole ~= "nil" and client:getGuild(id):getMember(itemz.user) then
-							if client:getGuild(id):getMember(itemz.user):hasRole(items.mutedRole) then
-								client:getGuild(id):getMember(itemz.user):removeRole(items.mutedRole)
-							end
-						end
-            print('[DEBUG] [UNMUTE]: '..itemz.user.." has been unmuted in "..id)
-            local case = {type = "Auto-Unmute", duration = "", reason = "Mute duration expired.", user = itemz.user, mod = client.user.id}
-            config[id].modData.cases[1+#config[id].modData.cases] = case
-            if config[id].modlog ~= "nil" and client:getGuild(id):getChannel(config[id].modlog) then
-              client:getGuild(id):getChannel(config[id].modlog):send{embed = {
-                title = "**Case "..#config[id].modData.cases.."** - "..case.type:upper(),
-                description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
-                color = 2067276
-              }}
+      if client:getGuild(id) == nil or config[id] == nil
+        print('not in guild')
+      else
+        for num,itemz in pairs(items.modData.actions) do
+          if tonumber(itemz.duration) ~= nil and os.time() >= itemz.duration then
+            if itemz.type == "mute" then
+              if items.mutedRole ~= "nil" and client:getGuild(id):getMember(itemz.user) then
+                if client:getGuild(id):getMember(itemz.user):hasRole(items.mutedRole) then
+                  client:getGuild(id):getMember(itemz.user):removeRole(items.mutedRole)
+                end
+              end
+              print('[DEBUG] [UNMUTE]: '..itemz.user.." has been unmuted in "..id)
+              local case = {type = "Auto-Unmute", duration = "", reason = "Mute duration expired.", user = itemz.user, mod = client.user.id}
+              config[id].modData.cases[1+#config[id].modData.cases] = case
+              if config[id].modlog ~= "nil" and client:getGuild(id):getChannel(config[id].modlog) then
+                client:getGuild(id):getChannel(config[id].modlog):send{embed = {
+                  title = "**Case "..#config[id].modData.cases.."** - "..case.type:upper(),
+                  description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.mod).name.."#"..client:getUser(case.mod).discriminator.." (`"..client:getUser(case.mod).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason,
+                  color = 2067276
+                }}
+              end
+            elseif itemz.type == "ban" then
+              print('xd')
             end
-          elseif itemz.type == "ban" then
-            print('xd')
+            table.remove(items.modData.actions,num)
           end
-					table.remove(items.modData.actions,num)
-				end
-			end
-		end
+        end
+      end
+    end
 		timer.sleep(1000)
 	end
 end)
