@@ -526,7 +526,7 @@ local commands = {
       if found == nil or found == "" then
         return {success = false, msg = "No tag exists with that name."}
       else
-        found.response = table.concat(args," ",5)
+        found.response = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+string.len(args[4])+6)) --table.concat(args," ",5)
         for _,items in pairs(serverData.tags.tags) do if string.lower(args[4]) == string.lower(items.term) then items = found break end end
         return {success = true, msg = "Edited the **"..found.term.."** tag."}
       end
