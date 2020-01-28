@@ -566,16 +566,27 @@ client:on('ready', function()
 end)
 
 client:on('memberUpdate', function(member)
-	if config[member.guild.id] == nil then
-		addConfig(member.guild.id)
-	end
-	if member.nickname ~= nil then
-		if string.match(string.lower(member.nickname),"discord.gg") and config[message.guild.id].invites == true then
-			member:setNickname(nil)
-		elseif checkMany("curse",string.lower(member.nickname),member.guild.id) == true and config[member.guild.id].filter == true then
-			member:setNickname(nil)
-		end
-	end
+  print(member.name)
+end)
+
+client:on("messageDelete",function(message)
+  if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
+    message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
+      title = "Message Deleted",
+      fields = {
+        {
+					name = "Message Author",
+					value = message.author.mentionString.." (`"..message.author.id.."`)",
+					inline = true,
+				},
+        {
+					name = "Message Content",
+					value = message.content,
+					inline = true,
+				},
+      }
+    }}
+  end
 end)
 
 client:on('guildCreate', function(guild)
