@@ -96,7 +96,7 @@ local function getTimeString(seconds)
 	else
 		s = seconds .. " second" .. plural(seconds)
 	end
-	return s
+	return days.." day"..plural(days)..", "..hours.." "
 end
 
 local function addConfig(id)
@@ -570,10 +570,12 @@ local commands = {
     end    
 	end};
   {command = "tag", desc = "Sends a predefined message in response to a keyword.", usage = "tag <tag name>", shorthand = {}, execute = function(message,args) 
-	  if getPermission(message) < 1 then
-        return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}	
-    elseif config[message.guild.id].tags.enabled == false then
+	  if config[message.guild.id].tags.enabled == false then
         return {success = "stfu", msg = ""}
+    elseif getPermission(message) < 1 then
+        return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}	
+    elseif args[2] == nil then
+        return {success = false, msg = "You must provide a tag."}
     elseif #config[message.guild.id].tags.tags == 0 then
         return {success = false, msg = "There are currently no tags setup."}
     else
