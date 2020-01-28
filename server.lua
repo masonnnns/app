@@ -491,14 +491,30 @@ local commands = {
       serverData.tags.tags[1+#serverData.tags.tags] = {term = string.lower(args[4]), response = table.concat(args," ",5)}
       return {success = true, msg = "Added the **"..args[4].."** tag."}
     elseif args[3] == "view" then
-      local txt = ""
-      for _,items in pairs(serverData.tags.tags) do txt = txt.."\n**"..items.term.."** - "..items.response end
-      message:reply{embed = {
-        title = "**Tags**",
-        description = (#serverData.tags.tags == 0 and "None set!" or txt),
-        footer = {text = "Responding to "..message.author.name},
-        color =  (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
-      }}
+      if #serverData.tags.tags == 0 then return {success = false, msg = "There are no tags to display."} end
+      if string.lower(args[4]) == nil then
+        local txt = ""
+        for _,items in pairs(serverData.tags.tags) do txt = txt.."\n**"..items.term.."** - "..items.response end
+        message:reply{embed = {
+          title = "**Tags**",
+          description = (#serverData.tags.tags == 0 and "None set!" or txt),
+          footer = {text = "Responding to "..message.author.name},
+          color =  (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        }}
+      else
+          local found
+          for _,items in pairs(serverData.tags.tags) do if string.lower(args[4]) == string.lower(items.term) then items = found break end end
+          if found == nil or found == "" then
+            return {success = false, msg = "No tag exists with that name."}
+          else
+              message:reply{embed = {
+              title = "**Tags**",
+              description = (#serverData.tags.tags == 0 and "None set!" or txt),
+                footer = {text = "Responding to "..message.author.name},
+              color =  (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        }}
+          end
+      end
       return {success = "stfu", msg = ""}
     elseif args[3] == "delmsg" then
       serverData.tags.delete = not serverData.tags.delete
@@ -506,11 +522,24 @@ local commands = {
     elseif args[3] == "edit" then
       local found
       for _,items in pairs(serverData.tags.tags) do if string.lower(args[4]) == string.lower(items.term) then found = items break end end
-      if found == nil or found = "" then
-        return {success = false, "No tag exists with that name."}
+      if found == nil or found == "" then
+        return {success = false, msg = "No tag exists with that name."}
       else
-        found.response = table.concat(args," ")
+        found.response = table.concat(args," ",5)
+        for _,items in pairs(serverData.tags.tags) do if string.lower(args[4]) == string.lower(items.term) then items = found break end end
+        return {success = true, msg = "Edited the **"..found.term.."** tag."}
       end
+    elseif args[3] == "delete" then
+      local found
+      for a,items in pairs(serverData.tags.tags) do if string.lower(args[4]) == string.lower(items.term) then found = a break end end
+      if found == nil or found == "" then
+        return {success = false, msg = "No tag exists with that name."}
+      else
+        table.remove(serverData.tags.tags,found)
+        return {success = true, msg = "Deleted the **"..args[4].."** tag."}
+      end
+    else
+      return {success = false, msg = "Invalid **second argument**."}
     end
   else
       local configs = config[message.guild.id]
