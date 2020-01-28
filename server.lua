@@ -102,9 +102,8 @@ end
 local function addConfig(id)
 	config[id] = {
 		prefix = "a!",
-		plugins = {
-      automod = {enabled = false, types = {invites = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}}    },
-		  starboard = {enabled = false, channel = "nil", emoji = "⭐"},
+    automod = {enabled = false, types = {invites = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
+	  starboard = {enabled = false, channel = "nil", emoji = "⭐"},
     terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
     modlog = "nil",
 		modrole = "nil",
@@ -367,20 +366,30 @@ local commands = {
       return {success = false, msg = "You don't have permissions to run this command.", timer = 3000}
     elseif arg == "modonly" then
       serverData.modonly = not serverData.modonly
-      return {success = true, msg = "Set the **mod-only** setting to **"..tostring(serverData.modonly).."**!"}
+      return {success = true, msg = "**"..(serverData.modonly and "Enabled" or "Disabled").."** the **mod-only** setting."}
     elseif arg == "delmsg" then
       serverData.deletecmd = not serverData.deletecmd
-      return {success = true, msg = "Set the **delete invocation message** setting to **"..tostring(serverData.deletecmd).."**!"}
+      return {success = true, msg = "**"..(serverData.deletecmd and "Enabled" or "Disabled").."** the **delete invocation message** setting."}
     elseif arg == "modlog" then 
       if #message.mentionedChannels == 0 then
-        return {success = false, msg = "You must mention a new modlog channel."}
+        if serverData.modlog == "nil" then
+          return {success = false, msg = "You must mention a new modlog channel."}
+        else
+          serverData.modlog = "nil"
+          return {success = true, msg = "**Disabled** the **modlog**."}
+        end
       else
         serverData.modlog = message.mentionedChannels[1][1]
         return {success = true, msg = "Set the **modlog channel** to **"..message.guild:getChannel(message.mentionedChannels[1][1]).name.."**."}
       end
     elseif arg == "auditlog" then 
       if #message.mentionedChannels == 0 then
-        return {success = false, msg = "You must mention a new auditlog channel."}
+        if serverData.auditlog == "nil" then
+          return {success = false, msg = "You must mention a new auditlog channel."}
+        else
+          serverData.auditlog = "nil"
+          return {success = true, msg = "**Disabled** the **auditlog**."}
+        end
       else
         serverData.auditlog = message.mentionedChannels[1][1]
         return {success = true, msg = "Set the **audit channel** to **"..message.guild:getChannel(message.mentionedChannels[1][1]).name.."**."}
@@ -399,7 +408,18 @@ local commands = {
         serverData.modrole = message.mentionedRoles[1][1]
         return {success = true, msg = "Set the **mod role** to **"..message.guild:getRole(message.mentionedRoles[1][1]).name.."**."}
       end
-    else
+    elseif arg == "starboard" then 
+     if #message.mentionedChannels == 0 then
+       serverData.starboard.enabled = not serverData.starboard.enabled 
+       return {success = true, msg = "**"..(serverData.starboard.enabled and "Enabled" or "Disabled").."** the **starboard** plugin."}
+     else
+       serverData.starboard.channel = message.mentionedChannels[1][1]
+       return {success = true, msg = "Set the **starboard channel** to **"..message.guild:getChannel(message.mentionedChannels[1][1]).name.."**."}
+    end
+  elseif arg == "automod" then 
+    serverData.automod.enabled = not serverData.automod.enabled
+    return {success = true, msg = "**"..(serverData.automod.enabled and "Enabled" or "Disabled").."** the **automod** plugin."}
+  else
       local configs = config[message.guild.id]
       message:reply{embed = {
         title = "**Configuration Settings**",
@@ -411,12 +431,12 @@ local commands = {
 					},
           {
             name = "Automod Settings",
-            value = "**Enabled:** "..tostring(configs.plugins.automod.enabled).."\n**Words Filter:** "..(configs.plugins.automod.types.filter[1] and "Enabled. (Terms: "..#configs.terms..")" or "Disabled.").."\n**Newline Filter:** "..(configs.plugins.automod.types.newline[1] and "Enabled. (Limit: "..#configs.plugins.automod.types.newline[2].."d)" or "Disabled.").."\n**Spoiler Filter:** "..(configs.plugins.automod.types.spoilers[1] and "Enabled (Limit: "..configs.plugins.automod.types.spoilers[2]..")" or "Disabled.").."\n**Mentions Filter:** "..(configs.plugins.automod.types.mentions[1] and "Enabled (Limit: "..configs.plugins.automod.types.mentions[2]..")" or "Disabled.").."\n**Invites Filter:** "..(configs.plugins.automod.types.invites[1] and "Enabled." or "Disabled."),
+            value = "**Enabled:** "..tostring(configs.automod.enabled).."\n**Words Filter:** "..(configs.automod.types.filter[1] and "Enabled. (Terms: "..#configs.terms..")" or "Disabled.").."\n**Newline Filter:** "..(configs.automod.types.newline[1] and "Enabled. (Limit: "..#configs.automod.types.newline[2].."d)" or "Disabled.").."\n**Spoiler Filter:** "..(configs.automod.types.spoilers[1] and "Enabled (Limit: "..configs.automod.types.spoilers[2]..")" or "Disabled.").."\n**Mentions Filter:** "..(configs.automod.types.mentions[1] and "Enabled (Limit: "..configs.automod.types.mentions[2]..")" or "Disabled.").."\n**Invites Filter:** "..(configs.automod.types.invites[1] and "Enabled." or "Disabled."),
             inline = true,
           },
           {
             name = "Starboard Settings",
-            value = "**Enabled:** "..tostring(configs.plugins.starboard.enabled).."\n**Channel:** "..(configs.plugins.starboard.channel == "nil" and "None Set!" or message.guild:getChannel(configs.plugins.starboard.channel).mentionString).."\n**Emoji:** "..,
+            value = "**Enabled:** "..tostring(configs.starboard.enabled).."\n**Channel:** "..(configs.starboard.channel == "nil" and "None Set!" or message.guild:getChannel(configs.starboard.channel).mentionString),
             inline = true      
           },
         },
@@ -465,14 +485,14 @@ local message = msg
 local a, b = string.gsub(message.content,"\n","")
 local c, d = string.gsub(message.content,"||","")
 if message.author.bot == false  then
-	if (b + 1 >= tonumber(config[message.guild.id].plugins.automod.types.newline[2]) == true) and config[message.guild.id].plugins.automod.types.newline[1] and config[message.guild.id].plugins.automod.enabled then
+	if (b + 1 >= tonumber(config[message.guild.id].automod.types.newline[2]) == true) and config[message.guild.id].automod.types.newline[1] and config[message.guild.id].automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", too many lines.")
 		--message.author:getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\nPlease do not exceed the newline limit of 5 in "..message.guild.name..".\n\nHere's your message if you wish to edit it:```"..message.content.."```")
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif checkMany("curse",string.lower(msg.content),message.guild.id) == true and config[message.guild.id].plugins.automod.types.filte[1] and config[message.guild.id].plugins.automod.enabled then
+	elseif checkMany("curse",string.lower(msg.content),message.guild.id) == true and config[message.guild.id].automod.types.filte[1] and config[message.guild.id].automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", watch your language.")
 		if config[message.guild.id].modlog ~= "nil" then
@@ -488,19 +508,19 @@ if message.author.bot == false  then
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif checkMany("invites",msg.content,msg.guild.id) == true and config[message.guild.id].plugins.automod.types.invites[1] and config[message.guild.id].plugins.automod.enabled or string.match(message.content,"discord.gg") and client:getInvite(xd) and config[message.guild.id].plugins.automod.types.invites[1] and config[message.guild.id].plugins.automod.enabled then
+	elseif checkMany("invites",msg.content,msg.guild.id) == true and config[message.guild.id].automod.types.invites[1] and config[message.guild.id].automod.enabled or string.match(message.content,"discord.gg") and client:getInvite(xd) and config[message.guild.id].automod.types.invites[1] and config[message.guild.id].automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", no invites.")
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif d/2 >= config[message.guild.id].plugins.automod.types.spoilers[2] and config[message.guild.id].plugins.automod.types.spoilers[1] and config[message.guild.id].plugins.automod.enabled then
+	elseif d/2 >= config[message.guild.id].automod.types.spoilers[2] and config[message.guild.id].automod.types.spoilers[1] and config[message.guild.id].automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", too many spoilers.")
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif #msg.mentionedRoles + #msg.mentionedUsers >= config[message.guild.id].plugins.automod.types.mentions[2] and config[message.guild.id].plugins.automod.types.mentions[1] and config[message.guild.id].plugins.automod.enabled  then
+	elseif #msg.mentionedRoles + #msg.mentionedUsers >= config[message.guild.id].automod.types.mentions[2] and config[message.guild.id].automod.types.mentions[1] and config[message.guild.id].automod.enabled  then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", no mass-mentioning.")
 		timer.sleep(3000)
