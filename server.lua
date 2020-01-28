@@ -520,6 +520,7 @@ local commands = {
       serverData.tags.delete = not serverData.tags.delete
       return {success = true, msg = "**"..(serverData.tags.delete and "Enabled" or "Disabled").."** tag **invocation deletion**."}
     elseif args[3] == "edit" then
+      if args[5] == nil then return {success = false, msg = "You must provide content for the tag."} end
       local found
       for _,items in pairs(serverData.tags.tags) do if string.lower(args[4]) == string.lower(items.term) then found = items break end end
       if found == nil or found == "" then
@@ -885,7 +886,7 @@ client:on('messageCreate', function(message)
 		--if string.match("discordgg.ga",string.lower(message.content)) then message:delete() end
 		if string.lower(message.content) == "!!prefix?" then message:reply("The prefix for **"..message.guild.name.."** is **"..config[message.guild.id].prefix.."**") end
 		local isCommand = test(config[message.guild.id].prefix,message.content)
-		if isCommand == "notCommand" or isCommand[1] == nil then
+    if isCommand == "notCommand" or isCommand[1] == nil then
 			autoMod(message)
 		else
 			local cmd 
