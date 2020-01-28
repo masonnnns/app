@@ -429,7 +429,7 @@ local commands = {
         local result
         local success, error = pcall(function() result = message.author:getPrivateChannel():send{embed = {title = "**Filtered Words in "..message.guild.name.."**", description = "The following could contain sensitive content. Click to view.\n||"..table.concat(serverData.terms,", ").."||", footer = {text = "From "..message.guild.name}, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color)}} end)
           if success and result ~= nil then
-            return {success = true, msg = "I DMed you the list of filtered words.", "thumbs-up"}
+            return {success = true, msg = "I DMed you the list of filtered words.", "thumbs_up"}
           else
             return {success = false, msg = "I couldn't DM you. Adjust your privacy settings and try again."}    
           end  
@@ -445,6 +445,38 @@ local commands = {
           end
         end
     elseif args[3] == "newline" then
+      if args[4] == nil then
+        serverData.automod.types.newline[1] = not serverData.automod.types.newline[1]
+        return {success = true, msg = "**"..(serverData.automod.types.newline[1] and "Enabled" or "Disabled").."** the **newline filter**."}
+      elseif tonumber(args[4]) == nil then
+        return {success = false, msg = "The **newline limit** must be a **number**."}
+      else
+        serverData.automod.types.newline[2] = (tonumber(args[4]) <= 1 and 2 or tonumber(args[4]))
+        return {success = true, msg = "Set the **newline limit** to **"..tostring(serverData.automod.types.newline[2]).."**."}
+      end
+    elseif args[3] == "spoilers" then
+      if args[4] == nil then
+        serverData.automod.types.spoilers[1] = not serverData.automod.types.spoilers[1]
+        return {success = true, msg = "**"..(serverData.automod.types.spoilers[1] and "Enabled" or "Disabled").."** the **spoiler filter**."}
+      elseif tonumber(args[4]) == nil then
+        return {success = false, msg = "The **spoiler limit** must be a **number**."}
+      else
+        serverData.automod.types.spoilers[2] = (tonumber(args[4]) <= 1 and 2 or tonumber(args[4]))
+        return {success = true, msg = "Set the **spoiler limit** to **"..tostring(serverData.automod.types.spoilers[2]).."**."}
+      end
+    elseif args[3] == "mentions" then
+      if args[4] == nil then
+        serverData.automod.types.mentions[1] = not serverData.automod.types.mentions[1]
+        return {success = true, msg = "**"..(serverData.automod.types.mentions[1] and "Enabled" or "Disabled").."** the **mentions filter**."}
+      elseif tonumber(args[4]) == nil then
+        return {success = false, msg = "The **mention limit** must be a **number**."}
+      else
+        serverData.automod.types.mentions[2] = tonumber(args[4] <= 0 and 1 or tonumber(args[4]))
+        return {success = true, msg = "Set the **mention limit** to **"..tostring(serverData.automod.types.mentions[2]).."**."}
+      end
+    else
+       serverData.automod.enabled = not serverData.automod.enabled
+       return {success = true, msg = "**"..(serverData.automod.enabled and "Enabled" or "Disabled").."** the **automod** plugin."}
     end
   else
       local configs = config[message.guild.id]
@@ -458,7 +490,7 @@ local commands = {
 					},
           {
             name = "Automod Settings",
-            value = "**Enabled:** "..tostring(configs.automod.enabled).."\n**Words Filter:** "..(configs.automod.types.filter[1] and "Enabled. (Terms: "..#configs.terms..")" or "Disabled.").."\n**Newline Filter:** "..(configs.automod.types.newline[1] and "Enabled. (Limit: "..#configs.automod.types.newline[2].."d)" or "Disabled.").."\n**Spoiler Filter:** "..(configs.automod.types.spoilers[1] and "Enabled (Limit: "..configs.automod.types.spoilers[2]..")" or "Disabled.").."\n**Mentions Filter:** "..(configs.automod.types.mentions[1] and "Enabled (Limit: "..configs.automod.types.mentions[2]..")" or "Disabled.").."\n**Invites Filter:** "..(configs.automod.types.invites[1] and "Enabled." or "Disabled."),
+            value = "**Enabled:** "..tostring(configs.automod.enabled).."\n**Words Filter:** "..(configs.automod.types.filter[1] and "Enabled. (Terms: "..#configs.terms..")" or "Disabled.").."\n**Newline Filter:** "..(configs.automod.types.newline[1] and "Enabled. (Limit: "..configs.automod.types.newline[2]..")" or "Disabled.").."\n**Spoiler Filter:** "..(configs.automod.types.spoilers[1] and "Enabled (Limit: "..configs.automod.types.spoilers[2]..")" or "Disabled.").."\n**Mentions Filter:** "..(configs.automod.types.mentions[1] and "Enabled (Limit: "..configs.automod.types.mentions[2]..")" or "Disabled.").."\n**Invites Filter:** "..(configs.automod.types.invites[1] and "Enabled." or "Disabled."),
             inline = true,
           },
           {
@@ -667,6 +699,7 @@ client:on('memberUpdate', function(member)
 end)
 
 client:on("messageDelete",function(message)
+  if message.guild == nil or message.author.bot then return end
   if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
     message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
       title = "Message Deleted",
