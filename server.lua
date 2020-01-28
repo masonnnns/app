@@ -101,7 +101,7 @@ end
 
 local function addConfig(id)
 	config[id] = {
-		prefix = "a!",
+		prefix = "!!",
     automod = {enabled = false, types = {invites = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
     tags = {enabled = false, tags = {}, delete = false},
     terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
@@ -359,7 +359,7 @@ local commands = {
 		else
       local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
       addModlog(message,{type = "Warn", duration = "", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
-      message.guild.members:get(message.mentionedUsers[1][1]):getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\n*Please do not continue to break the rules.*\n\nReason: "..reason)
+      message.guild.members:get(message.mentionedUsers[1][1]):getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\n*Please do not continue to break the rules.*\n\n**Reason:** "..reason)
       return {success = true, msg = "Successfully warned **"..message.guild.members:get(message.mentionedUsers[1][1]).name.."**."}
     end   
   end};
@@ -504,8 +504,8 @@ local commands = {
             return {success = false, msg = "No tag exists with that name."}
           else
               message:reply{embed = {
-              title = "**"..found.term.." Tag**",
-              description = found.response,
+              title = "**Tag: "..found.term.."**",
+              description = "```\n"..found.response.."\n```",
               footer = {text = "Responding to "..message.author.name},
               color =  (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
             }}
@@ -620,7 +620,7 @@ local commands = {
 				local reason = "No Reason Provided."
 				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "ban", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
 				local member = message.guild:getMember(message.mentionedUsers[1][1])
-        member:getPrivateChannel():send("⛔ **You've been permanently banned in "..message.guild.name.."!**\n\nReason: "..reason)
+        member:getPrivateChannel():send("⛔ **You've been permanently banned in "..message.guild.name.."!**\n\n**Reason:** "..reason)
         message.guild:banUser(message.mentionedUsers[1][1],reason,7)
         addModlog(message,{type = "Ban", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
 				return {success = true, msg = "Successfully banned **"..member.name.."**!"}
@@ -630,6 +630,7 @@ local commands = {
 				local reason = (table.concat(args," ",3))
 				config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "ban", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1]}
 				local member = message.guild:getMember(message.mentionedUsers[1][1])
+        member:getPrivateChannel():send("⛔ **You've been permanently banned in "..message.guild.name.."!**\n\n**Reason:** "..reason)
         message.guild:banUser(message.mentionedUsers[1][1],reason,7)
         addModlog(message,{type = "Ban", duration = "permanent", mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
         return {success = true, msg = "Successfully banned **"..member.name.."**!"}
@@ -640,6 +641,7 @@ local commands = {
           local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
           config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "ban", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], mod = message.author.id, user = message.mentionedUsers[1][1]}
           local member = message.guild:getMember(message.mentionedUsers[1][1])
+          member:getPrivateChannel():send("⛔ **You've been temporarily banned in "..message.guild.name.."!**\n*You will be unbanned automatically when the duration expires.*\n\n**Reason:** "..reason.."\n**Duration:** "..table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"))
           message.guild:banUser(message.mentionedUsers[1][1],reason,7)
           addModlog(message,{type = "Ban", duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), mod = message.author.id, user = message.mentionedUsers[1][1], reason = reason})
           return {success = true, msg = "Successfully banned **"..member.name.."** for **"..table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s").."**!"}
@@ -805,7 +807,7 @@ end
 client:on('ready', function()
   uptimeOS = os.time()
 	print('Logged in as '.. client.user.username)
-	client:setGame("a!help | AA-R0N")
+	client:setGame("!!help | AA-R0N")
 	print('starting temp action loop')
 	while true do
 		for id,items in pairs(config) do
