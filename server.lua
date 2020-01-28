@@ -618,6 +618,9 @@ end)
 
 client:on("messageUpdate", function(message)
 	 if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
+    if message.channel:getMessage(message.id) == nil or message.channel:getMessage(message.id).oldContent == nil then return end
+    local oldMsg
+    for a,items in pairs(message.channel:getMessage(message.id).oldContent) do oldMsg = items end
     message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
       title = "Message Edited",
       fields = {
@@ -632,12 +635,17 @@ client:on("messageUpdate", function(message)
 					inline = true,
 				},
         {
+					name = "Old Message Content",
+					value = oldMsg,
+					inline = false,
+				},
+        {
 					name = "New Message Content",
 					value = message.content,
 					inline = false,
 				},
       },
-      color = 3447003,
+      color = 15105570,
     }}
   end
   if message.guild ~= nil or message.author.bot ~= true then
