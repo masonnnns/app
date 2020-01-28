@@ -410,7 +410,7 @@ local commands = {
 					},
           {
             name = "Automod Settings",
-            value = "**Enabled:** "..tostring(configs.plugins.automod.enabled).."\n**Words Filter:** "..(configs.plugins.automod.types.filter[1] and "Enabled. (Terms: "..#configs.terms..")" or "Disabled.").."\n**Newline Filter:** "..(configs.plugins.automod.types.newline[1] and "Enabled. (Limit: "..#configs.plugins.automod.types.newline[2]..")" or "Disabled."),
+            value = "**Enabled:** "..tostring(configs.plugins.automod.enabled).."\n**Words Filter:** "..(configs.plugins.automod.types.filter[1] and "Enabled. (Terms: "..#configs.terms..")" or "Disabled.").."\n**Newline Filter:** "..(configs.plugins.automod.types.newline[1] and "Enabled. (Limit: "..#configs.plugins.automod.types.newline[2]..")" or "Disabled.").."\n",
             inline = true,
           },
         },
@@ -510,7 +510,7 @@ end
 local function test(prefix,msg)
 local Command = string.sub(msg, string.len(tostring(prefix))+1, string.len(msg))
 local Args = {}
-for Match in Command:gmatch("[^%s,]+") do
+for Match in Command:gmatch("[^%s]+") do
 table.insert(Args, Match)
 end;
 local Data = {
