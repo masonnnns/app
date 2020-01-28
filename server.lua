@@ -425,14 +425,23 @@ local commands = {
       if args[4] == nil then
         serverData.automod.types.filter[1] = not serverData.automod.types.filter[1]
         return {success = true, msg = "**"..(serverData.automod.types.filter[1] and "Enabled" or "Disabled").."** the **words filter**."}
+    elseif string.lower(args[4]) == "view" then
+      local success, error = pcall(function() message.author:getPrivateChannel():send{embed = {title = "**Filtered Words in "..message.guild.name.."**", description = table.concat(serverData.terms,", "), footer = {text = "From "..message.guild.name}, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color)}} end)
+      if success then
+        return {success = true, msg = "I DMed you the list of filtered words.", "thumbs-up"}
       else
+        message:reply(error)
+        return {success = false, msg = "I couldn't DM you. Adjust your privacy settings and try again."}    
+      end  
+    else
         local found
-        for _,items in pairs(serverData.terms) do if string.lower(items) == string.lower(table.concat(args," ",4)) then found = items items = nil end end
+        for a,items in pairs(serverData.terms) do if string.lower(items) == string.lower(table.concat(args," ",4)) then found = items table.remove(serverData.terms,a) end end
         if found == nil or found == "" then
-          serverData.filter[1+#serverData.filter] = string.lower(table.concat(args," ",4))
-          return {success = true, msg = 'Added **"'..table.concat(args," ",4)..'"** to the **words filter**.'} 
+          serverData.terms[1+#serverData.terms] = string.lower(table.concat(args," ",4))
+          message:delete()
+          return {success = true, msg = 'Added that term to the **words filter**.'} 
         else
-          return {success = true, msg = 'Removed **"'..table.concat(args," ",4)..'"** to the **words filter**.'}
+          return {success = true, msg = 'Removed that term from the **words filter**.'}
         end
       end
     end
