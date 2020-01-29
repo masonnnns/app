@@ -901,7 +901,7 @@ end)
 client:on('memberUpdate', function(member)
   --print(member.guild:getAuditLogs()[1].)
   print(os.time())
-  for a,items in pairs(member.guild:getAuditLogs()) do print(a,math.floor(items.createdAt)) end
+  for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() then print(items.actiontype) end end
 end)
 
 client:on("messageDelete",function(message)
