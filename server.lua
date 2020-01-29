@@ -899,7 +899,9 @@ client:on('ready', function()
 end)
 
 client:on('memberUpdate', function(member)
-  for a,items in pairs(member.guild:getAuditLogs()) do print(a,items.actionType) end
+  --print(member.guild:getAuditLogs()[1].)
+  print(os.time())
+  for a,items in pairs(member.guild:getAuditLogs()) do print(a,math.floor(items.createdAt)) end
 end)
 
 client:on("messageDelete",function(message)
