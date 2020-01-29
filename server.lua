@@ -917,7 +917,7 @@ client:on('memberUpdate', function(member)
       member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Added**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = txt, inline = false, }, }, color = 3447003, }}
     else
       local txt = {}
-      if #loggingCache.members[member.guild.id][member.id].roles < member.roles then -- more new roles than old ones (one was added)
+      if #loggingCache.members[member.guild.id][member.id].roles < #member.roles then -- more new roles than old ones (one was added)
         for _,items in pairs(member.roles) do 
           for a,b in pairs(loggingCache.members[member.guild.id][member.id].roles) do
             if items.id ~= b then
@@ -925,6 +925,15 @@ client:on('memberUpdate', function(member)
             end
           end
         end
+        member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Added**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = table.concat(txt,", "), inline = false, }, }, color = 3447003, }}
+      else
+        for _,items in pairs(loggingCache.members[member.guild.id][member.id].roles) do 
+          print(member.roles[tonumber(items)])
+          if member.roles[items] == nil then
+            txt[1+#txt] = member.guild:getRole(items).mentionString
+          end
+        end
+        member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Removed**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = table.concat(txt,", "), inline = false, }, }, color = 3447003, }}
       end
     end
     loggingCache.members[member.guild.id][member.id].roles = {}
