@@ -928,7 +928,7 @@ client:on('memberUpdate', function(member)
         member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Added**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = table.concat(txt,", "), inline = false, }, }, color = 3447003, }}
       else
         for _,items in pairs(loggingCache.members[member.guild.id][member.id].roles) do 
-          print(member.roles[tonumber(items)])
+          print(member.roles[tostring(items)])
           if member.roles[items] == nil then
             txt[1+#txt] = member.guild:getRole(items).mentionString
           end
