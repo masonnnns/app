@@ -903,16 +903,23 @@ end)
 client:on('memberUpdate', function(member)
   if loggingCache.members[member.guild.id] == nil then loggingCache.members[member.guild.id] = {} end
   if loggingCache.members[member.guild.id][member.id] == nil then loggingCache.members[member.guild.id][member.id] = {} end 
-  if loggingCache.members[member.guild.id][member.id].roles == nil then loggingCache.members[member.guild.id][member.id].roles = {} end for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end
+  if loggingCache.members[member.guild.id][member.id].roles == nil then loggingCache.members[member.guild.id][member.id].roles = {} for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end end
   if config[member.guild.id] == nil or config[member.guild.id].auditlog == "nil" or member.guild:getChannel(config[member.guild.id].auditlog) == nil then return end
   local auditLog
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end
+  if auditLog == nil then print('no log found?') return end
   if auditLog.actionType == 25 then
     local roles = {}
+    print(#member.roles,#loggingCache.members[member.guild.id][member.id].roles)
     if #loggingCache.members[member.guild.id][member.id].roles < #member.roles then
-      for _,items in pairs(loggingCache.members[member.guild.id][member.id].roles) do if not member:hasRole(items.id) then roles[1+#roles] = items.id end end
+      for _,items in pairs(member.roles) do for a,b in pairs(loggingCache.members[member.guild.id][member.id].roles) do if items.id == b then roles[1+#roles] = b end end end
+      print(#roles,"added")
+    else
+      for _,items in pairs(loggingCache.members[member.guild.id][member.id].roles) do if member:hasRole(items) then roles[1+#roles] = items end end
       print(#roles,"removed")
     end
+    loggingCache.members[member.guild.id][member.id].roles= {}
+    for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end
   end
 end)
 
