@@ -13,6 +13,7 @@ local http = require("coro-http")
 local Date = discordia.Date
 local statusEnum = {online = 1, idle = 2, dnd = 3, offline = 4}
 local statusText = {'Online', 'Idle', 'Do Not Disturb', 'Offline'}
+local loggingCache = {members = {}}
 local config = {}
 
 local function getPermission(message,id)
@@ -113,7 +114,7 @@ local function addConfig(id)
 		modonly = false,
 		mutedRole = "nil",
     auditignore = {},
-    memberCache = {}
+    --memberCache = {},
     purgeignore = {["551794917584666625"] = 1000}
 	}
 	
@@ -900,18 +901,16 @@ client:on('ready', function()
 end)
 
 client:on('memberUpdate', function(member)
-  if config[member.guild.id] ~= nil then if config[message.guild.id].memeberCache == nil then config[message.guild.id].memeberCache = {} end config[message.guild.id].memeberCache[member.id] = member end 
+  if loggingCache.members[member.guild.id] == nil then
   if config[member.guild.id] == nil or config[member.guild.id].auditlog == "nil" or member.guild:getChannel(config[member.guild.id].auditlog) == nil then return end
   local auditLog
-  for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 then auditLog = items end end
+  for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 and items.guild.id == member.guild.id then auditLog = items break end end
   if auditLog.actionType == 25 then
-    print(member.old)
-    print(auditLog.changes.old)
-    print(auditLog.targetId)
-    member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
-      title = "**Message Deleted**",
+    for _,items in pairs(config[member.guild.id].memberCache[auditLog.targetId].roles) do print(items.id) end
+    --[[member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
+      title = "**Role Changed**",
       color = 3447003,
-    }}
+    }}-]]
   end
 end)
 
