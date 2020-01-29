@@ -206,8 +206,12 @@ local commands = {
       config[message.guild.id].purgeignore[message.channel.id] = 0
       for a,items in pairs(msgs) do if math.floor(items.createdAt) + 1209600 >= os.time() then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1 else table.remove(msgs,a) end end
       num = config[message.guild.id].purgeignore[message.channel.id]
+      if config[message.guild.id].purgeignore[message.channel.id] <= 1 then config[message.guild.id].purgeignore[message.channel.id] = 0 end
       local purge = message.channel:bulkDelete(msgs)
       if purge then
+        if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
+        message.guild:getChannel(config[message.guild.id].auditlog):send{embed = {title = "**Bulk Message Deletion**", fields = {{name = "Amount of Messages", value = (num).." message"..(num == 1 and "" or "s"), inline = true},{name = "Message Location", value = message.channel.mentionString, inline = true}}, color = 3447003 }}
+        end
         return {success = true, msg = "Purged **"..(num).."** message"..(num == 1 and "" or "s").."."}
       else
         config[message.guild.id].purgeignore[message.channel.id] = 0
@@ -899,11 +903,12 @@ client:on('memberUpdate', function(member)
 end)
 
 client:on("messageDelete",function(message)
+  if message.guild == nil then return end
   if config[message.guild.id].purgeignore[message.channel.id] ~= nil and config[message.guild.id].purgeignore[message.channel.id] >= 1 then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] - 1 return end
-  if message.guild == nil or message.author.bot then return end
+  if message.author.bot then return end
   if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
     message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
-      title = "Message Deleted",
+      title = "**Message Deleted**",
       fields = {
         {
 					name = "Message Author",
@@ -954,7 +959,7 @@ client:on("messageUpdate", function(message)
     local oldMsg
     for a,items in pairs(message.channel:getMessage(message.id).oldContent) do oldMsg = items end
     message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
-      title = "Message Edited",
+      title = "**Message Edited**",
       fields = {
         {
 					name = "Message Author",
