@@ -899,7 +899,7 @@ client:on('ready', function()
 end)
 
 client:on('memberUpdate', function(member)
-  print(member.name)
+  for a,items in pairs(member.guild:getAuditLogs()) do print(a,items.actionType) end
 end)
 
 client:on("messageDelete",function(message)
