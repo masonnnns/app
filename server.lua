@@ -901,15 +901,13 @@ client:on('ready', function()
 end)
 
 client:on('memberUpdate', function(member)
-  if loggingCache.members[member.guild.id] == nil then loggingCache.members[member.guild.id] = {} end
-  if loggingCache.members[member.guild.id][member.id] == nil then loggingCache.members[member.guild.id][member.id] = member end
   if config[member.guild.id] == nil or config[member.guild.id].auditlog == "nil" or member.guild:getChannel(config[member.guild.id].auditlog) == nil then return end
   local auditLog
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end
   if auditLog.actionType == 25 then
-    local roles = {}
-    if #loggingCache.members[member.guild.id][member.id].roles < member.roles then
-      for _,items in pairs(loggingCache.members[member.guild.id][member.id].roles) do if not member:hasRole(items.id) then roles[1+#roles] = items.id end end
+    print(#member)
+    print(auditLog:getBeforeAfter()[1])
+    for a,b in pairs(auditLog:getBeforeAfter()) do print(a,b) end
   end
 end)
 
