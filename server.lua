@@ -909,54 +909,11 @@ client:on('memberUpdate', function(member)
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end
   if auditLog == nil then print('no log found?') return end
   if auditLog.actionType == 25 then
-    local roles = {}
-    print(#member.roles,#loggingCache.members[member.guild.id][member.id].roles)
-    if #loggingCache.members[member.guild.id][member.id].roles < #member.roles then
-      if #loggingCache.members[member.guild.id][member.id].roles == 0 then
-        local txt = ""
-        for _,items in pairs(member.roles) do txt = txt..items.mentionString end
-        member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
-          title = "**Roles Updated**",
-          fields = {
-            {
-			    		name = "Target",
-				    	value = member.mentionString.." (`"..member.id.."`)",
-				    	inline = true,
-			    	},
-            {
-			    		name = "Role Added",
-				    	value = txt,
-				    	inline = true,
-			    	},
-          },
-          color = 3447003,
-        }}
-      else
-        for _,items in pairs(member.roles) do for a,b in pairs(loggingCache.members[member.guild.id][member.id].roles) do if items.id ~= b then print('xddss') roles[1+#roles] = items.id end end end
-        for a,b in pairs(roles) do roles[a] = member.guild:getRole(b).mentionString end
-        member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
-          title = "**Roles Updated**",
-          fields = {
-            {
-			    		name = "Target",
-				    	value = member.mentionString.." (`"..member.id.."`)",
-				    	inline = true,
-			    	},
-            {
-			    		name = "Roles Added",
-				    	value = table.concat(roles,", "),
-				    	inline = true,
-			    	},
-          },
-          color = 3447003,
-        }}
-      end
+    if #member.roles == 0 then
+      member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Removed**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = member.guild:getRole(loggingCache.members[member.guild.id][member.id].roles[1]).mentionString, inline = false, }, }, color = 3447003, }}
+    elseif #loggingCache.members[member.guild.id][member.id].roles == 0 then
     else
-      for _,items in pairs(loggingCache.members[member.guild.id][member.id].roles) do if member:hasRole(items) then roles[1+#roles] = items end end
-      print(#roles,"removed")
     end
-    loggingCache.members[member.guild.id][member.id].roles = {}
-    for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id print('xxx') end
   end
 end)
 
