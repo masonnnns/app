@@ -113,6 +113,7 @@ local function addConfig(id)
 		modonly = false,
 		mutedRole = "nil",
     auditignore = {},
+    memberCache = {}
     purgeignore = {["551794917584666625"] = 1000}
 	}
 	
@@ -899,11 +900,14 @@ client:on('ready', function()
 end)
 
 client:on('memberUpdate', function(member)
+  if config[member.guild.id] ~= nil then if config[message.guild.id].memeberCache == nil then config[message.guild.id].memeberCache = {} end config[message.guild.id].memeberCache[member.id] = member end 
   if config[member.guild.id] == nil or config[member.guild.id].auditlog == "nil" or member.guild:getChannel(config[member.guild.id].auditlog) == nil then return end
   local auditLog
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 then auditLog = items end end
   if auditLog.actionType == 25 then
-    for a,b in pairs(auditLog.changes) do print(a,b.id) end
+    print(member.old)
+    print(auditLog.changes.old)
+    print(auditLog.targetId)
     member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
       title = "**Message Deleted**",
       color = 3447003,
