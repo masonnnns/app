@@ -899,9 +899,16 @@ client:on('ready', function()
 end)
 
 client:on('memberUpdate', function(member)
+  if config[member.guild.id] == nil or config[member.guild.id].auditlog == "nil" or member.guild:getChannel(config[member.guild.id].auditlog) == nil then return end
   local auditLog
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 then auditLog = items end end
-  print(auditLog.actionType)
+  if auditLog.actionType == 25 then
+    for a,b in pairs(auditLog.changes) do print(a,b.id) end
+    member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
+      title = "**Message Deleted**",
+      color = 3447003,
+    }}
+  end
 end)
 
 client:on("messageDelete",function(message)
