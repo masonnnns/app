@@ -912,14 +912,33 @@ client:on('memberUpdate', function(member)
     local roles = {}
     print(#member.roles,#loggingCache.members[member.guild.id][member.id].roles)
     if #loggingCache.members[member.guild.id][member.id].roles < #member.roles then
-      for _,items in pairs(member.roles) do for a,b in pairs(loggingCache.members[member.guild.id][member.id].roles) do if items.id == b then roles[1+#roles] = b end end end
-      print(#roles,"added")
+      if #loggingCache.members[member.guild.id][member.id].roles == 0 then
+        member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
+          title = "**Roles Updated**",
+          fields = {
+            {
+			    		name = "Target",
+				    	value = member.mentionString.." (`"..member.id.."`)",
+				    	inline = true,
+			    	},
+            {
+			    		name = "Role Added",
+				    	value = member.guild:getRole(member.roles[1]).mentionString,
+				    	inline = true,
+			    	},
+          },
+          color = 3447003,
+        }}
+      else
+        for _,items in pairs(member.roles) do for a,b in pairs(loggingCache.members[member.guild.id][member.id].roles) do if items.id ~= b then print('xddss') roles[1+#roles] = b end end end
+        print(#roles,"added")
+      end
     else
       for _,items in pairs(loggingCache.members[member.guild.id][member.id].roles) do if member:hasRole(items) then roles[1+#roles] = items end end
       print(#roles,"removed")
     end
-    loggingCache.members[member.guild.id][member.id].roles= {}
-    for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end
+    loggingCache.members[member.guild.id][member.id].roles = {}
+    for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id print('xxx') end
   end
 end)
 
