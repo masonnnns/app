@@ -48,6 +48,15 @@ end
 
 module.updateConfig = function(id,newTable)
   config[id] = newTable
+  local configForSaving = {
+		guilds = {},
+	}
+	for a,b in pairs(config) do
+		configForSaving.guilds[a] = b
+	end
+	file = io.open("./data.txt", "w+") 
+  file:write(json.encode(configForSaving.guilds))
+	file:close()
 end
 
 return module
