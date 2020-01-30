@@ -34,6 +34,30 @@ local function addConfig(id)
 	
 end
 
+local function getPermission(message,id)
+	if id == nil then id = message.author.id end
+	if message.guild:getMember(id) == nil then
+		return 0
+	elseif id == client.owner.id then
+		--print('owner')
+		return 5
+	elseif id == message.guild.owner.id then
+		--print('guild owner')
+		return 3
+	elseif message.guild:getMember(id):hasPermission("administrator") == true then
+		--print('admin')
+		return 2
+	elseif message.guild:getMember(id):hasPermission("manageGuild") == true then
+		--print('admin')
+		return 2
+	elseif config[message.guild.id].modrole ~= nil and message.guild:getMember(id):hasRole(config[message.guild.id].modrole) == true then
+		--print('modrole')
+		return 1
+	else 
+		return 0
+ 	end
+end	
+
 print("[DB]: Starting Data Loading Process.")
   local decode = json.decode(io.open("./data.txt","r"):read())
   for a,b in pairs(decode) do
@@ -68,9 +92,7 @@ client:on("messageCreate",function(message)
   if message.guild == nil then return end
   if message.author.id == client.owner.id and string.lower(message.content) == "!!restart" then os.exit() os.exit() os.exit() return end
   local args = sepMsg(message.content)
-  print(args[1])
   if args[1] == "<@!"..client.user.id..">" or args[1] == "<@"..client.user.id..">" then
-    print('xd')
     table.remove(args,1)
     args[1] = config[message.guild.id].prefix..args[1]
   end
@@ -91,18 +113,25 @@ client:on("messageCreate",function(message)
       end
 	  end
   end
-  if found == nil then
+  if found == nil or getPermission(message) < 1 and config[message.guild.id].modonly then
     -- automod / log message
   else
-    local execute = found.execute(message,config[message.guild.id])
-    if execute == nil or type(execute) ~= "table" then
-      message:reply(":no_entry: An **unknown error** occured.")
-    elseif execute.success == false then
-      message:reply(":no_entry: "..execute.msg)
-    elseif tostring(execute.success):lower() == "stfu" then
-      -- stfu literally
+    if config[message.guild.id].modonly and getPermission(message) < 1 then return end
+    if found.info.PermLvl <= getPermission(message) then
+      local execute = found.execute(message,config[message.guild.id],args)
+      if execute == nil or type(execute) ~= "table" then
+        message:reply(":no_entry: An **unknown error** occured.")
+      elseif execute.success == false then
+        message:reply(":no_entry: "..execute.msg)
+      elseif tostring(execute.success):lower() == "stfu" then
+        -- stfu literally
+      else
+        message:reply((execute.emote == nil and ":ok_hand:" or execute.emote).." "..execute.msg)
+      end
     else
-      message:reply((execute.emote == nil and ":ok_hand:" or execute.emote).." "..execute.msg)
+      local m = message:reply(":no_entry: You **don't have permissions** to use this command!")
+      timer.sleep(3000)
+      m:delete()
     end
   end
 end)
