@@ -858,7 +858,7 @@ client:on('ready', function()
   print("[DEBUG]: Starting cache loading / loop.")
   for _,guilds in pairs(client.guilds) do
     for _,member in pairs(guilds.members) do
-      print(member.username,member.id)
+      print("[DEBUG] [CACHE]: "..member.name.." ("..member.id..") in "..guilds.id.." has loaded.")
       if loggingCache.members[member.guild.id] == nil then loggingCache.members[member.guild.id] = {} end
       if loggingCache.members[member.guild.id][member.id] == nil then loggingCache.members[member.guild.id][member.id] = {} end 
       if loggingCache.members[member.guild.id][member.id].roles == nil then loggingCache.members[member.guild.id][member.id].roles = {} for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end end
@@ -870,6 +870,8 @@ client:on('ready', function()
   print("[DEBUG]: Done.")
   client:setGame("!!help | AA-R0N")
 	print("[DEBUG]: Starting timed-actions loop.")
+  print("[DEBUG]: Done.")
+  print("[DEBUG]: Bot processes completed, serving on "..#client.guilds.." guilds.")
 	while true do
 		for id,items in pairs(config) do
       if client:getGuild(id) == nil or config[id] == nil then
@@ -994,6 +996,31 @@ end)
 
 client:on('guildDelete', function(guild)
 local him = guild.members
+end)
+
+client:on('channelCreate', function(channel)
+  if config[channel.guild.id] == nil then return end
+  local auditLog
+  for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end
+  if auditLog == nil then
+    if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
+      message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
+        title = "**Channel Created**",
+        fields = {
+          {
+            name = "Channel",
+            value = channel.mentionString,
+            inline = true,
+          },
+          {
+            name = "Channel Location",
+            value = channel.mentionString,
+            inline = true,
+          },
+        },
+        color = 3447003,
+      }}
+    end
 end)
 
 client:on('memberJoin', function(member)
