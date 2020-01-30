@@ -924,6 +924,7 @@ client:on('ready', function()
 end)
 
 client:on('memberUpdate', function(member)
+  --if member.guild == nil then return end
   if loggingCache.members[member.guild.id] == nil then loggingCache.members[member.guild.id] = {} end
   if loggingCache.members[member.guild.id][member.id] == nil then loggingCache.members[member.guild.id][member.id] = {} end 
   if loggingCache.members[member.guild.id][member.id].roles == nil then loggingCache.members[member.guild.id][member.id].roles = {} for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end return end
