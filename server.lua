@@ -1002,9 +1002,9 @@ client:on('channelCreate', function(channel)
   if config[channel.guild.id] == nil then return end
   local auditLog
   for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end
-  if auditLog == nil then
-    if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
-      message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
+  if auditLog == nil or auditLog:getMember() == nil then
+    if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={
         title = "**Channel Created**",
         fields = {
           {
@@ -1014,13 +1014,38 @@ client:on('channelCreate', function(channel)
           },
           {
             name = "Channel Location",
-            value = channel.mentionString,
+            value = (channel.category == nil and "Not in a category" or channel.category.name),
             inline = true,
           },
         },
-        color = 3447003,
+        color = 11027200,
       }}
     end
+  else
+    if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={
+        title = "**Channel Created**",
+        fields = {
+          {
+            name = "Channel",
+            value = channel.mentionString,
+            inline = true,
+          },
+          {
+            name = "Channel Location",
+            value = (channel.category == nil and "Not in a category" or channel.category.name),
+            inline = true,
+          },
+          {
+            name = "Responsible Member",
+            value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)",
+            inline = false,
+          },
+        },
+        color = 11027200,
+      }}
+    end
+  end
 end)
 
 client:on('memberJoin', function(member)
