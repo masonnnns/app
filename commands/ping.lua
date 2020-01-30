@@ -1,6 +1,13 @@
+command = {}
+
 command.info = {
   Name = "Ping",
   Alias = {},
-  Description = "Test AA-R0N's connection to Discord."
-  PermLvl = 0
+  Description = "Test AA-R0N's connection to Discord.",
+  PermLvl = 0,
 }
+
+command.execute = function(message,config)
+end
+
+return command
