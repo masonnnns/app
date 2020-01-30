@@ -8,6 +8,7 @@ command.info = {
 }
 
 command.execute = function(message,config)
+  return {success = true, msg = "PONG!!"}
 end
 
 return command
