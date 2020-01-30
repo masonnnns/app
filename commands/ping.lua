@@ -3,7 +3,7 @@ command = {}
 command.info = {
   Name = "Ping",
   Alias = {},
-  Example = "ping"
+  Example = "ping",
   Description = "Test AA-R0N's connection to Discord.",
   PermLvl = 0,
 }
