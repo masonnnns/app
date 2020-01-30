@@ -8,7 +8,7 @@ command.info = {
   PermLvl = 5,
 }
 
-command.execute = function(message,config)
+command.execute = function(message,args,client)
   message:reply(":ok_hand: Restarting bot.")
   os.exit()
   os.exit()

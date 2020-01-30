@@ -87,7 +87,7 @@ client:on("messageCreate",function(message)
   else
     if config[message.guild.id].modonly and getPermission(message) < 1 then return end
     if found.info.PermLvl <= getPermission(message) then
-      local execute = found.execute(message,args)
+      local execute = found.execute(message,args,client)
       if execute == nil or type(execute) ~= "table" then
         message:reply(":no_entry: An **unknown error** occured.")
       elseif execute.success == false then
@@ -105,4 +105,4 @@ client:on("messageCreate",function(message)
   end
 end)
 
-client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')
+client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')

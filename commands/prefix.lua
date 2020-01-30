@@ -10,7 +10,7 @@ command.info = {
   PermLvl = 2,
 }
 
-command.execute = function(message,args)
+command.execute = function(message,args,client)
   if args[2] == nil then
     return {success = false, msg = "You must provide a **new prefix.**"}
   elseif string.len(args[2]) > 10 or string.len(args[2]) < 1 then

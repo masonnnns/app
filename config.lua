@@ -43,6 +43,15 @@ end
 
 module.getConfig = function(id)
   if config[id] == nil then addConfig(id) end
+  local configForSaving = {
+		guilds = {},
+	}
+	for a,b in pairs(config) do
+		configForSaving.guilds[a] = b
+	end
+	file = io.open("./data.txt", "w+") 
+  file:write(json.encode(configForSaving.guilds))
+	file:close()
   return config[id]
 end
 

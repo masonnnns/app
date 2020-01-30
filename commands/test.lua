@@ -8,11 +8,9 @@ command.info = {
   PermLvl = 5,
 }
 
-command.execute = function(message,config)
-  local module = require("/app/config.lua")
-  local test = module.execute('xddd')
-  print(test)
-  return {success = true, msg = "console", emote = ":ping_pong:"}
+command.execute = function(message,args,client)
+ 
+  return {success = true, msg = client:getGuild(args[2]).name}
 end
 
 return command
