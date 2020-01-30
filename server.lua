@@ -13,7 +13,7 @@ local http = require("coro-http")
 local Date = discordia.Date
 local statusEnum = {online = 1, idle = 2, dnd = 3, offline = 4}
 local statusText = {'Online', 'Idle', 'Do Not Disturb', 'Offline'}
-local loggingCache = {members = {}}
+local loggingCache = {members = {}, channels = {},}
 local config = {}
 
 local function getPermission(message,id)
@@ -866,8 +866,10 @@ client:on('ready', function()
       --timer.sleep(100)
     end
     for _,channel in pairs(guilds.textChannels) do
+      print("[DEBUG] [CACHE] [CHANNEL]: "..channel.name.." ("..channel.id..") in "..channel.guild.id.." has loaded.")
       if loggingCache.channels[channel.guild.id] == nil then loggingCache.channels[channel.guild.id] = {} end
-      if loggingCache.channels[member.guild.id][channel.id] == nil then loggingCache.channels[member.guild.id][channel.id] = {} 
+      if loggingCache.channels[channel.guild.id][channel.id] == nil then loggingCache.channels[channel.guild.id][channel.id] = {} end
+      if loggingCache.channels[channel.guild.id][channel.id].name == nil then loggingCache.channels[channel.guild.id][channel.id].name = channel.name end
     end
     --timer.sleep(500)
   end
