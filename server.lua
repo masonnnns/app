@@ -904,17 +904,18 @@ client:on('memberUpdate', function(member)
   if loggingCache.members[member.guild.id] == nil then loggingCache.members[member.guild.id] = {} end
   if loggingCache.members[member.guild.id][member.id] == nil then loggingCache.members[member.guild.id][member.id] = {} end 
   if loggingCache.members[member.guild.id][member.id].roles == nil then loggingCache.members[member.guild.id][member.id].roles = {} for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end return end
+  if loggingCache.members[member.guild.id][member.id].nickname == nil then loggingCache.members[member.guild.id][member.id].nickname = (member.nickname ~= nil and member.nickname or "nil") return end
   if config[member.guild.id] == nil or config[member.guild.id].auditlog == "nil" or member.guild:getChannel(config[member.guild.id].auditlog) == nil then return end
   local auditLog
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end
   if auditLog == nil then print('no log found?') return end
   if auditLog.actionType == 25 then
     if #member.roles == 0 then
-      member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Removed**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = member.guild:getRole(loggingCache.members[member.guild.id][member.id].roles[1]).mentionString, inline = false, }, }, color = 3447003, }}
+      member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Removed**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = member.guild:getRole(loggingCache.members[member.guild.id][member.id].roles[1]).mentionString, inline = true, }, }, color = 3447003, }}
     elseif #loggingCache.members[member.guild.id][member.id].roles == 0 then
       local txt = "Error"
       for a,b in pairs(member.roles) do txt = b.mentionString end
-      member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Added**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = txt, inline = false, }, }, color = 3447003, }}
+      member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Added**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = txt, inline = true, }, }, color = 3447003, }}
     else
       local txt = {}
       if #loggingCache.members[member.guild.id][member.id].roles < #member.roles then -- more new roles than old ones (one was added)
@@ -928,8 +929,7 @@ client:on('memberUpdate', function(member)
         member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Added**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = table.concat(txt,", "), inline = false, }, }, color = 3447003, }}
       else
         for _,items in pairs(loggingCache.members[member.guild.id][member.id].roles) do 
-          print(member.roles[tostring(items)])
-          if member.roles[items] == nil then
+          if member:hasRole(items) == false then
             txt[1+#txt] = member.guild:getRole(items).mentionString
           end
         end
@@ -938,6 +938,8 @@ client:on('memberUpdate', function(member)
     end
     loggingCache.members[member.guild.id][member.id].roles = {}
     for _,items in pairs(member.roles) do  loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end
+  elseif loggingCache.members[member.guild.id][member.id].nickname ~= member.nickname then
+      
   end
 end)
 
