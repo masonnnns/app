@@ -911,11 +911,11 @@ client:on('memberUpdate', function(member)
   if auditLog == nil then print('no log found?') return end
   if auditLog.actionType == 25 then
     if #member.roles == 0 then
-      member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Removed**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = member.guild:getRole(loggingCache.members[member.guild.id][member.id].roles[1]).mentionString, inline = true, }, }, color = 3447003, }}
+      member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Removed**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = member.guild:getRole(loggingCache.members[member.guild.id][member.id].roles[1]).mentionString, inline = true, }, }, color = 2899536, }}
     elseif #loggingCache.members[member.guild.id][member.id].roles == 0 then
       local txt = "Error"
       for a,b in pairs(member.roles) do txt = b.mentionString end
-      member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Added**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = txt, inline = true, }, }, color = 3447003, }}
+      member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Added**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = txt, inline = true, }, }, color = 3426654, }}
     else
       local txt = {}
       if #loggingCache.members[member.guild.id][member.id].roles < #member.roles then -- more new roles than old ones (one was added)
@@ -926,20 +926,20 @@ client:on('memberUpdate', function(member)
             end
           end
         end
-        member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Added**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = table.concat(txt,", "), inline = false, }, }, color = 3447003, }}
+        member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Added**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = table.concat(txt,", "), inline = true, }, }, color = 3426654, }}
       else
         for _,items in pairs(loggingCache.members[member.guild.id][member.id].roles) do 
           if member:hasRole(items) == false then
             txt[1+#txt] = member.guild:getRole(items).mentionString
           end
         end
-        member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Removed**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = table.concat(txt,", "), inline = false, }, }, color = 3447003, }}
+        member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Removed**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = table.concat(txt,", "), inline = true, }, }, color = 2899536, }}
       end
     end
     loggingCache.members[member.guild.id][member.id].roles = {}
     for _,items in pairs(member.roles) do  loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end
   elseif loggingCache.members[member.guild.id][member.id].nickname ~= member.nickname then
-      
+    member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Nickname Changed**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Old Nickname", value = (loggingCache.members[member.guild.id][member.id].nickname == "nil" and "None set!" or loggingCache.members[member.guild.id][member.id].nickname), inline = false, }, { name = "New Nickname", value = member.nickname, inline = true, }, }, color = 3066993, }}
   end
 end)
 
@@ -1034,6 +1034,10 @@ end)
 client:on('messageCreate', function(message)
 	if message.guild == nil then return end
 	if message.author.bot then return end
+  if loggingCache.members[message.guild.id] == nil then loggingCache.members[message.guild.id] = {} end
+  if loggingCache.members[message.guild.id][message.author.id] == nil then loggingCache.members[message.guild.id][message.author.id] = {} end 
+  if loggingCache.members[message.guild.id][message.author.id].roles == nil then loggingCache.members[message.guild.id][message.author.id].roles = {} for _,items in pairs(message.guild:getMember(message.author.id).roles) do loggingCache.members[message.guild.id][message.author.id].roles[1+#loggingCache.members[message.guild.id][message.author.id].roles] = items.id end end
+  if loggingCache.members[message.guild.id][message.author.id].nickname == nil then loggingCache.members[message.guild.id][message.author.id].nickname = (message.guild:getMember(message.author.id).nickname ~= nil and message.guild:getMember(message.author.id).nickname or "nil") end
 	if message.guild ~= nil or message.author.bot ~= true then -- if it's not a guild or its a bot
 		if config[message.guild.id] == nil then
 			addConfig(message.guild.id)
