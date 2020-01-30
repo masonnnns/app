@@ -853,7 +853,19 @@ end
 client:on('ready', function()
   uptimeOS = os.time()
 	print('Logged in as '.. client.user.username)
-	client:setGame("!!help | AA-R0N")
+	client:setGame("booting... please wait")
+  for _,guilds in pairs(client.guilds) do
+    for _,member in pairs(guilds.members) do
+      print(member.username,member.id)
+      if loggingCache.members[member.guild.id] == nil then loggingCache.members[member.guild.id] = {} end
+      if loggingCache.members[member.guild.id][member.id] == nil then loggingCache.members[member.guild.id][member.id] = {} end 
+      if loggingCache.members[member.guild.id][member.id].roles == nil then loggingCache.members[member.guild.id][member.id].roles = {} for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end end
+      if loggingCache.members[member.guild.id][member.id].nickname == nil then loggingCache.members[member.guild.id][member.id].nickname = (member.nickname ~= nil and member.nickname or "nil")  end
+      timer.sleep(100)
+    end
+    timer.sleep(500)
+  end
+  client:setGame("!!help | AA-R0N")
 	print('starting temp action loop')
 	while true do
 		for id,items in pairs(config) do
