@@ -1,5 +1,7 @@
 command = {}
 
+local config = require("/app/config.lua")
+
 command.info = {
   Name = "Prefix",
   Alias = {},
@@ -14,6 +16,7 @@ command.execute = function(message,config,args)
   elseif string.len(args[2]) > 10 or string.len(args[2]) < 1 then
     return {success = false, msg = "The new prefix must be between **1 and 10 characters.**"}
   else
+
   end
 end
 

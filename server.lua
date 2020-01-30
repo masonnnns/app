@@ -14,29 +14,9 @@ local fs = require("fs")
 local Date = discordia.Date
 local config = {}
 
-local module = require("/app/config.lua")
-local test = module.execute('xddd')
-print(test,"OK")
-
-local function addConfig(id)
-	config[id] = {
-		prefix = "!!",
-    automod = {enabled = false, types = {invites = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
-    tags = {enabled = false, tags = {}, delete = false},
-    terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
-    modlog = "nil",
-		modrole = "nil",
-    auditlog = "nil",
-		modData = {cases = {}, actions = {}}, -- {type = "mute", reason = "", duration = os.time() / "perm", mod = userID, user = userID}
-		deletecmd = true,
-		modonly = false,
-		mutedRole = "nil",
-    auditignore = {},
-    --memberCache = {},
-    purgeignore = {["551794917584666625"] = 1000}
-	}
-	
-end
+local configuration = require("/app/config.lua")
+local configSetup = configuration.setupConfigs('xddd')
+for a,b in pairs(configSetup) do config[a] = b end 
 
 local function getPermission(message,id)
 	if id == nil then id = message.author.id end
@@ -62,23 +42,6 @@ local function getPermission(message,id)
  	end
 end	
 
-print("[DB]: Starting Data Loading Process.")
-  local decode = json.decode(io.open("./data.txt","r"):read())
-  for a,b in pairs(decode) do
-  	addConfig(a)
-	  for c,d in pairs(b) do
-	  	if config[a][c] ~= nil then
-		  	config[a][c] = d
-		  else
-		  	print("[DB]: Guild "..a.." doesn't have the "..c.." value in it, so it is using defualt settings.")
-	  	end
-	  end
-	  --config[a] = b
-    config[a].purgeignore = {}
-	  print("[DB]: Guild "..a.."'s data was successfully loaded.")
-  end
-  print("[DB]: All guilds have been successfully loaded.")
-
 local function sepMsg(msg)
 	local Args = {}
 	local Command = msg
@@ -94,6 +57,7 @@ end
 
 client:on("messageCreate",function(message)
   if message.guild == nil then return end
+  config[message.guild.id] = configuration.getConfig(message.guild.id)
   if message.author.id == client.owner.id and string.lower(message.content) == "!!restart" then os.exit() os.exit() os.exit() return end
   local args = sepMsg(message.content)
   if args[1] == nil then return end
