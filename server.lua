@@ -920,9 +920,11 @@ client:on('memberUpdate', function(member)
       local txt = {}
       local tempRoleStorage = {}
       if #loggingCache.members[member.guild.id][member.id].roles < #member.roles then -- more new roles than old ones (one was added)
-        for _,items in pairs(loggingCache.members[member.guild.id][member.id].roles) do tempRoleStorage[tostring(b)] = true end
+        for a,b in pairs(loggingCache.members[member.guild.id][member.id].roles) do tempRoleStorage[tostring(b)] = true end
         for _,items in pairs(member.roles) do
-          print(items.name)
+          if tempRoleStorage[tostring(items.id)] == nil then
+            txt[1+#txt] = items.mentionString
+          end
         end
         member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Role Added**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role", value = table.concat(txt,", "), inline = true, }, }, color = 3426654, }}
       else
@@ -937,8 +939,8 @@ client:on('memberUpdate', function(member)
     loggingCache.members[member.guild.id][member.id].roles = {}
     for _,items in pairs(member.roles) do  loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end
   elseif loggingCache.members[member.guild.id][member.id].nickname ~= member.nickname then
-    member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Nickname Changed**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Old Nickname", value = (loggingCache.members[member.guild.id][member.id].nickname == "nil" and "None set!" or loggingCache.members[member.guild.id][member.id].nickname), inline = false, }, { name = "New Nickname", value = (member.nickname == nil and member.username or member.nickname), inline = true, }, }, color = 15844367, }}
-    loggingCache.members[member.guild.id][member.id].nickname = member.nickname
+    member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Nickname Changed**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Old Nickname", value = (loggingCache.members[member.guild.id][member.id].nickname == "nil" and member.username or loggingCache.members[member.guild.id][member.id].nickname), inline = false, }, { name = "New Nickname", value = (member.nickname == nil and member.username or member.nickname), inline = true, }, }, color = 15844367, }}
+    loggingCache.members[member.guild.id][member.id].nickname = (member.nickname == nil and "nil" or member.nickname)
   end
 end)
 
