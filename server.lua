@@ -851,9 +851,11 @@ local function exec(arg, msg)
 end 
 
 client:on('ready', function()
+  print("[DEBUG]: Starting Bot.")
   uptimeOS = os.time()
-	print('Logged in as '.. client.user.username)
+	print("[DEBUG]: Logged in as "..client.user.name..".")
 	client:setGame("booting... please wait")
+  print("[DEBUG]: Starting cache loading / loop.")
   for _,guilds in pairs(client.guilds) do
     for _,member in pairs(guilds.members) do
       print(member.username,member.id)
@@ -861,12 +863,13 @@ client:on('ready', function()
       if loggingCache.members[member.guild.id][member.id] == nil then loggingCache.members[member.guild.id][member.id] = {} end 
       if loggingCache.members[member.guild.id][member.id].roles == nil then loggingCache.members[member.guild.id][member.id].roles = {} for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end end
       if loggingCache.members[member.guild.id][member.id].nickname == nil then loggingCache.members[member.guild.id][member.id].nickname = (member.nickname ~= nil and member.nickname or "nil")  end
-      timer.sleep(100)
+      --timer.sleep(100)
     end
-    timer.sleep(500)
+    --timer.sleep(500)
   end
+  print("[DEBUG]: Done.")
   client:setGame("!!help | AA-R0N")
-	print('starting temp action loop')
+	print("[DEBUG]: Starting timed-actions loop.")
 	while true do
 		for id,items in pairs(config) do
       if client:getGuild(id) == nil or config[id] == nil then
