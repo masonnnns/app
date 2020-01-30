@@ -14,6 +14,10 @@ local fs = require("fs")
 local Date = discordia.Date
 local config = {}
 
+local module = require("/app/config.lua")
+local test = module.execute('xddd')
+print(test,"OK")
+
 local function addConfig(id)
 	config[id] = {
 		prefix = "!!",
@@ -92,6 +96,7 @@ client:on("messageCreate",function(message)
   if message.guild == nil then return end
   if message.author.id == client.owner.id and string.lower(message.content) == "!!restart" then os.exit() os.exit() os.exit() return end
   local args = sepMsg(message.content)
+  if args[1] == nil then return end
   if args[1] == "<@!"..client.user.id..">" or args[1] == "<@"..client.user.id..">" then
     table.remove(args,1)
     args[1] = config[message.guild.id].prefix..args[1]
@@ -119,6 +124,7 @@ client:on("messageCreate",function(message)
     if config[message.guild.id].modonly and getPermission(message) < 1 then return end
     if found.info.PermLvl <= getPermission(message) then
       local execute = found.execute(message,config[message.guild.id],args)
+      print(execute)
       if execute == nil or type(execute) ~= "table" then
         message:reply(":no_entry: An **unknown error** occured.")
       elseif execute.success == false then
