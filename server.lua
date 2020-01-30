@@ -1002,48 +1002,13 @@ client:on('channelCreate', function(channel)
   if config[channel.guild.id] == nil then return end
   local auditLog
   for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end
-  if auditLog == nil or auditLog:getMember() == nil then
+  if auditLog == nil or auditLog:getMember() == nil or auditLog.actionType ~= 10 then
     if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={
-        title = "**Channel Created**",
-        fields = {
-          {
-            name = "Channel",
-            value = channel.mentionString,
-            inline = true,
-          },
-          {
-            name = "Channel Location",
-            value = (channel.category == nil and "Not in a category" or channel.category.name),
-            inline = true,
-          },
-        },
-        color = 11027200,
-      }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "**Channel Created**", fields = { { name = "Channel", value = channel.mentionString, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not in a category" or channel.category.name), inline = true, }, }, color = 11027200, }}
     end
   else
     if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={
-        title = "**Channel Created**",
-        fields = {
-          {
-            name = "Channel",
-            value = channel.mentionString,
-            inline = true,
-          },
-          {
-            name = "Channel Location",
-            value = (channel.category == nil and "Not in a category" or channel.category.name),
-            inline = true,
-          },
-          {
-            name = "Responsible Member",
-            value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)",
-            inline = false,
-          },
-        },
-        color = 11027200,
-      }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "**Channel Created**", fields = { { name = "Channel", value = channel.mentionString, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not in a category" or channel.category.name), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 11027200, }}
     end
   end
 end)
@@ -1101,13 +1066,7 @@ end)
 
 client:on('messageCreate', function(message)
 	if message.guild == nil then return end
-	if message.author.bot then return end
-  if loggingCache.members[message.guild.id] == nil then loggingCache.members[message.guild.id] = {} end
-  if loggingCache.members[message.guild.id][message.author.id] == nil then loggingCache.members[message.guild.id][message.author.id] = {} end 
-  if loggingCache.members[message.guild.id][message.author.id].roles == nil then loggingCache.members[message.guild.id][message.author.id].roles = {} for _,items in pairs(message.guild:getMember(message.author.id).roles) do loggingCache.members[message.guild.id][message.author.id].roles[1+#loggingCache.members[message.guild.id][message.author.id].roles] = items.id end end
-  if loggingCache.members[message.guild.id][message.author.id].nickname == nil then loggingCache.members[message.guild.id][message.author.id].nickname = (message.guild:getMember(message.author.id).nickname ~= nil and message.guild:getMember(message.author.id).nickname or "nil") end
-	if message.guild ~= nil or message.author.bot ~= true then -- if it's not a guild or its a bot
-		if config[message.guild.id] == nil then
+  if config[message.guild.id] == nil then
 			addConfig(message.guild.id)
 		end
 		local configForSaving = {
@@ -1119,6 +1078,12 @@ client:on('messageCreate', function(message)
 		file = io.open("./data.txt", "w+") 
 		file:write(json.encode(configForSaving.guilds))
 		file:close()
+	if message.author.bot then return end
+  if loggingCache.members[message.guild.id] == nil then loggingCache.members[message.guild.id] = {} end
+  if loggingCache.members[message.guild.id][message.author.id] == nil then loggingCache.members[message.guild.id][message.author.id] = {} end 
+  if loggingCache.members[message.guild.id][message.author.id].roles == nil then loggingCache.members[message.guild.id][message.author.id].roles = {} for _,items in pairs(message.guild:getMember(message.author.id).roles) do loggingCache.members[message.guild.id][message.author.id].roles[1+#loggingCache.members[message.guild.id][message.author.id].roles] = items.id end end
+  if loggingCache.members[message.guild.id][message.author.id].nickname == nil then loggingCache.members[message.guild.id][message.author.id].nickname = (message.guild:getMember(message.author.id).nickname ~= nil and message.guild:getMember(message.author.id).nickname or "nil") end
+	if message.guild ~= nil or message.author.bot ~= true then -- if it's not a guild or its a bot
 		--print("all guild data was saved because "..message.author.username.." sent a message")
 		--if string.match("discordgg.ga",string.lower(message.content)) then message:delete() end
 		if string.lower(message.content) == "!!prefix?" then message:reply("The prefix for **"..message.guild.name.."** is **"..config[message.guild.id].prefix.."**") end
