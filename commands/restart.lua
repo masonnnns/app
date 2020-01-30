@@ -9,7 +9,10 @@ command.info = {
 }
 
 command.execute = function(message,config)
-  
+  message:reply(":ok_hand: Restarting bot.")
+  os.exit()
+  os.exit()
+  os.exit()
   return {success = "stfu", msg = "console", emote = ":ping_pong:"}
 end
 

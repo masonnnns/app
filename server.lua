@@ -58,9 +58,9 @@ end
 client:on("messageCreate",function(message)
   if message.guild == nil then return end
   config[message.guild.id] = configuration.getConfig(message.guild.id)
-  if message.author.id == client.owner.id and string.lower(message.content) == "!!restart" then os.exit() os.exit() os.exit() return end
   local args = sepMsg(message.content)
   if args[1] == nil then return end
+  if string.lower(args[1]) == "!!prefix?" then message:reply("The prefix for **"..message.guild.name.."** is **"..config[message.guild.id].prefix.."**") return end
   if args[1] == "<@!"..client.user.id..">" or args[1] == "<@"..client.user.id..">" then
     table.remove(args,1)
     args[1] = config[message.guild.id].prefix..args[1]
