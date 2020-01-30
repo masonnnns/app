@@ -8,7 +8,7 @@ command.info = {
 }
 
 command.execute = function(message,config)
-  return {success = true, msg = "PONG!!"}
+  return {success = true, msg = "PONG!!", emote = ":ping_pong:"}
 end
 
 return command

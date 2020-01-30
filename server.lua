@@ -65,18 +65,25 @@ local function sepMsg(msg)
 end
 
 client:on("messageCreate",function(message)
+  if message.guild == nil then return end
   if message.author.id == client.owner.id and string.lower(message.content) == "!!restart" then os.exit() os.exit() os.exit() return end
   local args = sepMsg(message.content)
+  print(args[1])
+  if args[1] == "<@!"..client.user.id..">" or args[1] == "<@"..client.user.id..">" then
+    print('xd')
+    table.remove(args,1)
+    args[1] = config[message.guild.id].prefix..args[1]
+  end
   local found
   for file, _type in fs.scandirSync("./commands") do
 	  if _type ~= "directory" then
       local cmd = require("./commands/" .. file)
-      if string.lower(cmd.info.Name) == string.lower(config[message.guild.id].prefix..args[1]) then
+      if string.lower(config[message.guild.id].prefix..cmd.info.Name) == string.lower(args[1]) or args[1] == client.user.mentionString then
         found = cmd
         break
       elseif #cmd.info.Alias >= 1 then
         for _,items in pairs(cmd.info.Alias) do
-          if string.lower(items) == string.lower(config[message.guild.id].prefix..args[1]) then
+          if string.lower(config[message.guild.id].prefix..items) == string.lower(args[1]) then
             found = cmd
             break
           end
@@ -92,6 +99,8 @@ client:on("messageCreate",function(message)
       message:reply(":no_entry: An **unknown error** occured.")
     elseif execute.success == false then
       message:reply(":no_entry: "..execute.msg)
+    elseif tostring(execute.success):lower() == "stfu" then
+      -- stfu literally
     else
       message:reply((execute.emote == nil and ":ok_hand:" or execute.emote).." "..execute.msg)
     end
