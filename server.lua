@@ -21,19 +21,19 @@ local function getPermission(message,id)
 	if message.guild:getMember(id) == nil then
 		return 0
 	elseif id == client.owner.id then
-		print('owner')
+		--print('owner')
 		return 5
 	elseif id == message.guild.owner.id then
-		print('guild owner')
+		--print('guild owner')
 		return 3
 	elseif message.guild:getMember(id):hasPermission("administrator") == true then
-		print('admin')
+		--print('admin')
 		return 2
 	elseif message.guild:getMember(id):hasPermission("manageGuild") == true then
-		print('admin')
+		--print('admin')
 		return 2
 	elseif config[message.guild.id].modrole ~= nil and message.guild:getMember(id):hasRole(config[message.guild.id].modrole) == true then
-		print('modrole')
+		--print('modrole')
 		return 1
 	else 
 		return 0
@@ -858,7 +858,7 @@ client:on('ready', function()
   print("[DEBUG]: Starting cache loading / loop.")
   for _,guilds in pairs(client.guilds) do
     for _,member in pairs(guilds.members) do
-      print("[DEBUG] [CACHE] [USER]: "..member.name.." ("..member.id..") in "..guilds.id.." has loaded.")
+      print("[DEBUG] [CACHE] [USER]: "..member.name.." ("..member.id..") in "..guilds.name.." ("..guilds.id..") has loaded.")
       if loggingCache.members[member.guild.id] == nil then loggingCache.members[member.guild.id] = {} end
       if loggingCache.members[member.guild.id][member.id] == nil then loggingCache.members[member.guild.id][member.id] = {} end 
       if loggingCache.members[member.guild.id][member.id].roles == nil then loggingCache.members[member.guild.id][member.id].roles = {} for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end end
@@ -866,7 +866,7 @@ client:on('ready', function()
       --timer.sleep(100)
     end
     for _,channel in pairs(guilds.textChannels) do
-      print("[DEBUG] [CACHE] [CHANNEL]: "..channel.name.." ("..channel.id..") in "..channel.guild.id.." has loaded.")
+      print("[DEBUG] [CACHE] [CHANNEL]: "..channel.name.." ("..channel.id..") in "..channel.guild.name.." ("..channel.guild.id..") has loaded.")
       if loggingCache.channels[channel.guild.id] == nil then loggingCache.channels[channel.guild.id] = {} end
       if loggingCache.channels[channel.guild.id][channel.id] == nil then loggingCache.channels[channel.guild.id][channel.id] = {} end
       if loggingCache.channels[channel.guild.id][channel.id].name == nil then loggingCache.channels[channel.guild.id][channel.id].name = channel.name end
@@ -1151,6 +1151,7 @@ client:on('messageCreate', function(message)
 			if cmd == nil or cmd == "" then
 				autoMod(message)
 			else
+        print("[DEBUG] [COMMAND EXECUTED]: "..message.author.name.." ("..message.author.id..") in "..message.guild.name.." ("..message.guild.id..") ran the "..cmd.command.." command.")
 				local emojis = {
 					["ok"] = ":ok_hand:",
 					["ping"] = ":ping_pong:",
