@@ -1059,6 +1059,13 @@ client:on('roleDelete', function(channel)
 end)
 
 client:on('memberJoin', function(member)
+if loggingCache.members[member.guild.id] == nil then loggingCache.members[member.guild.id] = {} end
+if loggingCache.members[member.guild.id][member.id] == nil then loggingCache.members[member.guild.id][member.id] = {} end 
+if loggingCache.members[member.guild.id][member.id].roles == nil then loggingCache.members[member.guild.id][member.id].roles = {} for _,items in pairs(member.roles) do loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end end
+if loggingCache.members[member.guild.id][member.id].nickname == nil then loggingCache.members[member.guild.id][member.id].nickname = (member.nickname ~= nil and member.nickname or "nil") end
+if config[member.guild.id] and config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) then
+  member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Member Joined**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Created At", value = Date.fromSnowflake(member.id):toISO(' ', ''), inline = true, }, }, color = 15158332, }}
+end
 if member.bot then return end
 	if config[member.guild.id] then
 		for _,items in pairs(config[member.guild.id].modData.actions) do
