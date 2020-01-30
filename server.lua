@@ -934,7 +934,6 @@ client:on('memberUpdate', function(member)
   if auditLog == nil then print('no log found?') return end
   if auditLog.actionType == 25 then
     local newRoles = {}
-    for _,items in pairs(member.roles)
     loggingCache.members[member.guild.id][member.id].roles = {}
     for _,items in pairs(member.roles) do  loggingCache.members[member.guild.id][member.id].roles[1+#loggingCache.members[member.guild.id][member.id].roles] = items.id end
   elseif loggingCache.members[member.guild.id][member.id].nickname ~= member.nickname then
