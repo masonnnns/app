@@ -4,7 +4,7 @@ local function plural(num)
   return num == 1 and "" or "s"
 end
 
-module.getTimeString = functi(seconds)
+module.getTimeString = function(seconds)
 	local minutes = math.floor(seconds / 60)
 	seconds = seconds % 60
 	local hours = math.floor(minutes / 60)

@@ -86,7 +86,7 @@ command.execute = function(message,args,client)
     end
   else
     if getPermission(message) < found.info.PermLvl then local reCmd = command.execute(message,{"xd"},client) return {success = reCmd.success, msg = reCmd.msg} end
-    local txts = "**Command:** "..config.getConfig(message.guild.id).prefix..string.lower(found.info.Name).."\n**Description:** "..found.info.Description.."\n**Usage:** "..config.getConfig(message.guild.id).prefix..found.info.Example.."\n**Permission Level:** "..(found.info.PermLvl == 0 and "Everyone" or (found.info.PermLvl == 1 and "Server Moderator" or (found.info.PermLvl == 2 and "Server Administrator" or (found.info.PermLvl == 3 and "Server Owner" or "Aaron Only!"))))
+    local txts = "**Command:** "..config.getConfig(message.guild.id).prefix..string.lower(found.info.Name).."\n**Description:** "..found.info.Description..(#found.info.Alias == 0 and "" or "\n**Alias:** "..config.getConfig(message.guild.id).prefix..table.concat(found.info.Alias,", "..config.getConfig(message.guild.id).prefix)).."\n**Usage:** "..config.getConfig(message.guild.id).prefix..found.info.Example.."\n**Permission Level:** "..(found.info.PermLvl == 0 and "Everyone" or (found.info.PermLvl == 1 and "Server Moderator" or (found.info.PermLvl == 2 and "Server Administrator" or (found.info.PermLvl == 3 and "Server Owner" or "Aaron Only!"))))
     message:reply{embed ={
       title = "**"..found.info.Name.." Command**",
       description = txts,

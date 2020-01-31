@@ -1,6 +1,7 @@
 command = {}
 
-local startOS = os.time()
+local uptimeOS = os.time()
+local utils = require("/app/utils.lua")
 
 command.info = {
   Name = "Uptime",
@@ -11,9 +12,12 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  local m = message:reply(":ping_pong: Ping?")
-  local latency = m.createdAt - message.createdAt
-  m:setContent(":ping_pong: Pong! `"..math.max(latency).."ms`")
+  message:reply{embed = {
+      title = "**Uptime**",
+      description = utils.getTimeString(os.time() - uptimeOS)..".",
+      footer = {text = "Responding to "..message.author.name},
+      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    }}
   return {success = "stfu", msg = "PONG!!", emote = ":ping_pong:"}
 end
 
