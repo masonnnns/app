@@ -101,7 +101,7 @@ client:on("messageCreate",function(message)
       end
     else
       local m = message:reply(":no_entry: You **don't have permissions** to use this command!")
-      timer.sleep(3000)
+      timer.sleep(5000)
       m:delete()
     end
   end
