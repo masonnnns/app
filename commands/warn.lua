@@ -12,11 +12,16 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  if args[2] == nil then return {success = false, msg = "You must provide a **member to "..command.info.Name:lower().." in argument 2."} end
+  if args[2] == nil then return {success = false, msg = "You must provide a **member to "..command.info.Name:lower().."** in argument 2."} end
   local user = resolveUser.resolveUser(message,args[2])
   if user == false then
     return {success = false, msg = "I couldn't find the user you mentioned."}
-  elseif resolveUser.getPermission(message,user.id,)
+  elseif resolveUser.getPermission(message,client,user.id) >= resolveUser.getPermission(message,client) then
+    return {success = false, msg = "You cannot "..command.info.Name:lower().." people with **higher than or equal permissions as you.**"}
+  else
+    local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
+    user:getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\nPlease do not continue to break the rules.\n\n**Reason:** "..reason)
+    return {success = true, msg = "**"..user.name.."** has been warned."}
   end
 end
 
