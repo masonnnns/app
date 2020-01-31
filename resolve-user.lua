@@ -10,7 +10,7 @@ module.resolveUser = function(message,user)
       return message.guild:getMember(message.mentionedUsers[1][1])
     end
   end
-  if message.guild:getMember(user) ~= nil then
+  if tonumber(user) ~= nil and message.guild:getMember(user) ~= nil then
     return message.guild:getMember(user)
   end
   for _,items in pairs(message.guild.members) do
