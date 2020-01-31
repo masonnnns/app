@@ -23,7 +23,8 @@ command.execute = function(message,args,client)
     if string.lower(case.type) == "warn" then
       message:reply{embed = {
         title = "Warning - Case "..args[2],
-        description = "**Username:** "..client:getUser(case.user).tag.." (`"..case.user.."`)",
+        description = "**Username:** "..client:getUser(case.user).tag.." (`"..case.user.."`)\n**Moderator:** "..client:getUser(case.moderator).tag.." (`"..case.moderator.."`)\n**Reason:** "..case.reason,
+        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
       }}
       return {success = "stfu", message = ""}
     else
