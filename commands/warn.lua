@@ -1,5 +1,8 @@
 command = {}
 
+local config = require("/app/config.lua")
+local resolveUser = require("/app/resolve-user.lua")
+
 command.info = {
   Name = "Warn",
   Alias = {},
@@ -9,10 +12,12 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  local m = message:reply(":ping_pong: Ping?")
-  local latency = m.createdAt - message.createdAt
-  m:setContent(":ping_pong: Pong! `"..math.max(latency).."ms`")
-  return {success = "stfu", msg = "PONG!!", emote = ":ping_pong:"}
+  local user = resolveUser.resolveUser(message,args[2])
+  if user then
+    return {success = true, msg = user.name}
+  else
+    return {success = false, msg = "no user"}
+  end
 end
 
 return command
