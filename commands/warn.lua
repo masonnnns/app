@@ -22,7 +22,7 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I cannot warn myself."}
   else
     local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
-    user:getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\nPlease do not continue to break the rules.\n\n**Reason:** "..reason)
+    user:getPrivateChannel():send("⚠️ **You've been warned in "..message.guild.name.."!**\nPlease do not continue to break the rules.\n\n**Reason:** "..reason)
     local data = config.getConfig(message.guild.id)
     data.modData.cases[1+#data.modData.cases] = {type = "Warn", user = user.id, moderator = message.author.id, reason = reason}
     config.updateConfig(message.guild.id,data)

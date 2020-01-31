@@ -4,10 +4,10 @@ local config = require("/app/config.lua")
 local resolveUser = require("/app/resolve-user.lua")
 
 command.info = {
-  Name = "Warn",
+  Name = "Kick",
   Alias = {},
-  Usage = "warn <user> <reason>",
-  Description = "Issue a warning to a specified user.",
+  Usage = "kick <user> <reason>",
+  Description = "Kick a user from the server.",
   PermLvl = 1,
 }
 
@@ -19,21 +19,22 @@ command.execute = function(message,args,client)
   elseif resolveUser.getPermission(message,client,user.id) >= resolveUser.getPermission(message,client) then
     return {success = false, msg = "You cannot "..command.info.Name:lower().." people with **higher than or equal permissions as you.**"}
   elseif user.id == client.user.id then
-    return {success = false, msg = "I cannot warn myself."}
+    return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
   else
     local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
-    user:getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\nPlease do not continue to break the rules.\n\n**Reason:** "..reason)
+    message.guild:kickUser(user.id,reason)
+    --user:getPrivateChannel():send("⛔ **You've been kicked from "..message.guild.name.."!**\n\n**Reason:** "..reason)
     local data = config.getConfig(message.guild.id)
-    data.modData.cases[1+#data.modData.cases] = {type = "Warn", user = user.id, moderator = message.author.id, reason = reason}
+    data.modData.cases[1+#data.modData.cases] = {type = "Kick", user = user.id, moderator = message.author.id, reason = reason}
     config.updateConfig(message.guild.id,data)
     if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
       message.guild:getChannel(data.modlog):send{embed = {
-        title = "Warning - Case "..#data.modData.cases,
+        title = "Kick - Case "..#data.modData.cases,
         description = "**User:** "..user.mentionString.." (`"..user.id.."`)\n**Moderator:** "..message.author.mentionString.." (`"..message.author.id.."`)\n**Reason:** "..reason,
-        color = 11027200,
+        color = 15105570,
         }}
     end 
-    return {success = true, msg = "**"..user.name.."** has been warned."}
+    return {success = true, msg = "**"..user.name.."** has been kicked."}
   end
 end
 
