@@ -1,5 +1,7 @@
 module = {}
 
+local config = require("/app/config.lua")
+
 module.resolveUser = function(message,user)
   if #message.mentionedUsers >= 1 then
     if user == "<@"..message.mentionedUsers[1][1]..">" then
@@ -11,10 +13,36 @@ module.resolveUser = function(message,user)
   if message.guild:getMember(user) ~= nil then
     return message.guild:getMember(user)
   end
-  for _items in pairs(message.guild.members) do
-    if string.sub(items.name,1,string.len())
+  for _,items in pairs(message.guild.members) do
+    if string.sub(items.name,1,string.len(user)):lower() == user:lower() then
+      return items
+    end
   end
   return false
 end
+
+module.getPermission = function(message,client,id)
+	if id == nil then id = message.author.id end
+	if message.guild:getMember(id) == nil then
+		return 0
+	elseif id == client.owner.id then
+		--print('owner')
+		return 5
+	elseif id == message.guild.owner.id then
+		--print('guild owner')
+		return 3
+	elseif message.guild:getMember(id):hasPermission("administrator") == true then
+		--print('admin')
+		return 2
+	elseif message.guild:getMember(id):hasPermission("manageGuild") == true then
+		--print('admin')
+		return 2
+	elseif config.getConfig(message.guild.id).modrole ~= nil and message.guild:getMember(id):hasRole(config.getConfig(message.guild.id).modrole) == true then
+		--print('modrole')
+		return 1
+	else 
+		return 0
+ 	end
+end	
 
 return module

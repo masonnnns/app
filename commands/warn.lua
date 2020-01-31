@@ -12,11 +12,11 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
+  if args[2] == nil then return {success = false, msg = "You must provide a **member to "..command.info.Name:lower().." in argument 2."} end
   local user = resolveUser.resolveUser(message,args[2])
-  if user then
-    return {success = true, msg = user.name}
-  else
-    return {success = false, msg = "no user"}
+  if user == false then
+    return {success = false, msg = "I couldn't find the user you mentioned."}
+  elseif resolveUser.getPermission(message,user.id,)
   end
 end
 
