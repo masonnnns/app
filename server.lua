@@ -16,7 +16,9 @@ local config = {}
 
 local configuration = require("/app/config.lua")
 local configSetup = configuration.setupConfigs('xddd')
-for a,b in pairs(configSetup) do config[a] = b end 
+for a,b in pairs(configSetup) do config[a] = b end
+for a,b in pairs(client.guilds) do config[b.id] = configuration.getConfig(b.id) end 
+
 
 local function getPermission(message,id)
 	if id == nil then id = message.author.id end
