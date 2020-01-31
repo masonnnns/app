@@ -3,7 +3,7 @@ command = {}
 command.info = {
   Name = "Test",
   Alias = {},
-  Example = "test",
+  Usage = "test",
   Description = "test.",
   PermLvl = 5,
 }

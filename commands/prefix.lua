@@ -5,7 +5,7 @@ local config = require("/app/config.lua")
 command.info = {
   Name = "Prefix",
   Alias = {},
-  Example = "prefix <new prefix>",
+  Usage = "prefix <new prefix>",
   Description = "Change the server's prefix.",
   PermLvl = 2,
 }

@@ -3,7 +3,7 @@ command = {}
 command.info = {
   Name = "Username",
   Alias = {},
-  Example = "username <new username>",
+  Usage = "username <new username>",
   Description = "Change AA-R0N's username.",
   PermLvl = 5,
 }

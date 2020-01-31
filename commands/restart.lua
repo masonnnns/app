@@ -3,7 +3,7 @@ command = {}
 command.info = {
   Name = "Restart",
   Alias = {},
-  Example = "restart",
+  Usage = "restart",
   Description = "restart the bot.",
   PermLvl = 5,
 }

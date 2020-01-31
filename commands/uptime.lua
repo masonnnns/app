@@ -6,7 +6,7 @@ local utils = require("/app/utils.lua")
 command.info = {
   Name = "Uptime",
   Alias = {"up"},
-  Example = "uptime",
+  Usage = "uptime",
   Description = "Shows how long the bot has been online.",
   PermLvl = 0,
 }
