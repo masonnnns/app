@@ -91,6 +91,7 @@ command.execute = function(message,args,client)
       title = "**"..found.info.Name.." Command**",
       description = txts,
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      footer = {text = "Responding to "..message.author.name},
     }}
     return {success = "stfu"}
   end
