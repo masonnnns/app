@@ -61,8 +61,13 @@ command.execute = function(message,args,client)
       return {success = false, msg = "I **couldn't direct message** you, adjust your privacy settings and try again."}
     end
   else
-    local txt = "**Command:** "
-    message:reply{{embed ={ title = "**"..found.info.Name.." Command **", description = txt, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color), }}
+    local txts = "**Command:** "..config.getConfig(message.guild.id).prefix..string.lower(found.info.Name).."\n**Description:** "..found.info.Description.."\n**Usage:** "..config.getConfig(message.guild.id).prefix..found.info.Example.."\n**Permission Level:** "..(found.info.PermLvl == 0 and (found.info.PermLvl == 1 and "Server Moderator" or (found.info.PermLvl == 2 and "Server Administrator" or (found.info.PermLvl == 3 and "Server Owner" or "Aaron Only!")))
+    print(txts)
+    message:reply{embed ={
+      title = "**"..found.info.Name.." Command**",
+      description = txts,
+      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    }}
     return {success = "stfu"}
   end
   end
