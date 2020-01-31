@@ -8,9 +8,7 @@ command.info = {
   PermLvl = 0,
 }
 
-command.execute = function(message,args,client
-  
- ocal cSearch
+command.execute = function(message,args,client  local cmdSearch = 
   if args[2] == nil then
     cmdSearch = "E2AA442C7891B1523FBF2D33991A1B5FEC060F73FA20FD88AEBFD6B7A3249532"
   else
@@ -41,7 +39,7 @@ command.execute = function(message,args,client
       end
     end
     local result
-    local success, error = pcall(function())
+    result = message.author:getPrivateChannel():send{embed ={ title = "**AA-R0N Commands**", description = txt, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color), }}))
   endm  return {success = "stfu", msg = "PONG!!", emote = ":ping_pong:"}
 end
 
