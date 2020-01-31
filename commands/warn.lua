@@ -24,7 +24,7 @@ command.execute = function(message,args,client)
     local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
     user:getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\nPlease do not continue to break the rules.\n\n**Reason:** "..reason)
     local data = config.getConfig(message.guild.id)
-    if data.modlog ~= "nil" and message.guilds:getChannel()
+   -- if data.modlog ~= "nil" and message.guilds:getChannel() 
     return {success = true, msg = "**"..user.name.."** has been warned."}
   end
 end
