@@ -249,30 +249,42 @@ client:on("memberUpdate", function(member)
   end
 end)
 
+client:on("messageDelete", function(message)
+  config[message.guild.id] = configuration.getConfig(message.guild.id)
+  if config[message.guild.id].auditlog == "nil" and message.guild:getChannel(config[message.guild.id].auditlog) == nil then return end
+  local auditLog
+  for a,items in pairs(message.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id and items.actionType == 72 then auditLog = items break end end
+  if auditLog == nil or auditLog:getMember().id == message.author.id then
+    message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={ title = "Message Deleted", fields = { { name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true, }, { name = "Message Location", value = message.channel.mentionString, inline = true, }, { name = "Message Content", value = message.content, inline = false, }, }, color = 3447003, }}
+  else
+    message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={ title = "Message Deleted", fields = { { name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true, }, { name = "Message Location", value = message.channel.mentionString, inline = true, }, { name = "Message Content", value = message.content, inline = false, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 3447003, }}
+  end
+end)
+
 client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')
 
 --[[
 { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, },
 
-member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
-      title = "Nickname Edited",
+message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
+      title = "Message Deleted",
       fields = {
         {
-					name = "Member",
-					value = member.mentionString.." (`"..member.id.."`)",
+					name = "Message Author",
+					value = message.author.mentionString.." (`"..message.author.id.."`)",
+					inline = true,
+				},
+        {
+					name = "Message Location",
+					value = message.channel.mentionString,
+					inline = true,
+				},
+        {
+					name = "Message Content",
+					value = message.content,
 					inline = false,
 				},
-        {
-					name = "New Nickname",
-					value = member.nickname,
-					inline = true,
-				},
-        {
-					name = "Old Nickname",
-					value = cache[member.guild.id].users[member.id].nickname,
-					inline = true,
-				},
       },
-      color = 12370112,
+      color = 3447003,
 }}
 --]]
