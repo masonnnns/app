@@ -105,7 +105,12 @@ command.execute = function(message,args,client)
         return {success = true, msg = "Set the **muted role** to **"..role.name.."**."}
       end
     end
-  -- [ GENERAL PLUGINS END] [ START OF TAGS PLUGIN]
+  -- [ GENERAL PLUGINS END] [ START OF TAGS PLUGIN ]
+  elseif args[2] == "tags" then
+    if args[3] == nil then
+      message:reply{embed = {
+      }}
+    end
   -- [ END OF PLUGINS] [ START OF VIEW ]
   elseif args[2] == "view" then
     message:reply{embed = {
@@ -114,7 +119,7 @@ command.execute = function(message,args,client)
       fields = {
         {
           name = "General",
-          value = "**Command Prefix:** "..data.prefix.."\n**Delete Invocation Message:** "..(data.deletecmd and "Enabled." or "Disabled.").."\n**Mod-Only Commands:** "..(data.modonly and "Enabled." or "Disabled.").."\n**Moderator Role:** "..(data.modrole == "nil" and "None Set." or (message.guild:getRole(data.modrole) == nil and "Role was Deleted." or message.guild:getRole(data.modrole).mentionString)).."",
+          value = "**Command Prefix:** "..data.prefix.."\n**Delete Invocation Message:** "..(data.deletecmd and "Enabled." or "Disabled.").."\n**Mod-Only Commands:** "..(data.modonly and "Enabled." or "Disabled.").."\n**Moderator Role:** "..(data.modrole == "nil" and "None Set." or (message.guild:getRole(data.modrole) == nil and "Role was Deleted." or message.guild:getRole(data.modrole).mentionString)).."\n**Muted Role:** "..(data.mutedrole == "nil" and "None Set." or (message.guild:getRole(data.mutedrole) == nil and "Role was Deleted." or message.guild:getRole(data.mutedrole).mentionString)).."\n**Auditlog:** "..(data.auditlog == "nil" and "Disabled." or (message.guild:getChannel(data.auditlog) == nil and "Channel was Deleted." or message.guild:getChannel(data.auditlog).mentionString)).."\n**Modlog:** "..(data.modlog == "nil" and "Disabled." or (message.guild:getChannel(data.modlog) == nil and "Channel was Deleted." or message.guild:getChannel(data.modlog).mentionString)),
           inline = false,
         },
       },
@@ -122,6 +127,9 @@ command.execute = function(message,args,client)
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
     }}
     return {success = "stfu", msg = ""}
+  else
+    local rerunCmd = command.execute(message,{data.prefix.."config"},client)
+    return rerunCmd
   end 
 end
 
