@@ -21,6 +21,23 @@ module.resolveUser = function(message,user)
   return false
 end
 
+module.resolveRole = function(message,user)
+  if #message.mentionedRoles >= 1 then
+    if user == "<@&"..message.mentionedRoles[1][1]..">" then
+      return message.guild:getRole(message.mentionedRoles[1][1])
+    end
+  end
+  if tonumber(user) ~= nil and message.guild:getRole(user) ~= nil then
+    return message.guild:getRole(user)
+  end
+  for _,items in pairs(message.guild.roles) do
+    if string.sub(items.name,1,string.len(user)):lower() == user:lower() then
+      return items
+    end
+  end
+  return false
+end
+
 module.getPermission = function(message,client,id)
 	if id == nil then id = message.author.id end
 	if message.guild:getMember(id) == nil then

@@ -1,6 +1,7 @@
 command = {}
 
 local config = require("/app/config.lua")
+local utils = require("/app/resolve-user.lua")
 
 command.info = {
   Name = "Config",
@@ -43,7 +44,7 @@ command.execute = function(message,args,client)
         config.updateConfig(message.guild.id,data)
         return {success = true, msg = "**Disabled** the **auditlog**."}
       else
-        return {success = false, msg = "You must provide a **new auditlog channel** in argument 3."}
+        return {success = false, msg = "You must provide a **auditlog channel** in argument 3."}
       end
     else
       data.auditlog = message.mentionedChannels[1][1]
@@ -57,12 +58,26 @@ command.execute = function(message,args,client)
         config.updateConfig(message.guild.id,data)
         return {success = true, msg = "**Disabled** the **modlog**."}
       else
-        return {success = false, msg = "You must provide a **new modlog channel** in argument 3."}
+        return {success = false, msg = "You must provide a **modlog channel** in argument 3."}
       end
     else
       data.modlog = message.mentionedChannels[1][1]
       config.updateConfig(message.guild.id,data)
       return {success = true, msg = "Set the **modlog channel** to "..message.guild:getChannel(message.mentionedChannels[1][1]).mentionString.."."}
+    end
+  elseif args[2] == "modrole" then
+    if args[3] == nil then
+      if data.modrole == "nil" then
+        return {success = false, msg = "You must provide a **muted role** in argument 3."}
+      else
+        return {success = true, msg = "Cleared the **muted role**."}
+      end
+    else
+      local role = utils.resolveRole(message,table.concat(args," ",3))
+      if role == nil then
+        return {success = false, msg = "I couldn't the role you mentioned."}
+      elseif role.position > message.guild:getUser
+      end
     end
   end 
 end
