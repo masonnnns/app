@@ -138,7 +138,7 @@ command.execute = function(message,args,client)
         return {success = false, msg = "You must provide a **message for the tag**."}
       else
         for _,items in pairs(data.tags.tags) do if string.lower(items.term) == string.lower(args[4]) then return {success = false, msg = "A tag with that name **already exists**."} end end
-        local msg = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+string.len(args[4])+6))
+        local msg = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+string.len(args[4])+5))
         data.tags.tags[1+#data.tags.tags] = {term = args[4], response = msg}
         config.updateConfig(message.guild.id,data)
         return {success = true, msg = "Added the **"..args[4].."** tag."}
@@ -154,7 +154,7 @@ command.execute = function(message,args,client)
         elseif args[5] == nil then
           return {success = false, msg = "You must provide a **new message for the tag**."}
         else
-          local msg = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+string.len(args[4])+6))
+          local msg = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+string.len(args[4])+5))
           data.tags.tags[found] = {term = data.tags.tags[found].term, response = msg}
           config.updateConfig(message.guild.id,data)
           return {success = true, msg = "Edited the **"..data.tags.tags[found].term.."** tag."}
@@ -177,15 +177,15 @@ command.execute = function(message,args,client)
       end
     elseif args[3] == "view" then
       if args[4] == nil then
-        local txt = "ERROR"
         if #data.tags.tags == 0 then
           return {success = false, msg = "There are **no tags** to display."}
         else
-          for _,items in pairs(data.tags.tags) do txt = txt.."\n**"..items.term.."** - "..(string.len(items.response) >= 100 and string.sub(items.response,1,100).."..." or items.response) end
+          local txts = ""
+          for _,items in pairs(data.tags.tags) do txts = txts.."\n**"..items.term.."** - "..(string.len(items.response) >= 100 and string.sub(items.response,1,100).."..." or items.response) end
           message:reply{embed = {
-            title = ",
-            description = "To view a specific tag's content say **"..data.prefix.."config tags view <tag name>\n"..txt,
-            message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+            title = "Tags",
+            description = "To view a specific tag's content say **"..data.prefix.."config tags view <tag name>**\n"..txts,
+            color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
             footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
           }}
           return {success = "stfu", msg = ""}
@@ -196,7 +196,13 @@ command.execute = function(message,args,client)
         if found == nil then
           return {success = false, msg = "I couldn't find the tag you mentioned."}
         else
-          
+          message:reply{embed = {
+            title = data.tags.tags[found].term.." Tag",
+            description = "```\n"..data.tags.tags[found].response.."\n```",
+            color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+            footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+          }}
+          return {success = "stfu", msg = ""}
         end
       end
     else
