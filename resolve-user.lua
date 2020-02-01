@@ -23,8 +23,8 @@ end
 
 module.resolveChannel = function(message,user)
   if #message.mentionedChannels >= 1 then
-    if user == "<#"..message.mentionedUsers[1][1]..">" then
-      return message.guild:getMember(message.mentionedUsers[1][1])
+    if user == "<#"..message.mentionedChannels[1][1]..">" then
+      return message.guild:getChannel(message.mentionedChannels[1][1])
     end
   end
   if tonumber(user) ~= nil and message.guild:getChannel(user) ~= nil then
@@ -71,7 +71,7 @@ module.getPermission = function(message,client,id)
 	elseif message.guild:getMember(id):hasPermission("manageGuild") == true then
 		--print('admin')
 		return 2
-	elseif config.getConfig(message.guild.id).modrole ~= nil and message.guild:getMember(id):hasRole(config.getConfig(message.guild.id).modrole) == true then
+	elseif config.getConfig(message.guild.id).modrole ~= "nil" and message.guild:getMember(id):hasRole(config.getConfig(message.guild.id).modrole) == true then
 		--print('modrole')
 		return 1
 	else 

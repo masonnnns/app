@@ -299,7 +299,15 @@ command.execute = function(message,args,client)
         data.welcome.leavemsg = msg
         config.updateConfig(message.guild.id,data)
         return {success = true, msg = "Changed the **leave message**."}
-      end
+      end 
+    elseif args[3] == "view" then
+      message:reply{embed = {
+        title = "Welcome Messages",
+        description = (data.welcome.joinchannel ~= "nil" and "**Join Message:** ```"..data.welcome.joinmsg.."```Sending to "..(data.welcome.joinchannel == "dm" and "**User DMs**" or (message.guild:getChannel(data.welcome.joinchannel) == nil and "**Nowhere.**" or message.guild:getChannel(data.welcome.joinchannel).mentionString)) or "")..(data.welcome.leavechannel ~= "nil" and "\n\n**Leave Message:** ```"..data.welcome.leavemsg.."``` Sending to "..(message.guild:getChannel(data.welcome.leavechannel) == nil and "**Nowhere.**" or message.guild:getChannel(data.welcome.leavechannel).mentionString)),
+        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      }}
+      return {success = "stfu", msg = ""}
     else
       local redoCmd = command.execute(message,{data.prefix.."config","welcome"},client)
       return redoCmd
