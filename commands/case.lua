@@ -24,6 +24,15 @@ command.execute = function(message,args,client)
       message:reply{embed = {
         title = "Warning - Case "..args[2],
         description = "**Username:** "..client:getUser(case.user).tag.." (`"..case.user.."`)\n**Moderator:** "..client:getUser(case.moderator).tag.." (`"..case.moderator.."`)\n**Reason:** "..case.reason,
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      }}
+      return {success = "stfu", message = ""}
+    elseif string.lower(case.type) == "kick" then
+      message:reply{embed = {
+        title = "Kick - Case "..args[2],
+        description = "**Username:** "..client:getUser(case.user).tag.." (`"..case.user.."`)\n**Moderator:** "..client:getUser(case.moderator).tag.." (`"..case.moderator.."`)\n**Reason:** "..case.reason,
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
         color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
       }}
       return {success = "stfu", message = ""}
