@@ -13,7 +13,7 @@ local function addConfig(id)
 		modData = {cases = {}, actions = {}}, -- {type = "mute", reason = "", duration = os.time() / "perm", mod = userID, user = userID}
 		deletecmd = true,
 		modonly = false,
-		mutedRole = "nil",
+		mutedrole = "nil",
     auditignore = {},
     --memberCache = {},
     purgeignore = {["551794917584666625"] = 1000}

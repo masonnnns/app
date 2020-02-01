@@ -6,7 +6,7 @@ local utils = require("/app/resolve-user.lua")
 command.info = {
   Name = "Config",
   Alias = {},
-  Usage = "config <setting/plugin> <path/newvalue> <new value>",
+  Usage = "config <setting/plugin> <path/new value> <new value>",
   Description = "Edit AA-R0N's configuation in your server.",
   PermLvl = 0,
 }
@@ -68,15 +68,41 @@ command.execute = function(message,args,client)
   elseif args[2] == "modrole" then
     if args[3] == nil then
       if data.modrole == "nil" then
+        return {success = false, msg = "You must provide a **moderator role** in argument 3."}
+      else
+        data.modrole = "nil"
+        return {success = true, msg = "Cleared the **moderator role**."}
+      end
+    else
+      local role = utils.resolveRole(message,table.concat(args," ",3))
+      if role == false then
+        return {success = false, msg = "I couldn't the role you mentioned."}
+      elseif role.position > message.guild:getMember(client.user.id).highestRole.position then
+        return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
+      else
+        data.modrole = role.id
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Set the **moderator role** to **"..role.name.."**."}
+      end
+    end
+  elseif args[2] == "muterole" then
+    if args[3] == nil then
+      if data.mutedrole == "nil" then
         return {success = false, msg = "You must provide a **muted role** in argument 3."}
       else
+        data.mutedrole = "nil"
         return {success = true, msg = "Cleared the **muted role**."}
       end
     else
       local role = utils.resolveRole(message,table.concat(args," ",3))
-      if role == nil then
+      if role == false then
         return {success = false, msg = "I couldn't the role you mentioned."}
-      elseif role.position > message.guild:getUser
+      elseif role.position > message.guild:getMember(client.user.id).highestRole.position then
+        return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
+      else
+        data.mutedrole = role.id
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Set the **muted role** to **"..role.name.."**."}
       end
     end
   end 
