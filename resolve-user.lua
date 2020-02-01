@@ -30,7 +30,7 @@ module.resolveChannel = function(message,user)
   if tonumber(user) ~= nil and message.guild:getChannel(user) ~= nil then
     return message.guild:getChannel(user)
   end
-  for _,items in pairs(message.guild.channels) do
+  for _,items in pairs(message.guild.textChannels) do
     if string.sub(items.name,1,string.len(user)):lower() == user:lower() then
       return items
     end

@@ -51,7 +51,7 @@ command.execute = function(message,args,client)
         if channel == false then
           return {success = false, msg = "I couldn't find the channel you mentioned."}
         else
-          data.modlog = channel.id
+          data.auditlog = channel.id
           config.updateConfig(message.guild.id,data)
           return {success = true, msg = "Set the **auditlog channel** to "..channel.mentionString.."."}
         end
@@ -66,14 +66,14 @@ command.execute = function(message,args,client)
         return {success = true, msg = "**Disabled** the **modlog**."}
       end
     else
-        local channel = utils.resolveChannel(message,args[3])
-        if channel == false then
-          return {success = false, msg = "I couldn't find the channel you mentioned."}
-        else
-          data.modlog = channel.id
-          config.updateConfig(message.guild.id,data)
-          return {success = true, msg = "Set the **modlog channel** to "..channel.mentionString.."."}
-        end
+      local channel = utils.resolveChannel(message,args[3])
+      if channel == false then
+        return {success = false, msg = "I couldn't find the channel you mentioned."}
+      else
+        data.modlog = channel.id
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Set the **modlog channel** to "..channel.mentionString.."."}
+      end
     end
   elseif args[2] == "modrole" then
     if args[3] == nil then
@@ -242,8 +242,28 @@ command.execute = function(message,args,client)
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       }}
       return {success = "stfu", msg = ""}
-    elseif args[3] == "joinmsg" then
-      return {success = true, msg = "ga"}
+    elseif args[3] == "joinchannel" then
+      if args[4] == nil then
+        if data.welcome.joinchannel == "nil" then
+          return {success = false, msg = "You must provide a **join message channel** in argument 3."}
+        else
+          data.welcome.joinchannel = "nil"
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "**Disabled** the **join message**."}
+        end
+      else
+        local channel = utils.resolveChannel(message,args[4])
+        if args[4]:lower() == "dm" then
+          data.welcome.joinchannel = "dm"
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "Set the **join message channel** to **user DMs**."}
+        elseif channel == false then
+          return {success = false, msg = "I couldn't find the channel you mentioned."}
+        else
+          data.welcome.joinchannel = channel.id
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "Set the **join message channel** to "..channel.mentionString.."."} end
+      end
     else
       local redoCmd = command.execute(message,{data.prefix.."config","welcome"},client)
       return redoCmd
