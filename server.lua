@@ -112,7 +112,23 @@ end)
 
 client:on("memberJoin", function(member)
   config[member.guild.id] = configuration.getConfig(member.guild.id)
-  if config[member.guild.id] 
+  if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
+    member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Member Joined**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Created At", value = Date.fromSnowflake(member.id):toISO(' ', ''), inline = true, }, }, color = 3066993, }}
+  end
+  if config[member.guild.id].welcome.enabled and config[member.guild.id].welcome.joinchannel ~= "nil" and config[member.guild.id].welcome.joinmsg ~= "nil" then
+    local msg = config[member.guild.id].welcome.joinmsg
+    msg = string.gsub(msg, "{user}", member.mentionString)
+    msg = string.gsub(msg, "{tag}", member.tag)
+    msg = string.gsub(msg, "{username}", member.username)
+    msg = string.gsub(msg, "{discrim}", member.discriminator)
+    msg = string.gsub(msg, "{server}", member.guild.name)
+    msg = string.gsub(msg, "{members}", #member.guild.members)
+    if config[member.guild.id].welcome.joinchannel == "dm" then
+      member:getPrivateChannel():send(msg)
+    elseif member.guild:getChannel(config[member.guild.id].welcome.joinchannel) ~= nil then
+      member.guild:getChannel(config[member.guild.id].welcome.joinchannel):send(msg)
+    end
+  end
 end)
 
 client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')
