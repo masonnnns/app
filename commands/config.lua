@@ -48,7 +48,21 @@ command.execute = function(message,args,client)
     else
       data.auditlog = message.mentionedChannels[1][1]
       config.updateConfig(message.guild.id,data)
-      return {success = true, msg = "Set the **modlog channel** to "..}
+      return {success = true, msg = "Set the **auditlog channel** to "..message.guild:getChannel(message.mentionedChannels[1][1]).mentionString.."."}
+    end
+  elseif args[2] == "modlog" then
+    if #message.mentionedChannels == 0 then
+      if data.modlog ~= "nil" then
+        data.modlog = "nil"
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "**Disabled** the **modlog**."}
+      else
+        return {success = false, msg = "You must provide a **new modlog channel** in argument 3."}
+      end
+    else
+      data.modlog = message.mentionedChannels[1][1]
+      config.updateConfig(message.guild.id,data)
+      return {success = true, msg = "Set the **modlog channel** to "..message.guild:getChannel(message.mentionedChannels[1][1]).mentionString.."."}
     end
   end 
 end
