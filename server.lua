@@ -224,7 +224,17 @@ client:on("memberUpdate", function(member)
       end
     end
   elseif (member.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or member.nickname) ~= cache[member.guild.id].users[member.id].nickname then
-    print('nickname change')
+    if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
+      if member.nickname == nil then
+        if auditLog:getMember().id == member.id then
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, }, color = 12745742, }}
+        else
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 12745742, }}
+        end
+      elseif cache[member.guild.id].users[member.id].nickname == "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" then
+      end
+    end
+  cache[member.guild.id].users[member.id].nickname = (member.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or member.nickname)
   end
 end)
 
@@ -232,24 +242,19 @@ client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')
 
 --[[
 member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
-      title = "Roles Changed",
+      title = "Nickname Removed",
       fields = {
         {
 					name = "Member",
 					value = member.mentionString.." (`"..member.id.."`)",
-					inline = false,
-				},
-        {
-					name = "Role"..(#roles.added == 1 and "" or "s").." Added",
-					value = table.concat(lists.added,", "),
 					inline = true,
 				},
         {
-					name = "Role"..(#roles.removed == 1 and "" or "s").." Removed",
-					value = table.concat(lists.removed,", "),
+					name = "Old Nickname",
+					value = cache[member.guild.id].users[member.id].nickname,
 					inline = true,
 				},
       },
-      color = 10181046,
+      color = 12745742,
 }}
 --]]
