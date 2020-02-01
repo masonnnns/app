@@ -13,7 +13,7 @@ local function printLine(...)
     return table.concat(ret, '\t')
 end
 
-local sandbox = setmetatable(, { }, { __index = _G })
+local sandbox = setmetatable({ }, { __index = _G })
 
 local function exec(arg, msg)
 
@@ -46,7 +46,7 @@ local function exec(arg, msg)
         lines = lines:sub(1, 1990)
     end
 
-    return msg:reply(code(lines))
+    return {error = false, result = code(lines)}
         
 end 
 
@@ -59,7 +59,15 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  exec(string.sub(message.content,string.len(args[1])+1),message)
+  sandbox.client = client
+  sandbox.config = require("/app/config.lua")
+  local code = exec(string.sub(message.content,string.len(args[1])+1),message)
+  message:reply{embed = {
+    title = "Exec Result "..(code.error and "**[ERROR]**" or ""),
+    description = code.result,
+    color = (code.error and 15158332 or 3066993),
+    footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+  }}
   return {success = "stfu", msg = "PONG!!"}
 end
 
