@@ -38,32 +38,42 @@ command.execute = function(message,args,client)
     config.updateConfig(message.guild.id,data)
     return {success = true, msg = "**"..(data.deletecmd and "Enabled" or "Disabled").."** the **delete command** setting."}
   elseif args[2] == "auditlog" then
-    if #message.mentionedChannels == 0 then
-      if data.auditlog ~= "nil" then
+    if args[3] == nil then
+      if data.auditlog == "nil" then
+        return {success = false, msg = "You must provide a **auditlog channel** in argument 3."}
+      else
         data.auditlog = "nil"
         config.updateConfig(message.guild.id,data)
         return {success = true, msg = "**Disabled** the **auditlog**."}
-      else
-        return {success = false, msg = "You must provide a **auditlog channel** in argument 3."}
       end
     else
-      data.auditlog = message.mentionedChannels[1][1]
-      config.updateConfig(message.guild.id,data)
-      return {success = true, msg = "Set the **auditlog channel** to "..message.guild:getChannel(message.mentionedChannels[1][1]).mentionString.."."}
+        local channel = utils.resolveChannel(message,args[3])
+        if channel == false then
+          return {success = false, msg = "I couldn't find the channel you mentioned."}
+        else
+          data.modlog = channel.id
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "Set the **auditlog channel** to "..channel.mentionString.."."}
+        end
     end
   elseif args[2] == "modlog" then
-    if #message.mentionedChannels == 0 then
-      if data.modlog ~= "nil" then
+    if args[3] == nil then
+      if data.modlog == "nil" then
+        return {success = false, msg = "You must provide a **modlog channel** in argument 3."}
+      else
         data.modlog = "nil"
         config.updateConfig(message.guild.id,data)
         return {success = true, msg = "**Disabled** the **modlog**."}
-      else
-        return {success = false, msg = "You must provide a **modlog channel** in argument 3."}
       end
     else
-      data.modlog = message.mentionedChannels[1][1]
-      config.updateConfig(message.guild.id,data)
-      return {success = true, msg = "Set the **modlog channel** to "..message.guild:getChannel(message.mentionedChannels[1][1]).mentionString.."."}
+        local channel = utils.resolveChannel(message,args[3])
+        if channel == false then
+          return {success = false, msg = "I couldn't find the channel you mentioned."}
+        else
+          data.modlog = channel.id
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "Set the **modlog channel** to "..channel.mentionString.."."}
+        end
     end
   elseif args[2] == "modrole" then
     if args[3] == nil then
@@ -76,7 +86,7 @@ command.execute = function(message,args,client)
     else
       local role = utils.resolveRole(message,table.concat(args," ",3))
       if role == false then
-        return {success = false, msg = "I couldn't the role you mentioned."}
+        return {success = false, msg = "I couldn't find the role you mentioned."}
       elseif role.position > message.guild:getMember(client.user.id).highestRole.position then
         return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
       else
@@ -96,7 +106,7 @@ command.execute = function(message,args,client)
     else
       local role = utils.resolveRole(message,table.concat(args," ",3))
       if role == false then
-        return {success = false, msg = "I couldn't the role you mentioned."}
+        return {success = false, msg = "I couldn't find the role you mentioned."}
       elseif role.position > message.guild:getMember(client.user.id).highestRole.position then
         return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
       else
@@ -219,12 +229,12 @@ command.execute = function(message,args,client)
         fields = {
           {
 			  		name = "Welcome Settings",
-            value = "**Toggle:** "..(data.welcome.enable and "Disables" or "Enables").." the plugin.\n**JoinChannel:** The channel where the join message is sent. (Accepts 'dm')\n**JoinMsg:** Sets the join message.\n**LeaveChannel:** The channel where the leave message is sent.\n**LeaveMsg:** Sets the leave message.\n**Autorole:** Sets the role to be given to users when they join.",
+            value = "**Toggle:** "..(data.welcome.enable and "Disables" or "Enables").." the plugin.\n**View:** Displays the Join and Leave message.\n**JoinChannel:** The channel where the join message is sent. (Accepts 'dm')\n**JoinMsg:** Sets the join message.\n**LeaveChannel:** The channel where the leave message is sent.\n**LeaveMsg:** Sets the leave message.\n**Autorole:** Sets the role to be given to users when they join.",
 				  	inline = true,
 			  	},
           {
             name = "Vairables",
-            value = "**`{user}`** - Mentions the user. (Ex: "..message.author.mentionString..")\n**`{tag}`** - The user's username and discriminator. (Ex: "..message.author.tag..")\n**`{username}`** - The user's username. (Ex: "..message.author.username..")\n**`{discrim}`** - The user's discriminator. (Ex: "..message.author.discriminator..")",
+            value = "**`{user}`** - Mentions the user. (Ex: "..message.author.mentionString..")\n**`{tag}`** - The user's username and discriminator. (Ex: "..message.author.tag..")\n**`{username}`** - The user's username. (Ex: "..message.author.username..")\n**`{discrim}`** - The user's discriminator. (Ex: "..message.author.discriminator..")\n**`{server}`** - The name of the guild. (Ex: "..message.guild.name..")\n**`{members}`** - The amount of people in the guild. (Ex: "..#message.guild.members..")",
             inline = false,
           },
         },
