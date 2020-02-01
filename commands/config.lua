@@ -8,7 +8,7 @@ command.info = {
   Alias = {},
   Usage = "config <setting/plugin> <path/new value> <new value>",
   Description = "Edit AA-R0N's configuation in your server.",
-  PermLvl = 0,
+  PermLvl = 2,
 }
 
 command.execute = function(message,args,client)
@@ -105,6 +105,23 @@ command.execute = function(message,args,client)
         return {success = true, msg = "Set the **muted role** to **"..role.name.."**."}
       end
     end
+  -- [ GENERAL PLUGINS END] [ START OF TAGS PLUGIN]
+  -- [ END OF PLUGINS] [ START OF VIEW ]
+  elseif args[2] == "view" then
+    message:reply{embed = {
+      title = message.guild.name.." Configuration",
+      description = "To edit a general setting say **"..data.prefix.."config <setting name>**\nTo edit a plugin (besides general) say **"..data.prefix.."config <plugin name> <setting name>**",
+      fields = {
+        {
+          name = "General",
+          value = "**Command Prefix:** "..data.prefix.."\n**Delete Invocation Message:** "..(data.deletecmd and "Enabled." or "Disabled.").."\n**Mod-Only Commands:** "..(data.modonly and "Enabled." or "Disabled.").."\n**Moderator Role:** "..(data.modrole == "nil" and "None Set." or (message.guild:getRole(data.modrole) == nil and "Role was Deleted." or message.guild:getRole(data.modrole).mentionString)).."",
+          inline = false,
+        },
+      },
+      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+    }}
+    return {success = "stfu", msg = ""}
   end 
 end
 
