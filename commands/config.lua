@@ -143,6 +143,38 @@ command.execute = function(message,args,client)
         config.updateConfig(message.guild.id,data)
         return {success = true, msg = "Added the **"..args[4].."** tag."}
       end
+    elseif args[3] == "edit" then
+      if args[4] == nil then
+        return {success = false, msg = "You must provide a **tag to edit** in argument 4."}
+      else
+        local found
+        for num,items in pairs(data.tags.tags) do if string.lower(items.term) == string.lower(args[4]) then found = num break end end
+        if found == nil then
+          return {success = false, msg = "I couldn't find the tag you mentioned."}
+        elseif args[5] == nil then
+          return {success = false, msg = "You must provide a **new message for the tag**."}
+        else
+          local msg = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+string.len(args[4])+6))
+          data.tags.tags[found] = {term = data.tags.tags[found].term, response = msg}
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "Edited the **"..data.tags.tags[found].term.."** tag."}
+        end
+      end
+    elseif args[3] == "delete" then
+      if args[4] == nil then
+        return {success = false, msg = "You must provide a **tag to delete** in argument 4."}
+      else
+        local found
+        for num,items in pairs(data.tags.tags) do if string.lower(items.term) == string.lower(args[4]) then found = num break end end
+        if found == nil then
+          return {success = false, msg = "I couldn't find the tag you mentioned."}
+        else 
+          local name = data.tags.tags[found].term
+          table.remove(data.tags.tags,found)
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "Deleted the **"..name.."** tag."}
+        end
+      end
     else
       local redoCmd = command.execute(message,{data.prefix.."config","tags"},client)
       return redoCmd
