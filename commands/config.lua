@@ -291,6 +291,15 @@ command.execute = function(message,args,client)
         config.updateConfig(message.guild.id,data)
         return {success = true, msg = "Changed the **join message**."}
       end
+     elseif args[3] == "leavemsg" then
+      if args[4] == nil then
+        return {success = false, msg = "You must provide a **leave message**."}
+      else
+        local msg = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+4))
+        data.welcome.leavemsg = msg
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Changed the **leave message**."}
+      end
     else
       local redoCmd = command.execute(message,{data.prefix.."config","welcome"},client)
       return redoCmd

@@ -129,6 +129,36 @@ client:on("memberJoin", function(member)
       member.guild:getChannel(config[member.guild.id].welcome.joinchannel):send(msg)
     end
   end
+  if config[member.guild.id].welcome.enabled and config[member.guild.id].welcome.autorole ~= "nil" then
+    if member.guild:getRole(config[member.guild.id].welcome.autorole) ~= nil then
+      if member.guild:getRole(config[member.guild.id].welcome.autorole).position < member.guild:getMember(client.user.id).highestRole.position then
+        member:addRole(config[member.guild.id].welcome.autorole)
+      end
+    end
+  end
+end)
+
+client:on("memberLeave", function(member)
+  config[member.guild.id] = configuration.getConfig(member.guild.id)
+  if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
+    local roles = {}
+    for _,items in pairs(member.roles) do roles[1+#roles] = items.mentionString end
+    member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Member Left**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Roles", value = (#roles == 0 and "No Roles!" or table.concat(roles,", ")), inline = true, }, }, color = 15158332, }}
+  end
+  if config[member.guild.id].welcome.enabled and config[member.guild.id].welcome.leavechannel ~= "nil" and config[member.guild.id].welcome.leavemsg ~= "nil" then
+    local msg = config[member.guild.id].welcome.leavemsg
+    msg = string.gsub(msg, "{user}", member.mentionString)
+    msg = string.gsub(msg, "{tag}", member.tag)
+    msg = string.gsub(msg, "{username}", member.username)
+    msg = string.gsub(msg, "{discrim}", member.discriminator)
+    msg = string.gsub(msg, "{server}", member.guild.name)
+    msg = string.gsub(msg, "{members}", #member.guild.members)
+    if config[member.guild.id].welcome.leavechannel == "dm" then
+      member:getPrivateChannel():send(msg)
+    elseif member.guild:getChannel(config[member.guild.id].welcome.leavechannel) ~= nil then
+      member.guild:getChannel(config[member.guild.id].welcome.leavechannel):send(msg)
+    end
+  end
 end)
 
 client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')

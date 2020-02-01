@@ -53,9 +53,9 @@ end
 
 command.info = {
   Name = "Exec",
-  Alias = {"eval"},
-  Usage = "exec code",
-  Description = "emit an event to discord",
+  Alias = {"eval","e"},
+  Usage = "exec <code>",
+  Description = "run cool code right from discord isnt that neat",
   PermLvl = 5,
 }
 
