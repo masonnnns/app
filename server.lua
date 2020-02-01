@@ -174,29 +174,35 @@ client:on("memberLeave", function(member)
 end)
 
 client:on("memberUpdate", function(member)
+  config[member.guild.id] = configuration.getConfig(member.guild.id)
   if cache[member.guild.id] == nil then return end
   if cache[member.guild.id].users[member.id] == nil then return end
   local auditLog
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end
   if auditLog == nil then print("no log found for action.") end
-  print(auditLog.actionType)
   if auditLog.actionType == 25 then
     local theirRoles = {} for _,items in pairs(member.roles) do table.insert(theirRoles,#theirRoles+1,items.id) end
     local roles = {added = {}, removed = {}}
     for _,items in pairs(member.roles) do
       if cache[member.guild.id].users[member.id].roles[items.id] == nil then -- has a role but wasnt cached
         print(items.id,"was added!")
-        table.insert(roles.added,1+#roles.added,items.id)
+        roles.added[1+#roles.added] = items.id
       end
     end
     for items,_ in pairs(cache[member.guild.id].users[member.id].roles) do
-      if member:hasRole(items) == false then -- don't have a role that was cached
+      if member.guild:getRole(items) and member:hasRole(items) == false then -- don't have a role that was cached
         print(items,"was removed")
-        table.insert(roles.removed,1+#roles.removed,items)
+        roles.removed[1+#roles.removed] = items
       end
     end
-  cache[member.guild.id].users[member.id].roles = {} for _,items in pairs(member.roles) do cache[member.guild.id].users[member.id].roles[items.id] = true end
-  print('recached')
+    cache[member.guild.id].users[member.id].roles = {} for _,items in pairs(member.roles) do cache[member.guild.id].users[member.id].roles[items.id] = true end
+    if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
+      if #roles.added == 0 and #roles.removed >= 1 then
+        if auditLog:getMember().id == member.id then
+        else
+        end
+      end
+    end
   end
 end)
 
