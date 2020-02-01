@@ -4,7 +4,16 @@ local function code(str)
     return string.format('```\n%s```', str)
 end
 
-local sandbox = setmetatable({ }, { __index = _G })
+local function printLine(...)
+    local ret = {}
+    for i = 1, select('#', ...) do
+        local arg = tostring(select(i, ...))
+        table.insert(ret, arg)
+    end
+    return table.concat(ret, '\t')
+end
+
+local sandbox = setmetatable(, { }, { __index = _G })
 
 local function exec(arg, msg)
 
@@ -50,8 +59,8 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  exec(string.sub(message.content,string.len(args[1]+1),))
-  return {success = "emitted", msg = "PONG!!"}
+  exec(string.sub(message.content,string.len(args[1])+1),message)
+  return {success = "stfu", msg = "PONG!!"}
 end
 
 return command
