@@ -63,7 +63,7 @@ client:on("ready", function()
     cache[guilds.id] = {users = {}, textchannels = {}, voicechannels = {}}
     for _,users in pairs(guilds.members) do
        cache[guilds.id].users[users.id] = {roles = {}, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
-       for _,items in pairs(users.roles) do table.insert(cache[guilds.id].users[users.id].roles,1+#cache[guilds.id].users[users.id].roles,items.id) end
+       for _,items in pairs(users.roles) do cache[guilds.id].users[users.id].roles[items.id] = true end
        print("[USER CACHED]: "..users.name.." has been cached in "..guilds.name..".")
     end
   end
@@ -178,15 +178,25 @@ client:on("memberUpdate", function(member)
   if cache[member.guild.id].users[member.id] == nil then return end
   local auditLog
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end
-  if actionLog == nil then print("no log found for action.") end
-  if actionLog.actiontype == 25 then
-    local theirRoles = {} for _,items in pairs(member.roles) table.insert(theirRoles,#theirRoles+1,items.id) end
+  if auditLog == nil then print("no log found for action.") end
+  print(auditLog.actionType)
+  if auditLog.actionType == 25 then
+    local theirRoles = {} for _,items in pairs(member.roles) do table.insert(theirRoles,#theirRoles+1,items.id) end
     local roles = {added = {}, removed = {}}
     for _,items in pairs(member.roles) do
       if cache[member.guild.id].users[member.id].roles[items.id] == nil then -- has a role but wasnt cached
-        roles.added[items.id] = true
+        print(items.id,"was added!")
+        table.insert(roles.added,1+#roles.added,items.id)
       end
     end
+    for items,_ in pairs(cache[member.guild.id].users[member.id].roles) do
+      if member:hasRole(items) == false then -- don't have a role that was cached
+        print(items,"was removed")
+        table.insert(roles.removed,1+#roles.removed,items)
+      end
+    end
+  cache[member.guild.id].users[member.id].roles = {} for _,items in pairs(member.roles) do cache[member.guild.id].users[member.id].roles[items.id] = true end
+  print('recached')
   end
 end)
 
