@@ -225,6 +225,16 @@ command.execute = function(message,args,client)
           value = "**Enabled:** "..(data.tags.enabled and "Yes." or "No.").."\n**Delete Invocation Message:** "..(data.tags.delete and "Enabled." or "Disabled.").."\n**Total Tags:** "..(#data.tags.tags == 0 and "None!" or #data.tags.tags),
           inline = true,
         },
+        {
+          name = "Automod",
+          value = "coming soon",
+          inline = true,
+        },
+        {
+          name = "Welcome",
+          value = "**Enabled:** "..(data.welcome.enabled and "Yes." or "No.").."\n**Join Message Channel:** "..(data.welcome.joinchannel == "nil" and "Disabled." or (data.welcome.joinchannel == "dm" and "DM User." or (message.guild:getChannel(data.welcome.joinchannel) == nil and "Channel was Deleted." or message.guild:getChannel(data.welcome.joinchannel).mentionString))),
+          inline = true,
+        },
       },
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
