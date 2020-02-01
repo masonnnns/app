@@ -88,6 +88,7 @@ client:on("messageCreate",function(message)
     -- automod / log message
   else
     if config[message.guild.id].modonly and getPermission(message) < 1 then return end
+    if config[message.guild.id].deletecmd then message:delete() end
     if found.info.PermLvl <= getPermission(message) then
       local execute = found.execute(message,args,client)
       if execute == nil or type(execute) ~= "table" then
