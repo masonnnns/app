@@ -58,6 +58,17 @@ local function sepMsg(msg)
 	return Args
 end
 
+client:on("ready", function()
+  for _,guilds in pairs(client.guilds) do
+    cache[guilds.id] = {users = {}, textchannels = {}, voicechannels = {}}
+    for _,users in pairs(guilds.members) do
+       cache[guilds.id].users[users.id] = {roles = {}, nickname = (users.nickname == nil and "nil" or users.nickname)}
+       for _,items in pairs(users.roles) do cache[guilds.id].users[users.id].roles[1+#cache[guilds.id].users[users.id].roles] = items.id end
+       print("[USER CACHED]: "..users.name.." has been cached in "..guilds.name..".")
+    end
+  end
+end)
+
 client:on("messageCreate",function(message)
   if message.guild == nil then return end
   config[message.guild.id] = configuration.getConfig(message.guild.id)
@@ -160,6 +171,12 @@ client:on("memberLeave", function(member)
       member.guild:getChannel(config[member.guild.id].welcome.leavechannel):send(msg)
     end
   end
+end)
+
+client:on("memberUpdate", function(member)
+  if cache[member.guild.id] == nil then return end
+  if cache[member.guild.id].users[member.id] == nil then return end
+  
 end)
 
 client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')
