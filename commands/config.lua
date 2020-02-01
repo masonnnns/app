@@ -175,6 +175,30 @@ command.execute = function(message,args,client)
           return {success = true, msg = "Deleted the **"..name.."** tag."}
         end
       end
+    elseif args[3] == "view" then
+      if args[4] == nil then
+        local txt = "ERROR"
+        if #data.tags.tags == 0 then
+          return {success = false, msg = "There are **no tags** to display."}
+        else
+          for _,items in pairs(data.tags.tags) do txt = txt.."\n**"..items.term.."** - "..(string.len(items.response) >= 100 and string.sub(items.response,1,100).."..." or items.response) end
+          message:reply{embed = {
+            title = ",
+            description = "To view a specific tag's content say **"..data.prefix.."config tags view <tag name>\n"..txt,
+            message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+            footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+          }}
+          return {success = "stfu", msg = ""}
+        end
+      else
+        local found 
+        for num,items in pairs(data.tags.tags) do if string.lower(items.term) == string.lower(args[4]) then found = num break end end
+        if found == nil then
+          return {success = false, msg = "I couldn't find the tag you mentioned."}
+        else
+          
+        end
+      end
     else
       local redoCmd = command.execute(message,{data.prefix.."config","tags"},client)
       return redoCmd
@@ -183,7 +207,7 @@ command.execute = function(message,args,client)
   elseif args[2] == "view" then
     message:reply{embed = {
       title = message.guild.name.." Configuration",
-      description = "To edit a general setting say **"..data.prefix.."config <setting name>**\nTo edit a plugin (besides general) say **"..data.prefix.."config <plugin name> <setting name>**",
+      description = "To edit a general setting say **"..data.prefix.."config**\nTo edit a plugin (besides general) say **"..data.prefix.."config <plugin name>**",
       fields = {
         {
           name = "General",
@@ -192,7 +216,7 @@ command.execute = function(message,args,client)
         },
         {
           name = "Tags",
-          value = "**Enabled:** "..(data.tags.enabled and "Yes." or "No.").."\n**Delete Invocation Message:** "..(data.tags.delete and "Enabled." or "Disabled.").."\n**Total Tags:** "..(#data.tags.tags == 0 and "None Set!" or #data.tags.tags),
+          value = "**Enabled:** "..(data.tags.enabled and "Yes." or "No.").."\n**Delete Invocation Message:** "..(data.tags.delete and "Enabled." or "Disabled.").."\n**Total Tags:** "..(#data.tags.tags == 0 and "None!" or #data.tags.tags),
           inline = true,
         },
       },
