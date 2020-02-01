@@ -107,9 +107,33 @@ command.execute = function(message,args,client)
     end
   -- [ GENERAL PLUGINS END] [ START OF TAGS PLUGIN ]
   elseif args[2] == "tags" then
+    if args[3] then args[3] = args[3]:lower() end
     if args[3] == nil then
       message:reply{embed = {
+        title = "Tags Configuration Help",
+        description = "To edit a tag setting say **"..data.prefix.."config tags <setting name>**\nTo learn how to configure other plugins say **"..data.prefix.."config <plugin name>**\nTo view the current configuration settings say **"..data.prefix.."config view**",
+        fields = {
+          {
+			  		name = "Tag Settings",
+            value = "**Toggle:** "..(data.tags.enabled and "Disables" or "Enables").." the plugin.\n**DelCmd:** Deletes the tag invocation message __only.__\n**Add:** Creates a new tag.\n**Edit:** Edits an existing tag.\n**Delete:** Deletes an existing tag.\n**View:** Views all existing tags, or a specified one.",
+				  	inline = true,
+			  	},
+        },
+        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       }}
+      return {success = "stfu", msg = ""}
+    elseif args[3] == "toggle" then
+      data.tags.enabled = not data.tags.enabled
+      config.updateConfig(message.guild.id,data)
+      return {success = true, msg = "**"..(data.tags.enabled and "Enabled" or "Disabled").."** the **tags** plugin."}
+    elseif args[3] == "delcmd" then
+      data.tags.delete = not data.tags.delete
+      config.updateConfig(message.guild.id,data)
+      return {success = true, msg = "**"..(data.tags.delete and "Enabled" or "Disabled").."** the **delete tag command** setting."}
+    else
+      local redoCmd = command.execute(message,{data.prefix.."config","tags"},client)
+      return redoCmd
     end
   -- [ END OF PLUGINS] [ START OF VIEW ]
   elseif args[2] == "view" then
@@ -117,6 +141,11 @@ command.execute = function(message,args,client)
       title = message.guild.name.." Configuration",
       description = "To edit a general setting say **"..data.prefix.."config <setting name>**\nTo edit a plugin (besides general) say **"..data.prefix.."config <plugin name> <setting name>**",
       fields = {
+        {
+          name = "General",
+          value = "**Command Prefix:** "..data.prefix.."\n**Delete Invocation Message:** "..(data.deletecmd and "Enabled." or "Disabled.").."\n**Mod-Only Commands:** "..(data.modonly and "Enabled." or "Disabled.").."\n**Moderator Role:** "..(data.modrole == "nil" and "None Set." or (message.guild:getRole(data.modrole) == nil and "Role was Deleted." or message.guild:getRole(data.modrole).mentionString)).."\n**Muted Role:** "..(data.mutedrole == "nil" and "None Set." or (message.guild:getRole(data.mutedrole) == nil and "Role was Deleted." or message.guild:getRole(data.mutedrole).mentionString)).."\n**Auditlog:** "..(data.auditlog == "nil" and "Disabled." or (message.guild:getChannel(data.auditlog) == nil and "Channel was Deleted." or message.guild:getChannel(data.auditlog).mentionString)).."\n**Modlog:** "..(data.modlog == "nil" and "Disabled." or (message.guild:getChannel(data.modlog) == nil and "Channel was Deleted." or message.guild:getChannel(data.modlog).mentionString)),
+          inline = false,
+        },
         {
           name = "General",
           value = "**Command Prefix:** "..data.prefix.."\n**Delete Invocation Message:** "..(data.deletecmd and "Enabled." or "Disabled.").."\n**Mod-Only Commands:** "..(data.modonly and "Enabled." or "Disabled.").."\n**Moderator Role:** "..(data.modrole == "nil" and "None Set." or (message.guild:getRole(data.modrole) == nil and "Role was Deleted." or message.guild:getRole(data.modrole).mentionString)).."\n**Muted Role:** "..(data.mutedrole == "nil" and "None Set." or (message.guild:getRole(data.mutedrole) == nil and "Role was Deleted." or message.guild:getRole(data.mutedrole).mentionString)).."\n**Auditlog:** "..(data.auditlog == "nil" and "Disabled." or (message.guild:getChannel(data.auditlog) == nil and "Channel was Deleted." or message.guild:getChannel(data.auditlog).mentionString)).."\n**Modlog:** "..(data.modlog == "nil" and "Disabled." or (message.guild:getChannel(data.modlog) == nil and "Channel was Deleted." or message.guild:getChannel(data.modlog).mentionString)),
