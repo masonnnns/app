@@ -215,18 +215,28 @@ command.execute = function(message,args,client)
     if args[3] == nil then
       message:reply{embed = {
         title = "Welcome Configuration Help",
-        description = "To edit a tag setting say **"..data.prefix.."config welcome <setting name>**\nTo view the current configuration settings say **"..data.prefix.."config view**",
+        description = "To edit a welcome setting say **"..data.prefix.."config welcome <setting name>**\nTo view the current configuration settings say **"..data.prefix.."config view**",
         fields = {
           {
 			  		name = "Welcome Settings",
-            value = "**Toggle:** "..(data.welcome.enable and "Disables" or "Enables").." the plugin.\n**JoinChannel:** The channel where the join message is sent. (You can set it to 'dm' to DM the user the message.)\n**JoinMsg:** Sets the join message.\n**LeaveChannel:** The channel where the leave message is sent.\n**LeaveMsg:** Sets the leave message.\n**Autorole:** ",
+            value = "**Toggle:** "..(data.welcome.enable and "Disables" or "Enables").." the plugin.\n**JoinChannel:** The channel where the join message is sent. (Accepts 'dm')\n**JoinMsg:** Sets the join message.\n**LeaveChannel:** The channel where the leave message is sent.\n**LeaveMsg:** Sets the leave message.\n**Autorole:** Sets the role to be given to users when they join.",
 				  	inline = true,
 			  	},
+          {
+            name = "Vairables",
+            value = "**`{user}`** - Mentions the user. (Ex: "..message.author.mentionString..")\n**`{tag}`** - The user's username and discriminator. (Ex: "..message.author.tag..")\n**`{username}`** - The user's username. (Ex: "..message.author.username..")\n**`{discrim}`** - The user's discriminator. (Ex: "..message.author.discriminator..")",
+            inline = false,
+          },
         },
         color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       }}
       return {success = "stfu", msg = ""}
+    elseif args[3] == "joinmsg" then
+      return {success = true, msg = "ga"}
+    else
+      local redoCmd = command.execute(message,{data.prefix.."config","welcome"},client)
+      return redoCmd
     end
   -- [ END OF PLUGINS] [ START OF VIEW ]
   elseif args[2] == "view" then
