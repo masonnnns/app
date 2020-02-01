@@ -63,7 +63,7 @@ client:on("ready", function()
     cache[guilds.id] = {users = {}, textchannels = {}, voicechannels = {}}
     for _,users in pairs(guilds.members) do
        cache[guilds.id].users[users.id] = {roles = {}, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
-       for _,items in pairs(users.roles) do cache[guilds.id].users[users.id].roles[1+#cache[guilds.id].users[users.id].roles] = items.id end
+       for _,items in pairs(users.roles) do table.insert(cache[guilds.id].users[users.id].roles,1+#cache[guilds.id].users[users.id].roles,items.id) end
        print("[USER CACHED]: "..users.name.." has been cached in "..guilds.name..".")
     end
   end
@@ -180,7 +180,13 @@ client:on("memberUpdate", function(member)
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end
   if actionLog == nil then print("no log found for action.") end
   if actionLog.actiontype == 25 then
-    local theirRoles = {} for _,items in pairs(member.roles) theirRoles[1+#theirRoles] = items end
+    local theirRoles = {} for _,items in pairs(member.roles) table.insert(theirRoles,#theirRoles+1,items.id) end
+    local roles = {added = {}, removed = {}}
+    for _,items in pairs(member.roles) do
+      if cache[member.guild.id].users[member.id].roles[items.id] == nil then -- has a role but wasnt cached
+        roles.added[items.id] = true
+      end
+    end
   end
 end)
 
