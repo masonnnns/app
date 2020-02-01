@@ -111,7 +111,7 @@ command.execute = function(message,args,client)
     if args[3] == nil then
       message:reply{embed = {
         title = "Tags Configuration Help",
-        description = "To edit a tag setting say **"..data.prefix.."config tags <setting name>**\nTo learn how to configure other plugins say **"..data.prefix.."config <plugin name>**\nTo view the current configuration settings say **"..data.prefix.."config view**",
+        description = "To edit a tag setting say **"..data.prefix.."config tags <setting name>**\nTo view the current configuration settings say **"..data.prefix.."config view**",
         fields = {
           {
 			  		name = "Tag Settings",
@@ -209,6 +209,25 @@ command.execute = function(message,args,client)
       local redoCmd = command.execute(message,{data.prefix.."config","tags"},client)
       return redoCmd
     end
+  -- [ END OF TAGS] [ START OF WELCOME ]
+  elseif args[2] == "welcome" then
+    if args[3] then args[3] = args[3]:lower() end
+    if args[3] == nil then
+      message:reply{embed = {
+        title = "Welcome Configuration Help",
+        description = "To edit a tag setting say **"..data.prefix.."config welcome <setting name>**\nTo view the current configuration settings say **"..data.prefix.."config view**",
+        fields = {
+          {
+			  		name = "Welcome Settings",
+            value = "**Toggle:** "..(data.welcome.enable and "Disables" or "Enables").." the plugin.\n**JoinChannel:** The channel where the join message is sent. (You can set it to 'dm' to DM the user the message.)\n**JoinMsg:** Sets the join message.\n**LeaveChannel:** The channel where the leave message is sent.\n**LeaveMsg:** Sets the leave message.\n**Autorole:** ",
+				  	inline = true,
+			  	},
+        },
+        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      }}
+      return {success = "stfu", msg = ""}
+    end
   -- [ END OF PLUGINS] [ START OF VIEW ]
   elseif args[2] == "view" then
     message:reply{embed = {
@@ -232,7 +251,7 @@ command.execute = function(message,args,client)
         },
         {
           name = "Welcome",
-          value = "**Enabled:** "..(data.welcome.enabled and "Yes." or "No.").."\n**Join Message Channel:** "..(data.welcome.joinchannel == "nil" and "Disabled." or (data.welcome.joinchannel == "dm" and "DM User." or (message.guild:getChannel(data.welcome.joinchannel) == nil and "Channel was Deleted." or message.guild:getChannel(data.welcome.joinchannel).mentionString))),
+          value = "**Enabled:** "..(data.welcome.enabled and "Yes." or "No.").."\n**Join Message Channel:** "..(data.welcome.joinchannel == "nil" and "Disabled." or (data.welcome.joinchannel == "dm" and "DM User." or (message.guild:getChannel(data.welcome.joinchannel) == nil and "Channel was Deleted." or message.guild:getChannel(data.welcome.joinchannel).mentionString))).."\n**Leave Message Channel:** "..(data.welcome.leavechannel == "nil" and "Disabled." or (message.guild:getChannel(data.welcome.leavechannel) == nil and "Channel was Deleted." or message.guild:getChannel(data.welcome.leavechannel).mentionString)).."\n**Autorole:** "..(data.welcome.autorole == "nil" and "Disabled." or (message.guild:getRole(data.welcome.autorole) == nil and "Role was Deleted" or message.guild:getRole(data.welcome.autorole).mentionString)),
           inline = true,
         },
       },

@@ -6,7 +6,7 @@ local function addConfig(id)
 		prefix = "!!",
     automod = {enabled = false, types = {invites = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
     tags = {enabled = false, tags = {}, delete = false},
-    welcome = {enabled = false, joinmsg = "nil", joinchannel = "nil", leavemsg = "nil", joinchannel = "nil", autorole = "nil"},
+    welcome = {enabled = false, joinmsg = "nil", joinchannel = "nil", leavechannel = "nil", leavemsg = "nil", joinchannel = "nil", autorole = "nil"},
     terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
     modlog = "nil",
 		modrole = "nil",
