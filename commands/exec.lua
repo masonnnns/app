@@ -1,7 +1,7 @@
 command = {}
 
 local function code(str)
-    return string.format('```\n%s```', str)
+    return string.format('```lua\n%s```', str)
 end
 
 local function printLine(...)
@@ -16,9 +16,6 @@ end
 local sandbox = setmetatable({ }, { __index = _G })
 
 local function exec(arg, msg)
-
-    if not arg then return end
-    if msg.author ~= msg.client.owner then return end
 
     arg = arg:gsub('```\n?', '') -- strip markdown codeblocks
 
@@ -35,10 +32,10 @@ local function exec(arg, msg)
     end
 
     local fn, syntaxError = load(arg, 'DiscordBot', 't', sandbox)
-    if not fn then return msg:reply(code(syntaxError)) end
+    if not fn then return {error = true, result = code(syntaxError)} end
 
     local success, runtimeError = pcall(fn)
-    if not success then return msg:reply(code(runtimeError)) end
+    if not success then return {error = true, result = code(runtimeError)} end
 
     lines = table.concat(lines, '\n')
 
@@ -59,11 +56,12 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
+  if args[2] == nil then return {success = false, msg = "You must provide **code to execute**."} end
   sandbox.client = client
   sandbox.config = require("/app/config.lua")
   local code = exec(string.sub(message.content,string.len(args[1])+1),message)
   message:reply{embed = {
-    title = "Exec Result "..(code.error and "**[ERROR]**" or ""),
+    title = "Exec Result",
     description = code.result,
     color = (code.error and 15158332 or 3066993),
     footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
