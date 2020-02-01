@@ -179,7 +179,7 @@ client:on("memberUpdate", function(member)
   if cache[member.guild.id].users[member.id] == nil then return end
   local auditLog
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end
-  if auditLog == nil then print("no log found for action.") end
+  if auditLog == nil then print("no log found for action.") return end
   if auditLog.actionType == 25 then
     local theirRoles = {} for _,items in pairs(member.roles) do table.insert(theirRoles,#theirRoles+1,items.id) end
     local roles = {added = {}, removed = {}}
@@ -213,9 +213,18 @@ client:on("memberUpdate", function(member)
           member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.added == 1 and "" or "s").." Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.added == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 1146986, }}
         end
       else
-        local lists = {added = {}, removed }
+        local lists = {added = {}, removed = {}}
+        for _,items in pairs(roles.added) do lists.added[1+#lists.added] = member.guild:getRole(items).mentionString end
+        for _,items in pairs(roles.removed) do lists.removed[1+#lists.removed] = member.guild:getRole(items).mentionString end
+        if auditLog:getMember().id == member.id then
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Roles Changed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "Role"..(#roles.added == 1 and "" or "s").." Added", value = table.concat(lists.added,", "), inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s").." Removed", value = table.concat(lists.removed,", "), inline = true, }, }, color = 10181046, }}
+        else
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Roles Changed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "Role"..(#roles.added == 1 and "" or "s").." Added", value = table.concat(lists.added,", "), inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s").." Removed", value = table.concat(lists.removed,", "), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 10181046, }}
+        end
       end
     end
+  elseif (member.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or member.nickname) ~= cache[member.guild.id].users[member.id].nickname then
+    print('nickname change')
   end
 end)
 
@@ -223,19 +232,24 @@ client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')
 
 --[[
 member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
-      title = "Role"..(#roles.added == 1 and "" or "s").." Added",
+      title = "Roles Changed",
       fields = {
         {
 					name = "Member",
 					value = member.mentionString.." (`"..member.id.."`)",
+					inline = false,
+				},
+        {
+					name = "Role"..(#roles.added == 1 and "" or "s").." Added",
+					value = table.concat(lists.added,", "),
 					inline = true,
 				},
         {
-					name = "Role"..(#roles.added == 1 and "" or "s"),
-					value = table.concat(list,", "),
+					name = "Role"..(#roles.removed == 1 and "" or "s").." Removed",
+					value = table.concat(lists.removed,", "),
 					inline = true,
 				},
       },
-      color = 1146986,
+      color = 10181046,
 }}
 --]]
