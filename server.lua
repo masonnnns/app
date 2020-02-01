@@ -108,4 +108,11 @@ client:on("messageCreate",function(message)
   end
 end)
 
+-- AUDIT LOGGING
+
+client:on("memberJoin", function(member)
+  config[member.guild.id] = configuration.getConfig(member.guild.id)
+  if config[member.guild.id] 
+end)
+
 client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')

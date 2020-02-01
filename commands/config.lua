@@ -264,6 +264,33 @@ command.execute = function(message,args,client)
           config.updateConfig(message.guild.id,data)
           return {success = true, msg = "Set the **join message channel** to "..channel.mentionString.."."} end
       end
+    elseif args[3] == "leavechannel" then
+      if args[4] == nil then
+        if data.welcome.leavechannel == "nil" then
+          return {success = false, msg = "You must provide a **leave message channel** in argument 3."}
+        else
+          data.welcome.leavechannel = "nil"
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "**Disabled** the **leave message**."}
+        end
+      else
+        local channel = utils.resolveChannel(message,args[4])
+        if channel == false then
+          return {success = false, msg = "I couldn't find the channel you mentioned."}
+        else
+          data.welcome.leavechannel = channel.id
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "Set the **leave message channel** to "..channel.mentionString.."."} end
+      end
+    elseif args[3] == "joinmsg" then
+      if args[4] == nil then
+        return {success = false, msg = "You must provide a **join message**."}
+      else
+        local msg = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+4))
+        data.welcome.joinmsg = msg
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Changed the **join message**."}
+      end
     else
       local redoCmd = command.execute(message,{data.prefix.."config","welcome"},client)
       return redoCmd
