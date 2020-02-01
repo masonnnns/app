@@ -308,6 +308,26 @@ command.execute = function(message,args,client)
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       }}
       return {success = "stfu", msg = ""}
+    elseif args[3] == "autorole" then
+      if args[4] == nil then
+      if data.welcome.autorole == "nil" then
+        return {success = false, msg = "You must provide a **autorole** in argument 3."}
+      else
+        data.welcome.autorole = "nil"
+        return {success = true, msg = "Cleared the **autorole**."}
+      end
+    else
+      local role = utils.resolveRole(message,table.concat(args," ",4))
+      if role == false then
+        return {success = false, msg = "I couldn't find the role you mentioned."}
+      elseif role.position > message.guild:getMember(client.user.id).highestRole.position then
+        return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
+      else
+        data.welcome.autorole = role.id
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Set the **autorole** to **"..role.name.."**."}
+      end
+    end
     else
       local redoCmd = command.execute(message,{data.prefix.."config","welcome"},client)
       return redoCmd
