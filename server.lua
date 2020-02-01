@@ -13,6 +13,7 @@ local http = require("coro-http")
 local fs = require("fs")
 local Date = discordia.Date
 local config = {}
+local cache = {} -- ["1"] = {users = {}, textchannels = {}, voicechannels = {}, }
 
 local configuration = require("/app/config.lua")
 local configSetup = configuration.setupConfigs('xddd')
