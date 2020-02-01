@@ -232,6 +232,17 @@ client:on("memberUpdate", function(member)
           member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 12745742, }}
         end
       elseif cache[member.guild.id].users[member.id].nickname == "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" then
+        if auditLog:getMember().id == member.id then
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "New Nickname", value = member.nickname, inline = true, }, }, color = 15844367, }}
+        else
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "New Nickname", value = member.nickname, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 15844367, }}
+        end
+      else
+        if auditLog:getMember().id == member.id then
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Edited", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "New Nickname", value = member.nickname, inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, }, color = 12370112, }}
+        else
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Edited", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "New Nickname", value = member.nickname, inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 12370112, }}
+        end
       end
     end
   cache[member.guild.id].users[member.id].nickname = (member.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or member.nickname)
@@ -241,12 +252,19 @@ end)
 client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')
 
 --[[
+{ name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, },
+
 member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
-      title = "Nickname Removed",
+      title = "Nickname Edited",
       fields = {
         {
 					name = "Member",
 					value = member.mentionString.." (`"..member.id.."`)",
+					inline = false,
+				},
+        {
+					name = "New Nickname",
+					value = member.nickname,
 					inline = true,
 				},
         {
@@ -255,6 +273,6 @@ member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
 					inline = true,
 				},
       },
-      color = 12745742,
+      color = 12370112,
 }}
 --]]
