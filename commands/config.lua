@@ -12,6 +12,7 @@ command.info = {
 
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
+  if args[2] then args[2] = args[2]:lower() end
   if args[2] == nil then
     message:reply{embed = {
       title = "AA-R0N Config Help",
@@ -27,6 +28,10 @@ command.execute = function(message,args,client)
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
     }}
     return {success = "stfu", msg = ""}
+  elseif args[2] == "modonly" then
+    data.modonly = not data.modonly
+    config.updateConfig(message.guild.id,data)
+    return {success = true, msg = "**"..(data.modonly and "Enabled" or "Disabled").."** the **mod-only** setting."}
   end 
 end
 
