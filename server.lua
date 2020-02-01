@@ -197,9 +197,12 @@ client:on("memberUpdate", function(member)
     end
     cache[member.guild.id].users[member.id].roles = {} for _,items in pairs(member.roles) do cache[member.guild.id].users[member.id].roles[items.id] = true end
     if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
+      local list = {}
       if #roles.added == 0 and #roles.removed >= 1 then
+        for _,items in pairs(roles.removed) do list[1+#list] = member.guild:getRole(items).mentionString end
         if auditLog:getMember().id == member.id then
-        else
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.removed == 1 and "" or "s").." Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 10038562, }}        else
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.removed == 1 and "" or "s").." Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 10038562, }}
         end
       end
     end
@@ -207,3 +210,22 @@ client:on("memberUpdate", function(member)
 end)
 
 client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')
+
+--[[
+member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={
+      title = "Role"..(#roles.removed == 1 and "" or "s").." Removed",
+      fields = {
+        {
+					name = "Member",
+					value = member.mentionString.." (`"..member.id.."`)",
+					inline = true,
+				},
+        {
+					name = "Role"..(#roles.removed == 1 and "" or "s"),
+					value = table.concat(list,", "),
+					inline = true,
+				},
+      },
+      color = 10038562,
+}}
+--]]
