@@ -131,6 +131,20 @@ command.execute = function(message,args,client)
       data.tags.delete = not data.tags.delete
       config.updateConfig(message.guild.id,data)
       return {success = true, msg = "**"..(data.tags.delete and "Enabled" or "Disabled").."** the **delete tag command** setting."}
+    elseif args[3] == "add" then
+      if args[4] == nil then
+        return {success = false, msg = "You must provide a **title for the tag** in argument 4."}
+      elseif args[5] == nil then
+        return {success = false, msg = "You must provide a **message for the tag**."}
+      else
+        data.tags.tags = {}
+        config.updateConfig(message.guild.id,data)
+        for _,items in pairs(data.tags.tags) do if string.lower(items.term) == string.lower(args[4]) then return {success = false, msg = "A tag with that name **already exists**."} end end
+        local msg = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+string.len(args[4])+6))
+        data.tags.tags[1+#data.tags.tags] = {term = args[4], response = msg}
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Added the **"..args[4].."** tag."}
+      end
     else
       local redoCmd = command.execute(message,{data.prefix.."config","tags"},client)
       return redoCmd
@@ -144,12 +158,12 @@ command.execute = function(message,args,client)
         {
           name = "General",
           value = "**Command Prefix:** "..data.prefix.."\n**Delete Invocation Message:** "..(data.deletecmd and "Enabled." or "Disabled.").."\n**Mod-Only Commands:** "..(data.modonly and "Enabled." or "Disabled.").."\n**Moderator Role:** "..(data.modrole == "nil" and "None Set." or (message.guild:getRole(data.modrole) == nil and "Role was Deleted." or message.guild:getRole(data.modrole).mentionString)).."\n**Muted Role:** "..(data.mutedrole == "nil" and "None Set." or (message.guild:getRole(data.mutedrole) == nil and "Role was Deleted." or message.guild:getRole(data.mutedrole).mentionString)).."\n**Auditlog:** "..(data.auditlog == "nil" and "Disabled." or (message.guild:getChannel(data.auditlog) == nil and "Channel was Deleted." or message.guild:getChannel(data.auditlog).mentionString)).."\n**Modlog:** "..(data.modlog == "nil" and "Disabled." or (message.guild:getChannel(data.modlog) == nil and "Channel was Deleted." or message.guild:getChannel(data.modlog).mentionString)),
-          inline = false,
+          inline = true,
         },
         {
-          name = "General",
-          value = "**Command Prefix:** "..data.prefix.."\n**Delete Invocation Message:** "..(data.deletecmd and "Enabled." or "Disabled.").."\n**Mod-Only Commands:** "..(data.modonly and "Enabled." or "Disabled.").."\n**Moderator Role:** "..(data.modrole == "nil" and "None Set." or (message.guild:getRole(data.modrole) == nil and "Role was Deleted." or message.guild:getRole(data.modrole).mentionString)).."\n**Muted Role:** "..(data.mutedrole == "nil" and "None Set." or (message.guild:getRole(data.mutedrole) == nil and "Role was Deleted." or message.guild:getRole(data.mutedrole).mentionString)).."\n**Auditlog:** "..(data.auditlog == "nil" and "Disabled." or (message.guild:getChannel(data.auditlog) == nil and "Channel was Deleted." or message.guild:getChannel(data.auditlog).mentionString)).."\n**Modlog:** "..(data.modlog == "nil" and "Disabled." or (message.guild:getChannel(data.modlog) == nil and "Channel was Deleted." or message.guild:getChannel(data.modlog).mentionString)),
-          inline = false,
+          name = "Tags",
+          value = "**Enabled:** "..(data.tags.enabled and "Yes." or "No.").."\n**Delete Invocation Message:** "..(data.tags.delete and "Enabled." or "Disabled.").."\n**Total Tags:** "..(#data.tags.tags == 0 and "None Set!" or #data.tags.tags),
+          inline = true,
         },
       },
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
