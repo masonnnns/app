@@ -137,8 +137,6 @@ command.execute = function(message,args,client)
       elseif args[5] == nil then
         return {success = false, msg = "You must provide a **message for the tag**."}
       else
-        data.tags.tags = {}
-        config.updateConfig(message.guild.id,data)
         for _,items in pairs(data.tags.tags) do if string.lower(items.term) == string.lower(args[4]) then return {success = false, msg = "A tag with that name **already exists**."} end end
         local msg = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+string.len(args[4])+6))
         data.tags.tags[1+#data.tags.tags] = {term = args[4], response = msg}
