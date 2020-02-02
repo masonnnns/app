@@ -60,11 +60,15 @@ end
 
 client:on("ready", function()
   for _,guilds in pairs(client.guilds) do
-    cache[guilds.id] = {users = {}, textchannels = {}, voicechannels = {}}
+    cache[guilds.id] = {users = {}, textchannels = {}, voicechannels = {}, roles = {}, channels = {}}
     for _,users in pairs(guilds.members) do
        cache[guilds.id].users[users.id] = {roles = {}, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
        for _,items in pairs(users.roles) do cache[guilds.id].users[users.id].roles[items.id] = true end
        print("[USER CACHED]: "..users.name.." has been cached in "..guilds.name..".")
+    end
+    for _,channels in pairs(guilds.textChannels) do
+      cache[guilds.id].textchannels[channels.id] = {name = channels.name, nsfw = channels.nsfw, ratelimit = channels.rateLimit, topic = (channels.topic ~= nil and channels.topic or "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D"), permissions = channels.permissionOverwrites, position = channels.position, category = channels.category.id}
+      print("[CHANNEL CACHED]: "..channels.name.." has been cached in "..guilds.name..".")
     end
   end
 end)
@@ -261,30 +265,38 @@ client:on("messageDelete", function(message)
   end
 end)
 
+client:on("channelCreate", function(channel)
+  config[channel.guild.id] = configuration.getConfig(channel.guild.id)  
+  cache
+  if config[channel.guild.id].auditlog == "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) == nil then return end
+  local auditLog
+  for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id and items.actionType == 10 then auditLog = items break end end
+  if auditLog == nil then
+    channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Channel Created", fields = { { name = "Channel", value = channel.mentionString, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not Categorized" or channel.category.name), inline = true, }, }, color = 16580705, }}
+  else
+    channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Channel Created", fields = { { name = "Channel", value = channel.mentionString, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not Categorized" or channel.category.name), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 16580705, }}
+  end
+end)
+
 client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')
 
 --[[
 { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, },
 
-message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
-      title = "Message Deleted",
+channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={
+      title = "Channel Created",
       fields = {
         {
-					name = "Message Author",
-					value = message.author.mentionString.." (`"..message.author.id.."`)",
+					name = "Channel",
+					value = channel.mentionString,
 					inline = true,
 				},
         {
-					name = "Message Location",
-					value = message.channel.mentionString,
+					name = "Channel Location",
+					value = (channel.category == nil and "Not Categorized" or channel.category.name),
 					inline = true,
-				},
-        {
-					name = "Message Content",
-					value = message.content,
-					inline = false,
 				},
       },
-      color = 3447003,
+      color = 16580705,
 }}
 --]]
