@@ -62,21 +62,39 @@ command.execute = function(message,args,client)
     elseif message.guild:getMember(client.user.id):hasPermission("manageRoles") ~= true then
 			return {success = false, msg = "I need the **Manage Roles** permission to do this."}
     else -- done with the pre-errors
+      local duration = getDuration({args[1], args[2], (args[3] == nil and "FBBBB6DE2AA74C3C9570D2D8DB1DE31EADB66113C96034A7ADB21243754D7683" or args[3])})
       if args[3] == nil then
         local reason = "No Reason Provided."
         user:addRole(message.guild:getRole(data.mutedrole))
         data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, mod = message.author.id, user = user.id, duration = "Permanent"}
         config.updateConfig(message.guild.id,data)
         if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
-          message.guild:getChannel(data.modlog):send{embed = {
-            title = "Mute - Case "..#data.modData.cases,
-            fields = {
-              {
-              },
-            },
-            color = 10038562,
-          }}
-        end 
+         message.guild:getChannel(data.modlog):send{embed = { title = "Mute - Case "..#data.modData.cases, fields = { { name = "Member", value = user.mentionString.." (`"..user.id.."`)", inline = true, }, { name = "Duration", value = "Permanent", inline = true, }, { name = "Reason", value = reason, inline = false, }, { name = "Responsible Moderator", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = false, }, }, color = 10038562, }}
+        end
+        return {success = true, "**"..user.username.."** has been muted."}
+      elseif durationTable[table.concat(duration.char,"")] == nil then
+        local reason = (table.concat(args," ",3))
+        user:addRole(message.guild:getRole(data.mutedrole))
+        data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, mod = message.author.id, user = user.id, duration = "Permanent"}
+        config.updateConfig(message.guild.id,data)
+        if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
+         message.guild:getChannel(data.modlog):send{embed = { title = "Mute - Case "..#data.modData.cases, fields = { { name = "Member", value = user.mentionString.." (`"..user.id.."`)", inline = true, }, { name = "Duration", value = "Permanent", inline = true, }, { name = "Reason", value = reason, inline = false, }, { name = "Responsible Moderator", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = false, }, }, color = 10038562, }}
+        end
+        return {success = true, "**"..user.username.."** has been muted."}
+      else
+        if tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1] <= 0 then
+          return {success = false, msg = "Invalid duration."}
+        else
+          local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
+          data.modData.actions[1+#data.modData.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], mod = message.author.id, user = user.id}
+          user:addRole(message.guild:getRole(data.mutedrole))
+          data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, mod = message.author.id, user = user.id, duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s")}
+          config.updateConfig(message.guild.id,data)
+          if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
+            message.guild:getChannel(data.modlog):send{embed = { title = "Mute - Case "..#data.modData.cases, fields = { { name = "Member", value = user.mentionString.." (`"..user.id.."`)", inline = true, }, { name = "Duration", value = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), inline = true, }, { name = "Reason", value = reason, inline = false, }, { name = "Responsible Moderator", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = false, }, }, color = 10038562, }}
+          end
+          return {success = true, "**"..user.username.."** has been muted."}
+        end
       end
     end
   end
