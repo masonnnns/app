@@ -373,7 +373,23 @@ command.execute = function(message,args,client)
       data.automod.types.invites[1] = not data.automod.types.invites[1]
       config.updateConfig(message.guild.id,data)
       return {success = true, msg = "**"..(data.automod.types.invites[1] and "Enabled" or "Disabled").."** the **invites** filter."}
-    
+    elseif args[3] == "mentions" then
+      if args[4] == nil then
+        if data.automod.types.mentions[1] then
+          data.automod.types.mentions[1] = false
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "**Disabled** the **mass-mentions** filter."}
+        else
+          return {success = false, msg = "You must provide a **max mentions** number in argument 4."}
+        end
+      elseif tonumber(args[4]) == nil then
+        return {success = false, msg = "Argument 4 must be a **number**."}
+      else
+        data.automod.types.mentions[1] = true
+        data.automod.types.mentions[2] = tonumber(args[4])
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Set the"}
+      end
     else
       local redoCmd = command.execute(message,{data.prefix.."config","automod"},client)
       return redoCmd
