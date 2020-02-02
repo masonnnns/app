@@ -200,7 +200,6 @@ client:on("memberJoin", function(member)
   end
   for _,actions in pairs(config[member.guild.id].modData.actions) do 
     if actions.user == member.id and actions.type == "mute" then
-      print('xd')
       member:addRole(config[member.guild.id].mutedrole)
       break
     end
