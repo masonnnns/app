@@ -378,7 +378,7 @@ client:on("channelDelete", function(channel)
 end)
 
 client:on("messageUpdate", function(message)
-    if message.guild == nil or message.author.bot then return end
+  if message.guild == nil or message.author.bot then return end
 	if config[message.guild.id] and config[message.guild.id].auditlog ~= "nil" and message.guild:getChannel(config[message.guild.id].auditlog) then
     if message.channel:getMessage(message.id) == nil or message.channel:getMessage(message.id).oldContent == nil then return end
     local oldMsg
