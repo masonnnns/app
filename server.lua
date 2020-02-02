@@ -199,13 +199,13 @@ client:on("memberUpdate", function(member)
     local roles = {added = {}, removed = {}}
     for _,items in pairs(member.roles) do
       if cache[member.guild.id].users[member.id].roles[items.id] == nil then -- has a role but wasnt cached
-          print(items.id,"was added!")
+          --print(items.id,"was added!")
           roles.added[1+#roles.added] = items.id
       end
     end
     for items,_ in pairs(cache[member.guild.id].users[member.id].roles) do
       if member.guild:getRole(items) and member:hasRole(items) == false then -- don't have a role that was cached
-        print(items,"was removed")
+        --print(items,"was removed")
         roles.removed[1+#roles.removed] = items
       end
     end
@@ -224,18 +224,18 @@ client:on("memberUpdate", function(member)
         for _,items in pairs(roles.added) do list[1+#list] = member.guild:getRole(items).mentionString end
         for num,dupe in pairs(list) do for num2,dupe2 in pairs(list) do if dupe == dupe2 and num ~= num2 then table.remove(list,num) end end end
         if auditLog:getMember().id == member.id then
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.added == 1 and "" or "s").." Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.added == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 1146986, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.added == 1 and "" or "s").." Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.added == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 2067276, }}
         else
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.added == 1 and "" or "s").." Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.added == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 1146986, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.added == 1 and "" or "s").." Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.added == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 2067276, }}
         end
       else
         local lists = {added = {}, removed = {}}
         for _,items in pairs(roles.added) do lists.added[1+#lists.added] = member.guild:getRole(items).mentionString end
         for _,items in pairs(roles.removed) do lists.removed[1+#lists.removed] = member.guild:getRole(items).mentionString end
         if auditLog:getMember().id == member.id then
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Roles Changed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "Role"..(#roles.added == 1 and "" or "s").." Added", value = table.concat(lists.added,", "), inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s").." Removed", value = table.concat(lists.removed,", "), inline = true, }, }, color = 10181046, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Roles Changed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "Role"..(#roles.added == 1 and "" or "s").." Added", value = table.concat(lists.added,", "), inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s").." Removed", value = table.concat(lists.removed,", "), inline = true, }, }, color = 11027200, }}
         else
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Roles Changed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "Role"..(#roles.added == 1 and "" or "s").." Added", value = table.concat(lists.added,", "), inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s").." Removed", value = table.concat(lists.removed,", "), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 10181046, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Roles Changed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "Role"..(#roles.added == 1 and "" or "s").." Added", value = table.concat(lists.added,", "), inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s").." Removed", value = table.concat(lists.removed,", "), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 11027200, }}
         end
       end
     end
@@ -243,21 +243,21 @@ client:on("memberUpdate", function(member)
     if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
       if member.nickname == nil then
         if auditLog:getMember().id == member.id then
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, }, color = 12745742, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, }, color = 10038562, }}
         else
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 12745742, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 10038562, }}
         end
       elseif cache[member.guild.id].users[member.id].nickname == "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" then
         if auditLog:getMember().id == member.id then
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "New Nickname", value = member.nickname, inline = true, }, }, color = 15844367, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "New Nickname", value = member.nickname, inline = true, }, }, color = 2067276, }}
         else
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "New Nickname", value = member.nickname, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 15844367, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "New Nickname", value = member.nickname, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 2067276, }}
         end
       else
         if auditLog:getMember().id == member.id then
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Edited", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "New Nickname", value = member.nickname, inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, }, color = 12370112, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Edited", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "New Nickname", value = member.nickname, inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, }, color = 11027200, }}
         else
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Edited", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "New Nickname", value = member.nickname, inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 12370112, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Nickname Edited", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false, }, { name = "New Nickname", value = member.nickname, inline = true, }, { name = "Old Nickname", value = cache[member.guild.id].users[member.id].nickname, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 11027200, }}
         end
       end
     end
@@ -289,21 +289,21 @@ client:on("channelCreate", function(channel)
   for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id and items.actionType == 10 then auditLog = items break end end
   if channel.type == 0 then
     if auditLog == nil then
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Channel Created", fields = { { name = "Channel", value = channel.mentionString, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not Categorized" or channel.category.name), inline = true, }, }, color = 11027200, }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Channel Created", fields = { { name = "Channel", value = channel.mentionString, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not Categorized" or channel.category.name), inline = true, }, }, color = 2067276, }}
     else
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Channel Created", fields = { { name = "Channel", value = channel.mentionString, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not Categorized" or channel.category.name), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 11027200, }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Channel Created", fields = { { name = "Channel", value = channel.mentionString, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not Categorized" or channel.category.name), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 2067276, }}
     end
   elseif channel.type == 4 then
     if auditLog == nil then
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Category Created", fields = { { name = "Category", value = channel.name, inline = true, }, { name = "Category Position", value = "#"..channel.position, inline = true, }, }, color = 16747520, }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Category Created", fields = { { name = "Category", value = channel.name, inline = true, }, { name = "Category Position", value = "#"..channel.position, inline = true, }, }, color = 2067276, }}
     else
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Category Created", fields = { { name = "Category", value = channel.name, inline = true, }, { name = "Category Position", value = "#"..channel.position, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 16747520, }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Category Created", fields = { { name = "Category", value = channel.name, inline = true, }, { name = "Category Position", value = "#"..channel.position, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 2067276, }}
     end
   elseif channel.type == 2 then
     if auditLog == nil then
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Voice Channel Created", fields = { { name = "Channel", value = channel.name, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not Categorized" or channel.category.name), inline = true, }, }, color = 11027200, }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Voice Channel Created", fields = { { name = "Channel", value = channel.name, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not Categorized" or channel.category.name), inline = true, }, }, color = 2067276, }}
     else
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Voice Channel Created", fields = { { name = "Channel", value = channel.name, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not Categorized" or channel.category.name), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 11027200, }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Voice Channel Created", fields = { { name = "Channel", value = channel.name, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not Categorized" or channel.category.name), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 2067276, }}
     end
   end
 end)
@@ -323,7 +323,7 @@ client:on("channelDelete", function(channel)
     if auditLog == nil then
       channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Category Deleted", fields = { { name = "Category", value = channel.name, inline = true, }, { name = "Previous Position", value = "#"..channel.position, inline = true, }, }, color = 12745742, }}
     else
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Category Deleted", fields = { { name = "Category", value = channel.name, inline = true, }, { name = "Previous Position", value = "#"..channel.position, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 12745742, }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Category Deleted", fields = { { name = "Category", value = channel.name, inline = true, }, { name = "Previous Position", value = "#"..channel.position, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 10038562, }}
     end
   end
 end)
