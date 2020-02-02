@@ -358,6 +358,17 @@ command.execute = function(message,args,client)
       data.automod.enabled = not data.automod.enabled
       config.updateConfig(message.guild.id,data)
       return {success = true, msg = "**"..(data.automod.enabled and "Enabled" or "Disabled").."** the **automod** plugin."}
+    elseif args[3] == "view" then
+      if #data.terms == 0 then
+        return {success = false, msg = "There are no **filtered terms** to display."}
+      else
+        local success, error = pcall(function() result = message.author:getPrivateChannel():send{embed = {title = "Filtered Words in "..message.guild.name, description = "The following could contain sensitive content. Click to view.\n||"..table.concat(data.terms,", ").."||", footer = {text = "From "..message.guild.name}, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color)}} end)
+        if success and result ~= nil then
+           return {success = true, msg = "I sent you a **direct message** with the list of filtered terms."}
+        else
+          return {success = false, msg = "I **couldn't direct message** you, adjust your privacy settings and try again."}    
+        end 
+      end
     else
       local redoCmd = command.execute(message,{data.prefix.."config","automod"},client)
       return redoCmd

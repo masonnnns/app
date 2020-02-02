@@ -37,12 +37,12 @@ command.info = {
 
 command.execute = function(message,args,client)
   if args[2] == nil then
-    local txt = "To view more information about a command, say "..config.getConfig(message.guild.id).prefix.."help <command name>\n"
+    local txt = "To view more information about a command, say **"..config.getConfig(message.guild.id).prefix.."help <command name>**\n"
     for file, _type in fs.scandirSync("/app/commands") do
 	    if _type ~= "directory" then
       local cmd = require("/app/commands/" .. file)
         if cmd.info.PermLvl >= 5 and message.author.id ~= client.owner.id then else
-        txt = txt.."\n**"..cmd.info.Name.." -** "..cmd.info.Description
+        txt = txt.."\n**"..config.getConfig(message.guild.id).prefix..cmd.info.Name:lower().." -** "..cmd.info.Description
       end end
     end
     local result = message.author:getPrivateChannel():send{embed ={ title = "**AA-R0N Commands**", description = txt, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color), }}
@@ -70,12 +70,12 @@ command.execute = function(message,args,client)
 	    end
     end
   if found == nil then
-    local txt = "To view more information about a command, say "..config.getConfig(message.guild.id).prefix.."help <command name>\n"
+    local txt = "To view more information about a command, say **"..config.getConfig(message.guild.id).prefix.."help <command name>**\n"
     for file, _type in fs.scandirSync("/app/commands") do
 	    if _type ~= "directory" then
       local cmd = require("/app/commands/" .. file)
         if getPermission(message) < cmd.info.PermLvl then else
-        txt = txt.."\n**"..cmd.info.Name.." -** "..cmd.info.Description
+        txt = txt.."\n**"..config.getConfig(message.guild.id).prefix..cmd.info.Name:lower().." -** "..cmd.info.Description
       end end
     end
     local result = message.author:getPrivateChannel():send{embed ={ title = "**AA-R0N Commands**", description = txt, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color), }}
