@@ -88,14 +88,16 @@ client:on("ready", function()
       else
         for num,action in pairs(configData.modData.actions) do
           if tonumber(action.duration) ~= nil and os.time() >= action.duration then --// the duration isn't permanent and it's expired.
+            table.remove(configData.modData.actions,num)
+            configuration.updateConfig(id,configData)
             if action.type == "mute" then
               if client:getGuild(id):getMember(action.user) ~= nil and configData.mutedrole ~= "nil" and client:getGuild(id):getRole(configData.mutedrole) ~= nil and client:getGuild(id):getMember(action.user):hasRole(configData.mutedrole) then
-                client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
+                client:getGuild(id):getMember(action.user):removeRole(client:getGuild(id):getRole(configData.mutedrole))
               end
               configData.modData.cases[1+#configData.modData.cases] = {type = "Auto-Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
               configuration.updateConfig(id,configData)
               if configData.modlog ~= "nil" and client:getGuild(id):getChannel(configData.modlog) then
-                client:getGuild(id):getChannel(configData.modlog):send{embed = { title = "**Case "..#config[id].modData.cases.."** - "..case.type:upper(), description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.moderator).name.."#"..client:getUser(case.moderator).discriminator.." (`"..client:getUser(case.moderator).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason, color = 2067276 }}
+                message.guild:getChannel(configData.modlog):send{embed = { title = "Auto Unmute - Case "..#configData.modData.cases, fields = { { name = "Member", value = client:getUser(action.user).tag.." (`"..action.user.."`)", inline = true, }, { name = "Reason", value = "Mute duration expired.", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 2067276, }} 
               end
             end
           end
