@@ -136,6 +136,8 @@ end)
 
 client:on("memberJoin", function(member)
   config[member.guild.id] = configuration.getConfig(member.guild.id)
+  cache[member.guild.id].users[member.id] = {roles = {}, nickname = (member.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or member.nickname)}
+  for _,items in pairs(member.roles) do cache[guilds.id].users[member.id].roles[items.id] = true end
   if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
     member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Member Joined**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Created At", value = Date.fromSnowflake(member.id):toISO(' ', ''), inline = true, }, }, color = 3066993, }}
   end
@@ -197,16 +199,22 @@ client:on("memberUpdate", function(member)
     local roles = {added = {}, removed = {}}
     for _,items in pairs(member.roles) do
       if cache[member.guild.id].users[member.id].roles[items.id] == nil then -- has a role but wasnt cached
-        for _,removeDuplicates in pairs(roles.added) do for _,duplicates in pairs(roles.added) do if removeDuplicates == duplicates then return end end end
-        print(items.id,"was added!")
-        roles.added[1+#roles.added] = items.id
+        local dupe = false
+        for _,removeDuplicates in pairs(roles.added) do for _,duplicates in pairs(roles.added) do if removeDuplicates == duplicates then dupe = true end end end
+        if not dupe then
+          print(items.id,"was added!")
+          roles.added[1+#roles.added] = items.id
+        end
       end
     end
     for items,_ in pairs(cache[member.guild.id].users[member.id].roles) do
       if member.guild:getRole(items) and member:hasRole(items) == false then -- don't have a role that was cached
-        for _,removeDuplicates in pairs(roles.removed) do for _,duplicates in pairs(roles.removed) do if removeDuplicates == duplicates then return end end end
-        print(items,"was removed")
-        roles.removed[1+#roles.removed] = items
+        local dupe = false
+        for _,removeDuplicates in pairs(roles.removed) do for _,duplicates in pairs(roles.removed) do if removeDuplicates == duplicates then dupe = true end end end
+        if not dupe then
+          print(items,"was removed")
+          roles.removed[1+#roles.removed] = items
+        end
       end
     end
     cache[member.guild.id].users[member.id].roles = {} for _,items in pairs(member.roles) do cache[member.guild.id].users[member.id].roles[items.id] = true end
