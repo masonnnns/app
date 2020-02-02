@@ -214,7 +214,7 @@ client:on("memberUpdate", function(member)
       local list = {}
       if #roles.added == 0 and #roles.removed >= 1 then
         for _,items in pairs(roles.removed) do list[1+#list] = member.guild:getRole(items).mentionString end
-        for num,dups in pairs(list) do for num2,dupe2 
+        for num,dupe in pairs(list) do for num2,dupe2 in pairs(list) do if dupe == dupe2 and num ~= num2 then table.remove(list,num) end end end
         if auditLog:getMember().id == member.id then
           member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.removed == 1 and "" or "s").." Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 10038562, }} 
         else
@@ -222,6 +222,7 @@ client:on("memberUpdate", function(member)
         end
       elseif #roles.added >= 1 and #roles.removed == 0 then
         for _,items in pairs(roles.added) do list[1+#list] = member.guild:getRole(items).mentionString end
+        for num,dupe in pairs(list) do for num2,dupe2 in pairs(list) do if dupe == dupe2 and num ~= num2 then table.remove(list,num) end end end
         if auditLog:getMember().id == member.id then
           member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.added == 1 and "" or "s").." Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.added == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 1146986, }}
         else
