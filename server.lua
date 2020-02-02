@@ -86,15 +86,23 @@ client:on("ready", function()
       if client:getGuild(id) == nil or config[id] == nil then
         --// not in guild, we won't do their math >:*(
       else
-        for num,action in pairs(configData) do
-          if tonumber(action.duration) ~= nil and os.time() >= action.duration and client:getGuild(id):getMember(action.user) ~= nil then --// the duration isn't permanent and it's expired.
+        for num,action in pairs(configData.modData.actions) do
+          if tonumber(action.duration) ~= nil and os.time() >= action.duration then --// the duration isn't permanent and it's expired.
             if action.type == "mute" then
-              if 
+              if client:getGuild(id):getMember(action.user) ~= nil and configData.mutedrole ~= "nil" and client:getGuild(id):getRole(configData.mutedrole) ~= nil and client:getGuild(id):getMember(action.user):hasRole(configData.mutedrole) then
+                client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
+              end
+              configData.modData.cases[1+#configData.modData.cases] = {type = "Auto-Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
+              configuration.updateConfig(id,configData)
+              if configData.modlog ~= "nil" and client:getGuild(id):getChannel(configData.modlog) then
+                client:getGuild(id):getChannel(configData.modlog):send{embed = { title = "**Case "..#config[id].modData.cases.."** - "..case.type:upper(), description = "**User:** "..client:getUser(case.user).name.."#"..client:getUser(case.user).discriminator.." (`"..client:getUser(case.user).id.."`)\n**Moderator:** "..client:getUser(case.moderator).name.."#"..client:getUser(case.moderator).discriminator.." (`"..client:getUser(case.moderator).id.."`)"..(case.duration ~= "" and "\n**Duration:** "..case.duration or "").."\n**Reason:** "..case.reason, color = 2067276 }}
+              end
             end
           end
         end
       end
     end
+  timer.sleep(1000)
   end
 end)
 
