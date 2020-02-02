@@ -387,6 +387,21 @@ client:on("messageUpdate", function(message)
   end
 end)
 
+client:on('roleCreate', function(channel)
+  if config[channel.guild.id] == nil then return end
+  local auditLog
+  for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end
+  if auditLog == nil or auditLog:getMember() == nil or auditLog.actionType ~= 30 then
+    if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "**Role Created**", fields = { { name = "Role", value = channel.mentionString, inline = true,}, }, color = 2067276, }}
+    end
+  else
+    if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "**Role Created**", fields = { { name = "Role", value = channel.mentionString, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 2067276, }}
+    end
+  end
+end)
+
 client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')
 
 --[[
