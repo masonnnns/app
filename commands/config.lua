@@ -229,7 +229,7 @@ command.execute = function(message,args,client)
         fields = {
           {
 			  		name = "Welcome Settings",
-            value = "**Toggle:** "..(data.welcome.enable and "Disables" or "Enables").." the plugin.\n**View:** Displays the Join and Leave message.\n**JoinChannel:** The channel where the join message is sent. (Accepts 'dm')\n**JoinMsg:** Sets the join message.\n**LeaveChannel:** The channel where the leave message is sent.\n**LeaveMsg:** Sets the leave message.\n**Autorole:** Sets the role to be given to users when they join.",
+            value = "**Toggle:** "..(data.welcome.enabled and "Disables" or "Enables").." the plugin.\n**View:** Displays the Join and Leave message.\n**JoinChannel:** The channel where the join message is sent. (Accepts 'dm')\n**JoinMsg:** Sets the join message.\n**LeaveChannel:** The channel where the leave message is sent.\n**LeaveMsg:** Sets the leave message.\n**Autorole:** Sets the role to be given to users when they join.",
 				  	inline = true,
 			  	},
           {
@@ -310,26 +310,56 @@ command.execute = function(message,args,client)
       return {success = "stfu", msg = ""}
     elseif args[3] == "autorole" then
       if args[4] == nil then
-      if data.welcome.autorole == "nil" then
-        return {success = false, msg = "You must provide a **autorole** in argument 3."}
+        if data.welcome.autorole == "nil" then
+          return {success = false, msg = "You must provide a **autorole** in argument 3."}
+        else
+          data.welcome.autorole = "nil"
+          return {success = true, msg = "Cleared the **autorole**."}
+        end
       else
-        data.welcome.autorole = "nil"
-        return {success = true, msg = "Cleared the **autorole**."}
+        local role = utils.resolveRole(message,table.concat(args," ",4))
+        if role == false then
+          return {success = false, msg = "I couldn't find the role you mentioned."}
+        elseif role.position > message.guild:getMember(client.user.id).highestRole.position then
+          return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
+        else
+          data.welcome.autorole = role.id
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "Set the **autorole** to **"..role.name.."**."}
+        end
       end
-    else
-      local role = utils.resolveRole(message,table.concat(args," ",4))
-      if role == false then
-        return {success = false, msg = "I couldn't find the role you mentioned."}
-      elseif role.position > message.guild:getMember(client.user.id).highestRole.position then
-        return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
-      else
-        data.welcome.autorole = role.id
-        config.updateConfig(message.guild.id,data)
-        return {success = true, msg = "Set the **autorole** to **"..role.name.."**."}
-      end
-    end
+    elseif args[3] == "toggle" then
+      data.welcome.enabled = not data.welcome.enabled
+      config.updateConfig(message.guild.id,data)
+      return {success = true, msg = "**"..(data.welcome.enabled and "Enabled" or "Disabled").."** the **welcome** plugin."}
     else
       local redoCmd = command.execute(message,{data.prefix.."config","welcome"},client)
+      return redoCmd
+    end
+  -- [ END OF WELCOME ] [ START OF AUTOMOD ]
+  elseif args[2] == "automod" then
+    if args[3] then args[3] = args[3]:lower() end
+    if args[3] == nil then
+       message:reply{embed = {
+        title = "Automod Configuration Help",
+        description = "To edit an automod setting say **"..data.prefix.."config automod <setting name>**\nTo view the current configuration settings say **"..data.prefix.."config view**",
+        fields = {
+          {
+			  		name = "Automod Settings",
+            value = "**Toggle:** "..(data.automod.enabled and "Disables" or "Enables").." the plugin.\n**View:** Displays a list of filtered terms.\n**Invites:** Toggles the invites filter.\n**Mentions:** Toggles the mass-mentions filter, or sets a mention limit.\n**Spoilers:** Toggles the spoiler filter, or sets a spoiler limit.\n**Newline:** Toggles the newline filter, or sets a newline limit.\n**Filter:** Toggles the words filter, or adds/removes a term from the filter.",
+				  	inline = true,
+			  	},
+        },
+        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      }} 
+      return {success = "stfu", msg = ""}
+    elseif args[3] == "toggle" then
+      data.automod.enabled = not data.automod.enabled
+      config.updateConfig(message.guild.id,data)
+      return {success = true, msg = "**"..(data.automod.enabled and "Enabled" or "Disabled").."** the **automod** plugin."}
+    else
+      local redoCmd = command.execute(message,{data.prefix.."config","automod"},client)
       return redoCmd
     end
   -- [ END OF PLUGINS] [ START OF VIEW ]
