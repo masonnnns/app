@@ -173,8 +173,9 @@ client:on("memberJoin", function(member)
   if member.guild == nil then return end
   config[member.guild.id] = configuration.getConfig(member.guild.id)
   cache[member.guild.id].users[member.id] = {roles = {}, nickname = (member.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or member.nickname)}
+  for _,items in pairs(member.roles) do cache[member.guild.id].users[member.id].roles[items.id] = true end
   if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
-    member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Member Joined**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Created At", value = Date.fromSnowflake(member.id):toISO(' ', ''), inline = true, }, }, color = 3066993, }}
+    member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Member Joined", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Created At", value = Date.fromSnowflake(member.id):toISO(' ', ''), inline = true, }, }, color = 3066993, }}
   end
   if config[member.guild.id].welcome.enabled and config[member.guild.id].welcome.joinchannel ~= "nil" and config[member.guild.id].welcome.joinmsg ~= "nil" then
     local msg = config[member.guild.id].welcome.joinmsg
@@ -197,7 +198,13 @@ client:on("memberJoin", function(member)
       end
     end
   end
-  for _,items in pairs(member.roles) do cache[member.guild.id].users[member.id].roles[items.id] = true end
+  for _,actions in pairs(config[member.guild.id].modData.actions) do 
+    if actions.user == member.id and actions.type == "mute" then
+      print('xd')
+      member:addRole(config[member.guild.id].mutedrole)
+      break
+    end
+  end
 end)
 
 client:on("memberLeave", function(member)
@@ -206,7 +213,7 @@ client:on("memberLeave", function(member)
   if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
     local roles = {}
     for _,items in pairs(member.roles) do roles[1+#roles] = items.mentionString end
-    member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "**Member Left**", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Roles", value = (#roles == 0 and "No Roles!" or table.concat(roles,", ")), inline = true, }, }, color = 15158332, }}
+    member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Member Left", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Roles", value = (#roles == 0 and "No Roles!" or table.concat(roles,", ")), inline = true, }, }, color = 15158332, }}
   end
   if config[member.guild.id].welcome.enabled and config[member.guild.id].welcome.leavechannel ~= "nil" and config[member.guild.id].welcome.leavemsg ~= "nil" then
     local msg = config[member.guild.id].welcome.leavemsg
