@@ -91,9 +91,9 @@ client:on("ready", function()
             table.remove(configData.modData.actions,num)
             configuration.updateConfig(id,configData)
             if action.type == "mute" then
-              if client:getGuild(id):getRole(configData.mutedrole) then
+              if client:getGuild(id):getMember(action.user) ~= nil and configData.mutedrole ~= "nil" and client:getGuild(id):getRole(configData.mutedrole) ~= nil then
                 print('hi')
-                client:getGuild(id):getMember(action.user):removeRole(client:getGuild(id):getRole(configData.mutedrole))
+                client:getGuild(id):getMember(action.user):removeRole(client:getGuild(id):getRole(configData.mutedrole).id)
               end
               configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
               configuration.updateConfig(id,configData)
@@ -243,6 +243,7 @@ client:on("memberUpdate", function(member)
       if #roles.added == 0 and #roles.removed >= 1 then
         for _,items in pairs(roles.removed) do list[1+#list] = member.guild:getRole(items).mentionString end
         for num,dupe in pairs(list) do for num2,dupe2 in pairs(list) do if dupe == dupe2 and num ~= num2 then table.remove(list,num) end end end
+        for num,crazy in pairs(list) do for _,roles in pairs(member.guild.roles) do if member:hasRole(roles.id) == true and crazy == roles.mentionString then table.remove(list,num) end end end
         if auditLog:getMember().id == member.id then
           member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#list == 1 and "" or "s").." Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#list == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 10038562, }} 
         else
@@ -251,6 +252,7 @@ client:on("memberUpdate", function(member)
       elseif #roles.added >= 1 and #roles.removed == 0 then
         for _,items in pairs(roles.added) do list[1+#list] = member.guild:getRole(items).mentionString end
         for num,dupe in pairs(list) do for num2,dupe2 in pairs(list) do if dupe == dupe2 and num ~= num2 then table.remove(list,num) end end end
+        for num,crazy in pairs(list) do for _,roles in pairs(member.guild.roles) do if member:hasRole(roles.id) == false and crazy == roles.mentionString then table.remove(list,num) end end end
         if auditLog:getMember().id == member.id then
           member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#list == 1 and "" or "s").." Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#list == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 2067276, }}
         else
