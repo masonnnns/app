@@ -100,6 +100,13 @@ client:on("ready", function()
                 client:getGuild(id):getChannel(configData.modlog):send{embed = { title = "Auto Unmute - Case "..#configData.modData.cases, fields = { { name = "Member", value = client:getUser(action.user).tag.." (`"..action.user.."`)", inline = true, }, { name = "Reason", value = "Mute duration expired.", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 2067276, }} 
               end
               client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
+            elseif action.type == "ban" then
+              if client:getGuild(id):getBan(action.user) ~= nil then client:getGuild(id):unbanUser(action.user,"Ban duration expired.") end
+              configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unban", user = action.user, moderator = client.user.id, reason = "Ban duration expired."}
+              configuration.updateConfig(id,configData)
+              if configData.modlog ~= "nil" and client:getGuild(id):getChannel(configData.modlog) then
+                client:getGuild(id):getChannel(configData.modlog):send{embed = { title = "Auto Unban - Case "..#configData.modData.cases, fields = { { name = "Member", value = client:getUser(action.user).tag.." (`"..action.user.."`)", inline = true, }, { name = "Reason", value = "Ban duration expired.", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 2067276, }} 
+              end
             end
           end
         end
@@ -163,6 +170,7 @@ end)
 -- AUDIT LOGGING
 
 client:on("memberJoin", function(member)
+  if member.guild == nil then return end
   config[member.guild.id] = configuration.getConfig(member.guild.id)
   cache[member.guild.id].users[member.id] = {roles = {}, nickname = (member.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or member.nickname)}
   for _,items in pairs(member.roles) do cache[guilds.id].users[member.id].roles[items.id] = true end
@@ -193,6 +201,7 @@ client:on("memberJoin", function(member)
 end)
 
 client:on("memberLeave", function(member)
+  if member.guild == nil then return end
   config[member.guild.id] = configuration.getConfig(member.guild.id)
   if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
     local roles = {}
@@ -216,6 +225,7 @@ client:on("memberLeave", function(member)
 end)
 
 client:on("memberUpdate", function(member)
+  if member.guild == nil then return end
   config[member.guild.id] = configuration.getConfig(member.guild.id)
   if cache[member.guild.id] == nil then return end
   if cache[member.guild.id].users[member.id] == nil then return end
@@ -296,6 +306,8 @@ client:on("memberUpdate", function(member)
 end)
 
 client:on("messageDelete", function(message)
+  if message.guild == nil then return end
+  if message.author.bot then return end
   config[message.guild.id] = configuration.getConfig(message.guild.id)
   if config[message.guild.id].auditlog == "nil" and message.guild:getChannel(config[message.guild.id].auditlog) == nil then return end
   local auditLog
@@ -339,6 +351,7 @@ client:on("channelCreate", function(channel)
 end)
 
 client:on("channelDelete", function(channel)
+  if channel.guild == nil then return end
   config[channel.guild.id] = configuration.getConfig(channel.guild.id)
   if config[channel.guild.id].auditlog == "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) == nil then return end
   local auditLog
