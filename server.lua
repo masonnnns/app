@@ -91,7 +91,8 @@ client:on("ready", function()
             table.remove(configData.modData.actions,num)
             configuration.updateConfig(id,configData)
             if action.type == "mute" then
-              if client:getGuild(id):getMember(action.user) ~= nil and configData.mutedrole ~= "nil" and client:getGuild(id):getRole(configData.mutedrole) ~= nil and client:getGuild(id):getMember(action.user):hasRole(configData.mutedrole) then
+              if client:getGuild(id):getRole(configData.mutedrole) then
+                print('hi')
                 client:getGuild(id):getMember(action.user):removeRole(client:getGuild(id):getRole(configData.mutedrole))
               end
               configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
@@ -251,9 +252,9 @@ client:on("memberUpdate", function(member)
         for _,items in pairs(roles.added) do list[1+#list] = member.guild:getRole(items).mentionString end
         for num,dupe in pairs(list) do for num2,dupe2 in pairs(list) do if dupe == dupe2 and num ~= num2 then table.remove(list,num) end end end
         if auditLog:getMember().id == member.id then
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.added == 1 and "" or "s").." Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.added == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 2067276, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#list == 1 and "" or "s").." Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#list == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 2067276, }}
         else
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.added == 1 and "" or "s").." Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.added == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 2067276, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#list == 1 and "" or "s").." Added", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#list == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 2067276, }}
         end
       else
         local lists = {added = {}, removed = {}}
