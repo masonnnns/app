@@ -384,11 +384,73 @@ command.execute = function(message,args,client)
         end
       elseif tonumber(args[4]) == nil then
         return {success = false, msg = "Argument 4 must be a **number**."}
+      elseif tonumber(args[4]) < 2 then
+        return {success = false, msg = "Argument 4 must be **greater than 1**."}
       else
         data.automod.types.mentions[1] = true
         data.automod.types.mentions[2] = tonumber(args[4])
         config.updateConfig(message.guild.id,data)
-        return {success = true, msg = "Set the"}
+        return {success = true, msg = "Set the **mention limit** to **"..args[4].."**."}
+      end
+    elseif args[3] == "spoilers" then
+      if args[4] == nil then
+        if data.automod.types.spoilers[1] then
+          data.automod.types.spoilers[1] = false
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "**Disabled** the **spoilers** filter."}
+        else
+          return {success = false, msg = "You must provide a **spoiler limit** in argument 4."}
+        end
+      elseif tonumber(args[4]) == nil then
+        return {success = false, msg = "Argument 4 must be a **number**."}
+      elseif tonumber(args[4]) < 2 then
+        return {success = false, msg = "Argument 4 must be **greater than 1**."}
+      else
+        data.automod.types.spoilers[1] = true
+        data.automod.types.spoilers[2] = tonumber(args[4])
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Set the **spoiler limit** to **"..args[4].."**."}
+      end
+    elseif args[3] == "newline" then
+      if args[4] == nil then
+        if data.automod.types.newline[1] then
+          data.automod.types.newline[1] = false
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "**Disabled** the **newline** filter."}
+        else
+          return {success = false, msg = "You must provide a **newline limit** in argument 4."}
+        end
+      elseif tonumber(args[4]) == nil then
+        return {success = false, msg = "Argument 4 must be a **number**."}
+      elseif tonumber(args[4]) < 2 then
+        return {success = false, msg = "Argument 4 must be **greater than 1**."}
+      else
+        data.automod.types.newline[1] = true
+        data.automod.types.newline[2] = tonumber(args[4])
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Set the **newline limit** to **"..args[4].."**."}
+      end
+    elseif args[3] == "filter" then
+      if args[4] == nil then
+        if data.automod.types.filter[1] then
+          data.automod.types.filter[1] = false
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "**Disabled** the **words filter** filter."}
+        else
+          return {success = false, msg = "You must provide a **term** in argument 4."}
+        end
+      else
+        local found
+        for a,items in pairs(data.terms) do if items:lower() == table.concat(args," ",4):lower() then found = a break end end
+        if found then
+          table.remove(data.terms,found)
+          config.updateConfig(message.guild.id,data)
+          return {success = true, msg = "Removed that term from the **words filter**."}
+        else
+          data.terms[1+#data.terms] = table.concat(args," ",4)
+          message:delete()
+          return {success = true, msg = "Added that term to the **words filter**."}
+        end
       end
     else
       local redoCmd = command.execute(message,{data.prefix.."config","automod"},client)

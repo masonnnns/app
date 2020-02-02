@@ -35,7 +35,7 @@ command.info = {
   Name = "Ban",
   Alias = {},
   Usage = "ban <user> <optional duration> <reason>",
-  Description = "Ban a user from the server with a set duration..",
+  Description = "Ban a user from the server with a set duration.",
   PermLvl = 1,
 }
 
