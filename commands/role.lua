@@ -20,7 +20,23 @@ command.execute = function(message,args,client)
     local role = utils.resolveRole(message,table.concat(args," ",3))
     if user == false then
       return {success = false, msg = "I couldn't find the member you mentioned."}
-    elseif 
+    elseif role == false then
+      return {success = false, msg = "I couldn't find the role you mentioned."}
+    elseif role:getPermissions():has("administrator") or role:getPermissions():has("manageGuild") then
+      return {success = false, msg = "I won't manage that role because it's an **admin role**."}
+    elseif role.position > message.guild:getMember(message.author.id).highestRole.position then
+      return {success = false, msg = "The **"..role.name.."** role is above your highest role, you cannot manage it."}
+    elseif role.position > message.guild:getMember(client.user.id).highestRole.position then
+      return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
+    else
+      if message.guild:getMember(user.id):hasRole(role) == false then
+        message.guild:getMember(user.id):addRole(role)
+        return {success = true, msg = "Gave **"..user.name.."** the **"..role.name.."** role."}
+      else
+        message.guild:getMember(user.id):removeRole(role)
+        return {success = true, msg = "Removed the **"..role.name.."** role from **"..user.name.."**."}
+      end
+    end
   end
 end
 

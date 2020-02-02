@@ -18,6 +18,11 @@ module.resolveUser = function(message,user)
       return items
     end
   end
+  for _,items in pairs(message.guild.members) do
+    if string.sub(items.username,1,string.len(user)):lower() == user:lower() then
+      return items
+    end
+  end
   return false
 end
 
