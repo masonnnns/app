@@ -78,6 +78,10 @@ client:on("ready", function()
       cache[guilds.id].channels[channels.id] = {name = channels.name, userlimit = channels.userLimit, bitrate = channels.bitrate, permissions = channels.permissionOverwrites, category = (channels.category == nil and "nil" or channels.category.id)}
       print("[VOICE CHANNEL CACHED]: "..channels.name.." has been cached in "..guilds.name..".")
     end
+    for _,roles in pairs(guilds.roles) do
+      cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles:getColor():toHex()}
+      print("[ROLE CACHED]: "..roles.name.." has been cached in "..guilds.name..".")
+    end
   end
   print("[TEMP-ACTION LOOP]: Starting timed-actions loop.")
   while true do
@@ -389,15 +393,16 @@ end)
 
 client:on('roleCreate', function(channel)
   if config[channel.guild.id] == nil then return end
+  cache[channel.guild.id].roles[channel.id] = {name = channel.name, hoisted = channel.hoisted, mentionable = channel.mentionable, color = channel:getColor():toHex()}
   local auditLog
   for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end
   if auditLog == nil or auditLog:getMember() == nil or auditLog.actionType ~= 30 then
     if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "**Role Created**", fields = { { name = "Role", value = channel.mentionString, inline = true,}, }, color = 2067276, }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Role Created", fields = { { name = "Role", value = channel.mentionString, inline = true,}, }, color = 2067276, }}
     end
   else
     if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "**Role Created**", fields = { { name = "Role", value = channel.mentionString, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 2067276, }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Role Created", fields = { { name = "Role", value = channel.mentionString, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = true, }, }, color = 2067276, }}
     end
   end
 end)
