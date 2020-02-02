@@ -31,10 +31,10 @@ command.execute = function(message,args,client)
     else
       if message.guild:getMember(user.id):hasRole(role) == false then
         message.guild:getMember(user.id):addRole(role)
-        return {success = true, msg = "Gave **"..user.name.."** the **"..role.name.."** role."}
+        return {success = true, msg = "Gave **"..user.username.."** the **"..role.name.."** role."}
       else
         message.guild:getMember(user.id):removeRole(role)
-        return {success = true, msg = "Removed the **"..role.name.."** role from **"..user.name.."**."}
+        return {success = true, msg = "Removed the **"..role.name.."** role from **"..user.username.."**."}
       end
     end
   end

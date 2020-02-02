@@ -199,22 +199,14 @@ client:on("memberUpdate", function(member)
     local roles = {added = {}, removed = {}}
     for _,items in pairs(member.roles) do
       if cache[member.guild.id].users[member.id].roles[items.id] == nil then -- has a role but wasnt cached
-        local dupe = false
-        for _,removeDuplicates in pairs(roles.added) do for _,duplicates in pairs(roles.added) do if removeDuplicates == duplicates then dupe = true end end end
-        if not dupe then
           print(items.id,"was added!")
           roles.added[1+#roles.added] = items.id
-        end
       end
     end
     for items,_ in pairs(cache[member.guild.id].users[member.id].roles) do
       if member.guild:getRole(items) and member:hasRole(items) == false then -- don't have a role that was cached
-        local dupe = false
-        for _,removeDuplicates in pairs(roles.removed) do for _,duplicates in pairs(roles.removed) do if removeDuplicates == duplicates then dupe = true end end end
-        if not dupe then
-          print(items,"was removed")
-          roles.removed[1+#roles.removed] = items
-        end
+        print(items,"was removed")
+        roles.removed[1+#roles.removed] = items
       end
     end
     cache[member.guild.id].users[member.id].roles = {} for _,items in pairs(member.roles) do cache[member.guild.id].users[member.id].roles[items.id] = true end
