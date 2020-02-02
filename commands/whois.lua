@@ -23,16 +23,38 @@ command.execute = function(message,args,client)
     if inGuild then
     else
       message:reply{embed = {
-				title = "**Whois Lookup Results**",
-				description = "**Mention:** "..user.mentionString.."\n**Username:** "..user.username.."#"..user.discriminator.." (`"..user.id.."`)"..(message.guild:getMember(user.id).nickname ~= nil and "\n**Nickname:** "..message.guild:getMember(user.id).nickname or "").."\n**Created At:** "..Date.fromSnowflake(user.id):toISO(' ', '').."\n**Joined At:** "..(message.guild:getMember(user.id).joinedAt and message.guild:getMember(user.id).joinedAt:gsub('%..*', ''):gsub('T', ' ') or "ERROR").."\n**Status:** "..message.guild:getMember(user.id).status.."\n**Roles ["..#message.guild:getMember(user.id).roles.."]:** "..(#message.guild:getMember(user.id).roles == 0 and "No roles to list!" or table.concat(roles,", ")),
+				author = {name = user.tag, icon_url = user:getAvatarURL()},
+        --title = "**Whois Lookup Results**",
+        description = "**This user isn't in the guild.**",
+        fields = {
+          {
+            name = "Mention",
+            value = user.mentionString,
+            inline = true
+          },
+          {
+            name = "Tag",
+            value = user.tag,
+            inline = true
+          },
+          {
+            name = "ID",
+            value = user.id,
+            inline = true
+          },
+          {
+            name = "Status",
+            value = user.id,
+            inline = true
+          },
+        },
 				thumbnail = {
 					url = user:getAvatarURL()
 				},
-				footer = {
-					text = "Responding to "..message.author.name
-				},
-				color = (message.guild:getMember(user.id).highestRole.color == 0 and 3066993 or message.guild:getMember(user.id).highestRole.color),
+				footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+				color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
 			}}
+      return {success = "stfu",msg = ""}
     end
   end
 end
