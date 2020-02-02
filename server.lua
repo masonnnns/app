@@ -94,10 +94,10 @@ client:on("ready", function()
               if client:getGuild(id):getMember(action.user) ~= nil and configData.mutedrole ~= "nil" and client:getGuild(id):getRole(configData.mutedrole) ~= nil and client:getGuild(id):getMember(action.user):hasRole(configData.mutedrole) then
                 client:getGuild(id):getMember(action.user):removeRole(client:getGuild(id):getRole(configData.mutedrole))
               end
-              configData.modData.cases[1+#configData.modData.cases] = {type = "Auto-Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
+              configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
               configuration.updateConfig(id,configData)
               if configData.modlog ~= "nil" and client:getGuild(id):getChannel(configData.modlog) then
-                message.guild:getChannel(configData.modlog):send{embed = { title = "Auto Unmute - Case "..#configData.modData.cases, fields = { { name = "Member", value = client:getUser(action.user).tag.." (`"..action.user.."`)", inline = true, }, { name = "Reason", value = "Mute duration expired.", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 2067276, }} 
+                client:getGuild(id):getChannel(configData.modlog):send{embed = { title = "Auto Unmute - Case "..#configData.modData.cases, fields = { { name = "Member", value = client:getUser(action.user).tag.." (`"..action.user.."`)", inline = true, }, { name = "Reason", value = "Mute duration expired.", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 2067276, }} 
               end
             end
           end
@@ -243,9 +243,9 @@ client:on("memberUpdate", function(member)
         for _,items in pairs(roles.removed) do list[1+#list] = member.guild:getRole(items).mentionString end
         for num,dupe in pairs(list) do for num2,dupe2 in pairs(list) do if dupe == dupe2 and num ~= num2 then table.remove(list,num) end end end
         if auditLog:getMember().id == member.id then
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.removed == 1 and "" or "s").." Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 10038562, }} 
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#list == 1 and "" or "s").." Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#list == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 10038562, }} 
         else
-          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.removed == 1 and "" or "s").." Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 10038562, }}
+          member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#list == 1 and "" or "s").." Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#list == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 10038562, }}
         end
       elseif #roles.added >= 1 and #roles.removed == 0 then
         for _,items in pairs(roles.added) do list[1+#list] = member.guild:getRole(items).mentionString end
