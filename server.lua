@@ -58,6 +58,81 @@ local function sepMsg(msg)
 	return Args
 end
 
+function checkMany(check,content,id)
+local detect = false
+	if check == "curse" then
+		for _,items in pairs(config[id].terms) do
+			if string.match(content,items) then
+				detect = true
+			end
+		end
+	elseif check == "role" then
+		local n = 0
+		for _,items in pairs(content) do
+			n = n + 1
+			if n >= 3 then
+				detect = true
+			end
+		end
+	elseif check == "invites" then
+		local msg = sepMsg(content)
+		for _,items in pairs(msg) do
+			items = string.lower(items)
+			if string.match(items,"discord.gg") then
+				return true
+			elseif string.match(items,"discordapp.com/invite") then
+				return true
+			end
+		end
+		return false
+	end
+	return detect
+end
+
+function autoMod(msg)
+--if "x" == "x" then return end
+local message = msg
+local a, b = string.gsub(message.content,"\n","")
+local c, d = string.gsub(message.content,"||","")
+if message.author.bot == false  then
+	if (b + 1 >= tonumber(config[message.guild.id].automod.types.newline[2]) == true) and config[message.guild.id].automod.types.newline[1] and config[message.guild.id].automod.enabled then
+		message:delete()
+		local reply = message:reply(message.author.mentionString..", too many lines.")
+		--message.author:getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\nPlease do not exceed the newline limit of 5 in "..message.guild.name..".\n\nHere's your message if you wish to edit it:```"..message.content.."```")
+		timer.sleep(3000)
+		reply:delete()
+		return false
+	elseif checkMany("curse",string.lower(msg.content),message.guild.id) == true and config[message.guild.id].automod.types.filter[1] and config[message.guild.id].automod.enabled then
+		message:delete()
+		local reply = message:reply(message.author.mentionString..", watch your language.")
+		timer.sleep(3000)
+		reply:delete()
+		return false
+	elseif checkMany("invites",msg.content,msg.guild.id) == true and config[message.guild.id].automod.types.invites[1] and config[message.guild.id].automod.enabled or string.match(message.content,"discord.gg") and client:getInvite(xd) and config[message.guild.id].automod.types.invites[1] and config[message.guild.id].automod.enabled then
+		message:delete()
+		local reply = message:reply(message.author.mentionString..", no invites.")
+		timer.sleep(3000)
+		reply:delete()
+		return false
+	elseif d/2 >= config[message.guild.id].automod.types.spoilers[2] and config[message.guild.id].automod.types.spoilers[1] and config[message.guild.id].automod.enabled then
+		message:delete()
+		local reply = message:reply(message.author.mentionString..", too many spoilers.")
+		timer.sleep(3000)
+		reply:delete()
+		return false
+	elseif #msg.mentionedRoles + #msg.mentionedUsers >= config[message.guild.id].automod.types.mentions[2] and config[message.guild.id].automod.types.mentions[1] and config[message.guild.id].automod.enabled  then
+		message:delete()
+		local reply = message:reply(message.author.mentionString..", no mass-mentioning.")
+		timer.sleep(3000)
+		reply:delete()
+		return false
+	else
+		print("[NEW MESSAGE] [AUTHOR: "..string.upper(message.author.username).."] [GUILD: "..string.upper(message.guild.name).."] [CHANNEL: "..string.upper(message.channel.name).."]: "..message.content)
+    return true
+	end
+end
+end
+
 client:on("ready", function()
   for _,guilds in pairs(client.guilds) do
     cache[guilds.id] = {users = {}, channels = {}, roles = {}}
@@ -148,7 +223,7 @@ client:on("messageCreate",function(message)
 	  end
   end
   if found == nil or getPermission(message) < 1 and config[message.guild.id].modonly then
-    -- automod / log message
+    autoMod(message)
   else
     if config[message.guild.id].modonly and getPermission(message) < 1 then return end
     if config[message.guild.id].deletecmd then message:delete() end
@@ -164,6 +239,7 @@ client:on("messageCreate",function(message)
         message:reply((execute.emote == nil and ":ok_hand:" or execute.emote).." "..execute.msg)
       end
     else
+      autoMod(message)
       local m = message:reply(":no_entry: You **don't have permissions** to use this command!")
       timer.sleep(5000)
       m:delete()
@@ -374,7 +450,7 @@ client:on("channelDelete", function(channel)
     end
   elseif channel.type == 4 then
     if auditLog == nil then
-      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Category Deleted", fields = { { name = "Category", value = channel.name, inline = true, }, { name = "Previous Position", value = "#"..channel.position, inline = true, }, }, color = 12745742, }}
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Category Deleted", fields = { { name = "Category", value = channel.name, inline = true, }, { name = "Previous Position", value = "#"..channel.position, inline = true, }, }, color = 10038562, }}
     else
       channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Category Deleted", fields = { { name = "Category", value = channel.name, inline = true, }, { name = "Previous Position", value = "#"..channel.position, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, }, }, color = 10038562, }}
     end
@@ -403,6 +479,21 @@ client:on('roleCreate', function(channel)
   else
     if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
       channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Role Created", fields = { { name = "Role", value = channel.mentionString, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = true, }, }, color = 2067276, }}
+    end
+  end
+end)
+
+client:on('roleDelete', function(channel)
+  if config[channel.guild.id] == nil then return end
+  local auditLog
+  for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end
+  if auditLog == nil or auditLog:getMember() == nil or auditLog.actionType ~= 32 then
+    if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Role Deleted", fields = { { name = "Role", value = channel.name, inline = true,}, }, color = 10038562, }}
+    end
+  else
+    if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
+      channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Role Deleted", fields = { { name = "Role", value = channel.name, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = true, }, }, color = 10038562, }}
     end
   end
 end)
