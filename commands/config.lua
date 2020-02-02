@@ -369,6 +369,11 @@ command.execute = function(message,args,client)
           return {success = false, msg = "I **couldn't direct message** you, adjust your privacy settings and try again."}    
         end 
       end
+    elseif args[3] == "invites" then
+      data.automod.types.invites[1] = not data.automod.types.invites[1]
+      config.updateConfig(message.guild.id,data)
+      return {success = true, msg = "**"..(data.automod.types.invites[1] and "Enabled" or "Disabled").."** the **invites** filter."}
+    
     else
       local redoCmd = command.execute(message,{data.prefix.."config","automod"},client)
       return redoCmd
