@@ -214,6 +214,7 @@ client:on("memberUpdate", function(member)
       local list = {}
       if #roles.added == 0 and #roles.removed >= 1 then
         for _,items in pairs(roles.removed) do list[1+#list] = member.guild:getRole(items).mentionString end
+        for num,dups in pairs(list) do for num2,dupe2 
         if auditLog:getMember().id == member.id then
           member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Role"..(#roles.removed == 1 and "" or "s").." Removed", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Role"..(#roles.removed == 1 and "" or "s"), value = table.concat(list,", "), inline = true, }, }, color = 10038562, }} 
         else
