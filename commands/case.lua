@@ -121,6 +121,59 @@ command.execute = function(message,args,client)
         color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
       }}
       return {success = "stfu", message = ""}
+    elseif string.lower(case.type) == "ban" then
+      message:reply{embed = {
+        title = "Ban - Case "..args[2],
+        fields = {
+          {
+            name = "Member",
+            value = client:getUser(case.user).tag.." (`"..case.user.."`)",
+            inline = false,
+          },
+          {
+            name = "Reason",
+            value = case.reason,
+            inline = true,
+          },
+          {
+            name = "Duration",
+            value = case.duration,
+            inline = true,
+          },
+          {
+            name = "Responsible Moderator",
+            value = client:getUser(case.moderator).tag.." (`"..case.moderator.."`)",
+            inline = false,
+          },
+        },
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      }}
+      return {success = "stfu", message = ""} 
+    elseif string.lower(case.type) == "auto unban" then
+      message:reply{embed = {
+        title = "Auto Unban - Case "..args[2],
+        fields = {
+          {
+            name = "Member",
+            value = client:getUser(case.user).tag.." (`"..case.user.."`)",
+            inline = true,
+          },
+          {
+            name = "Reason",
+            value = case.reason,
+            inline = true,
+          },
+          {
+            name = "Responsible Moderator",
+            value = client:getUser(case.moderator).tag.." (`"..case.moderator.."`)",
+            inline = false,
+          },
+        },
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      }}
+      return {success = "stfu", message = ""}
     else
       return {success = false, msg = "**Case "..args[2].."** couldn't be displayed."}
     end

@@ -45,6 +45,7 @@ command.execute = function(message,args,client)
     return {success = false, msg = "You must provide a **member to ban** in argument 2."}
   else
     local user = utils.resolveUser(message,args[2])
+    if user == false and tonumber(args[2]) ~= nil then if client:getUser(args[2]) ~= nil then user = client:getUser(args[2]) else user = false end end
     if user == false then
       return {success = false, msg = "I couldn't find the user you mentioned."}
     elseif user.id == client.user.id then

@@ -22,7 +22,7 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
   else
     local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
-    user:getPrivateChannel():send("⛔ **You've been kicked from "..message.guild.name.."!**\n\n**Reason:** "..reason)
+    --user:getPrivateChannel():send("⛔ **You've been kicked from "..message.guild.name.."!**\n\n**Reason:** "..reason)
     message.guild:kickUser(user.id,reason)
     local data = config.getConfig(message.guild.id)
     data.modData.cases[1+#data.modData.cases] = {type = "Kick", user = user.id, moderator = message.author.id, reason = reason}
