@@ -29,7 +29,23 @@ command.execute = function(message,args,client)
     if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
       message.guild:getChannel(data.modlog):send{embed = {
         title = "Warning - Case "..#data.modData.cases,
-        description = "**User:** "..user.mentionString.." (`"..user.id.."`)\n**Moderator:** "..message.author.mentionString.." (`"..message.author.id.."`)\n**Reason:** "..reason,
+        fields = {
+          {
+            name = "Member",
+            value = user.mentionString.." (`"..user.id.."`)",
+            inline = false,
+          },
+          {
+            name = "Reason",
+            value = reason,
+            inline = false,
+          },
+          {
+            name = "Responsible Moderator",
+            value = message.author.mentionString.." (`"..message.author.id.."`)",
+            inline = false,
+          },
+        },
         color = 11027200,
         }}
     end 

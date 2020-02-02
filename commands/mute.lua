@@ -66,7 +66,7 @@ command.execute = function(message,args,client)
       if args[3] == nil then
         local reason = "No Reason Provided."
         user:addRole(message.guild:getRole(data.mutedrole))
-        data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, mod = message.author.id, user = user.id, duration = "Permanent"}
+        data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, moderator = message.author.id, user = user.id, duration = "Permanent"}
         config.updateConfig(message.guild.id,data)
         if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
          message.guild:getChannel(data.modlog):send{embed = { title = "Mute - Case "..#data.modData.cases, fields = { { name = "Member", value = user.mentionString.." (`"..user.id.."`)", inline = true, }, { name = "Duration", value = "Permanent", inline = true, }, { name = "Reason", value = reason, inline = false, }, { name = "Responsible Moderator", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = false, }, }, color = 10038562, }}
@@ -75,7 +75,7 @@ command.execute = function(message,args,client)
       elseif durationTable[table.concat(duration.char,"")] == nil then
         local reason = (table.concat(args," ",3))
         user:addRole(message.guild:getRole(data.mutedrole))
-        data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, mod = message.author.id, user = user.id, duration = "Permanent"}
+        data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, moderator = message.author.id, user = user.id, duration = "Permanent"}
         config.updateConfig(message.guild.id,data)
         if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
          message.guild:getChannel(data.modlog):send{embed = { title = "Mute - Case "..#data.modData.cases, fields = { { name = "Member", value = user.mentionString.." (`"..user.id.."`)", inline = true, }, { name = "Duration", value = "Permanent", inline = true, }, { name = "Reason", value = reason, inline = false, }, { name = "Responsible Moderator", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = false, }, }, color = 10038562, }}
@@ -86,9 +86,9 @@ command.execute = function(message,args,client)
           return {success = false, msg = "Invalid duration."}
         else
           local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
-          data.modData.actions[1+#data.modData.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], mod = message.author.id, user = user.id}
+          data.modData.actions[1+#data.modData.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], moderator = message.author.id, user = user.id}
           user:addRole(message.guild:getRole(data.mutedrole))
-          data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, mod = message.author.id, user = user.id, duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s")}
+          data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, moderator = message.author.id, user = user.id, duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s")}
           config.updateConfig(message.guild.id,data)
           if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
             message.guild:getChannel(data.modlog):send{embed = { title = "Mute - Case "..#data.modData.cases, fields = { { name = "Member", value = user.mentionString.." (`"..user.id.."`)", inline = true, }, { name = "Duration", value = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), inline = true, }, { name = "Reason", value = reason, inline = false, }, { name = "Responsible Moderator", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = false, }, }, color = 10038562, }}

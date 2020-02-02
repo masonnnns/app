@@ -22,15 +22,31 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
   else
     local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
+    user:getPrivateChannel():send("⛔ **You've been kicked from "..message.guild.name.."!**\n\n**Reason:** "..reason)
     message.guild:kickUser(user.id,reason)
-    --user:getPrivateChannel():send("⛔ **You've been kicked from "..message.guild.name.."!**\n\n**Reason:** "..reason)
     local data = config.getConfig(message.guild.id)
     data.modData.cases[1+#data.modData.cases] = {type = "Kick", user = user.id, moderator = message.author.id, reason = reason}
     config.updateConfig(message.guild.id,data)
     if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
       message.guild:getChannel(data.modlog):send{embed = {
         title = "Kick - Case "..#data.modData.cases,
-        description = "**User:** "..user.mentionString.." (`"..user.id.."`)\n**Moderator:** "..message.author.mentionString.." (`"..message.author.id.."`)\n**Reason:** "..reason,
+        fields = {
+          {
+            name = "Member",
+            value = user.mentionString.." (`"..user.id.."`)",
+            inline = false,
+          },
+          {
+            name = "Reason",
+            value = reason,
+            inline = false,
+          },
+          {
+            name = "Responsible Moderator",
+            value = message.author.mentionString.." (`"..message.author.id.."`)",
+            inline = false,
+          },
+        },
         color = 15105570,
         }}
     end 
