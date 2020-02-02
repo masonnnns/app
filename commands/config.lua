@@ -350,7 +350,7 @@ command.execute = function(message,args,client)
         },
         {
           name = "Automod",
-          value = "coming soon",
+          value = "**Enabled:** "..(data.automod.enabled and "Yes." or "No.").."\n**Invites Filter:** "..(data.automod.types.invites[1] and "Enabled." or "Disabled.").."\n**Mass-Mention Filter:** "..(data.automod.types.mentions[1] and "Enabled. (Limit: "..data.automod.types.mentions[2].."/msg)" or "Disabled.").."\n**Spoilers Filter:** "..(data.automod.types.spoilers[1] and "Enabled. (Limit: "..data.automod.types.spoilers[2].."/msg)" or "Disabled.").."\n**Newline Filter:** "..(data.automod.types.newline[1] and "Enabled. (Limit: "..data.automod.types.newline[2]..")" or "Disabled.").."\n**Words Filter:** "..(data.automod.types.filter[1] and "Enabled." or "Disabled."),
           inline = true,
         },
         {
