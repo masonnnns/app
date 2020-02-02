@@ -79,6 +79,23 @@ client:on("ready", function()
       print("[VOICE CHANNEL CACHED]: "..channels.name.." has been cached in "..guilds.name..".")
     end
   end
+  print("[TEMP-ACTION LOOP]: Starting timed-actions loop.")
+  while true do
+    for id,configData in pairs(config) do
+      config[id] = configuration.getConfig(id)
+      if client:getGuild(id) == nil or config[id] == nil then
+        --// not in guild, we won't do their math >:*(
+      else
+        for num,action in pairs(configData) do
+          if tonumber(action.duration) ~= nil and os.time() >= action.duration and client:getGuild(id):getMember(action.user) ~= nil then --// the duration isn't permanent and it's expired.
+            if action.type == "mute" then
+              if 
+            end
+          end
+        end
+      end
+    end
+  end
 end)
 
 client:on("messageCreate",function(message)
