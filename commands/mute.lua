@@ -57,13 +57,26 @@ command.execute = function(message,args,client)
       return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
     elseif utils.getPermission(message,client,user.id) >= utils.getPermission(message,client) then
       return {success = false, msg = "You cannot "..command.info.Name:lower().." people with **higher than or equal permissions as you.**"}
-    elseif user:hasRole(data.mutedrole) then
+    elseif user:hasRole(message.guild:getRole(data.mutedrole)) then
       return {success = false, msg = "You cannot mute people who're already muted."}
     elseif message.guild:getMember(client.user.id):hasPermission("manageRoles") ~= true then
 			return {success = false, msg = "I need the **Manage Roles** permission to do this."}
     else -- done with the pre-errors
       if args[3] == nil then
-        local reason = "No reason provide"
+        local reason = "No Reason Provided."
+        user:addRole(message.guild:getRole(data.mutedrole))
+        data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, mod = message.author.id, user = user.id, duration = "Permanent"}
+        config.updateConfig(message.guild.id,data)
+        if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
+          message.guild:getChannel(data.modlog):send{embed = {
+            title = "Mute - Case "..#data.modData.cases,
+            fields = {
+              {
+              },
+            },
+            color = 10038562,
+          }}
+        end 
       end
     end
   end
