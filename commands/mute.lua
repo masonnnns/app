@@ -48,7 +48,7 @@ command.execute = function(message,args,client)
     return {success = false, msg = "**Config Error:** You don't have a muted role setup."}
   elseif message.guild:getRole(data.mutedrole) == nil then
     return {success = false, msg = "**Config Error:** The setup muted role was deleted."}
-  elseif mutedRole.position > botRole.position then
+  elseif mutedRole.position >= botRole.position then
     return {success = false, msg = "**Config Error:** The muted role is above my highest role, please move it down so I can manage it."}
   elseif args[2] == nil then
     return {success = false, msg = "You must provide a **member to mute** in argument 2."}

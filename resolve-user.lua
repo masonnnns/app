@@ -1,6 +1,7 @@
 module = {}
 
 local config = require("/app/config.lua")
+local cache = require("/app/server.lua")
 
 module.resolveUser = function(message,user)
   if #message.mentionedUsers >= 1 then
@@ -76,7 +77,7 @@ module.getPermission = function(message,client,id)
 	elseif message.guild:getMember(id):hasPermission("manageGuild") == true then
 		--print('admin')
 		return 2
-	elseif config.getConfig(message.guild.id).modrole ~= "nil" and message.guild:getMember(id):hasRole(config.getConfig(message.guild.id).modrole) == true then
+	elseif config.getConfig(message.guild.id).modrole ~= "nil" and cache.getCache("user",message.guild.id,id).roles[config.getConfig(message.guild.id).modrole] ~= nil then
 		--print('modrole')
 		return 1
 	else 
