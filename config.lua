@@ -3,7 +3,7 @@ module = {}
 local config = {}
 local function addConfig(id)
 	config[id] = {
-		prefix = "!!",
+		prefix = "?",
     automod = {enabled = false, types = {invites = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
     tags = {enabled = false, tags = {}, delete = false},
     welcome = {enabled = false, joinmsg = "nil", joinchannel = "nil", leavechannel = "nil", leavemsg = "nil", joinchannel = "nil", autorole = "nil"},

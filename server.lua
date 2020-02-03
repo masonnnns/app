@@ -134,7 +134,7 @@ end
 end
 
 client:on("ready", function()
-  client:setGame("!!help | AA-R0N")
+  client:setGame("?help | AA-R0N")
   for _,guilds in pairs(client.guilds) do
     cache[guilds.id] = {users = {}, channels = {}, roles = {}}
     for _,users in pairs(guilds.members) do
@@ -303,7 +303,7 @@ client:on("guildCreate",function(guild)
   }}
 end)
 
-client:on("guildRemove", function(guild)
+client:on("guildDelete", function(guild)
   client:getGuild("551017079797579795"):getChannel("551758183274905600"):send{embed ={
       title = "Guild Removed",
       description = "I've just been kicked from a guild.",
@@ -397,6 +397,7 @@ end)
 client:on("memberUpdate", function(member)
   timer.sleep(100)
   if member.guild == nil then return end
+  if client:getGuild(member.guild.id) == nil then return end
   config[member.guild.id] = configuration.getConfig(member.guild.id)
   if cache[member.guild.id] == nil then return end
   if cache[member.guild.id].users[member.id] == nil then return end
@@ -569,6 +570,9 @@ client:on('roleCreate', function(channel)
 end)
 
 client:on('roleDelete', function(channel)
+  timer.sleep(100)
+  if channel.guild == nil then return end
+  if client:getGuild(channel.guild.id) == nil then return end
   if config[channel.guild.id] == nil then return end
   local auditLog
   for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end
