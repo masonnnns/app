@@ -19,7 +19,7 @@ command.execute = function(message,args,client)
   else
     local user = utils.resolveUser(message,args[2])
     local role = utils.resolveRole(message,table.concat(args," ",3))
-    local roleInfo, theirRoleInfo, myRoleInfo, userInfo = cache.getCache("role",message.guild.id,role.id), cache.getCache("roleh",message.guild.id,user.id), cache.getCache("roleh",message.guild.id,client.user.id), cache.getCache("user",message.guild.id,user.id)
+    local roleInfo, theirRoleInfo, myRoleInfo, userInfo = cache.getCache("role",message.guild.id,role.id), cache.getCache("roleh",message.guild.id,message.author.id), cache.getCache("roleh",message.guild.id,client.user.id), cache.getCache("user",message.guild.id,user.id)
     if user == false then
       return {success = false, msg = "I couldn't find the member you mentioned."}
     elseif role == false then
@@ -32,9 +32,11 @@ command.execute = function(message,args,client)
       return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
     else
       if userInfo.roles[role.id] == nil then
+        message.guild:getMember(user.id):removeRole(role)
         message.guild:getMember(user.id):addRole(role)
         return {success = true, msg = "Gave **"..user.username.."** the **"..role.name.."** role."}
       else
+        message.guild:getMember(user.id):addRole(role)
         message.guild:getMember(user.id):removeRole(role)
         return {success = true, msg = "Removed the **"..role.name.."** role from **"..user.username.."**."}
       end

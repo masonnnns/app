@@ -2,6 +2,7 @@ command = {}
 
 local config = require("/app/config.lua")
 local utils = require("/app/resolve-user.lua")
+local cache = require("/app/server.lua")
 local discordia = require("discordia")
 local Date = discordia.Date
 
@@ -25,7 +26,7 @@ command.execute = function(message,args,client)
     if inGuild then
       local perm = utils.getPermission(message,false,user.id)
       local roles = {}
-      for _,items in pairs(user.roles) do roles[1+#roles] = items.mentionString end
+      for items,_ in pairs(cache.getCache("user",message.guild.id,user.id).roles) do roles[1+#roles] = message.guild:getRole(items).mentionString end
       local data = {embed = {
 				author = {name = user.tag, icon_url = user:getAvatarURL()},
         --title = "**Whois Lookup Results**",
