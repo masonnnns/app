@@ -23,9 +23,10 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I couldn't find the user you mentioned."}
   else
     if inGuild then
-      local joinPos = message.guild.members
-      local sorted
-      sorted = table.sort(joinPos, function(a,b) print(a,b) return a.joinedAt < b.joinedAt end)
+      local joinPos = {}
+      for _,items in pairs(message.guild.members) do joinPos[1+#joinPos] = items end
+      local sorted = table.sort(joinPos, function(a,b) print(a.joinedAt) return a.joinedAt < b.joinedAt end)
+      print(sorted)
       for num,items in pairs(sorted) do if joinPos.id == user.id then joinPos = num end end
       table.sort()
       message:reply{embed = {
