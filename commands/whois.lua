@@ -54,7 +54,8 @@ command.execute = function(message,args,client)
       if useGuild == nil then
         message:reply(data)
       else
-        table.insert(data.embed.fields,#data.embed.fields+1, {name = "test", value = "xd", inline = true})
+        table.insert(data.embed.fields,#data.embed.fields+1, {name = "Activity", value = (useGuild.activity == nil and "Nothing" or ((useGuild.activity.type == 2 and "Listening to "..useGuild.activity.name or (useGuild.activity.type == 1 and "Streaming "..useGuild.activity.name or useGuild.activity.name))), inline = true})
+        table.insert(data.embed.fields,#data.embed.fields+1, {name = "Status", value = })
         message:reply(data)
       end
       return {success = "stfu",msg = ""}
