@@ -50,11 +50,12 @@ command.execute = function(message,args,client)
 				color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
 			}}
       local useGuild
-      for a,b in pairs(user.mutualGuilds) do useGuild = b.id break end
+      for a,b in pairs(user.mutualGuilds) do useGuild = b break end
       if useGuild == nil then
         message:reply(data)
       else
-        message:reply('ok'..useGuild)
+        local member = b:getMember(user.id)
+        
       end
       return {success = "stfu",msg = ""}
     end

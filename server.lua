@@ -249,7 +249,28 @@ end)
 
 -- AUDIT LOGGING
 
-client:on("guildC")
+client:on("guildCreate",function(guild)
+  config[guild.id] = configuration.getConfig(guild.id)
+  local guilds = guild
+  cache[guilds.id] = {users = {}, channels = {}, roles = {}}
+  for _,users in pairs(guilds.members) do
+     cache[guilds.id].users[users.id] = {roles = {}, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
+     for _,items in pairs(users.roles) do cache[guilds.id].users[users.id].roles[items.id] = true end
+  end
+  for _,channels in pairs(guilds.textChannels) do
+    cache[guilds.id].channels[channels.id] = {name = channels.name, nsfw = channels.nsfw, ratelimit = channels.rateLimit, topic = (channels.topic ~= nil and channels.topic or "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D"), permissions = channels.permissionOverwrites, position = channels.position, category = (channels.category == nil and "nil" or channels.category.id)}
+  end
+  for _,channels in pairs(guilds.categories) do
+    cache[guilds.id].channels[channels.id] = {name = channels.name, permissions = channels.permissionOverwrites, position = channels.position}
+  end
+  for _,channels in pairs(guilds.voiceChannels) do
+    cache[guilds.id].channels[channels.id] = {name = channels.name, userlimit = channels.userLimit, bitrate = channels.bitrate, permissions = channels.permissionOverwrites, category = (channels.category == nil and "nil" or channels.category.id)}
+  end
+  for _,roles in pairs(guilds.roles) do
+    cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles:getColor():toHex()}
+  end
+  print("[NEW GUILD]: "..guild.name.." owned by "..guild.owner.name.." with "..#guild.members.." members.")
+end)
 
 client:on("memberJoin", function(member)
   if member.guild == nil then return end

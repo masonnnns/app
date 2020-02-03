@@ -12,7 +12,7 @@ local function addConfig(id)
 		modrole = "nil",
     auditlog = "nil",
 		modData = {cases = {}, actions = {}}, -- {type = "mute", reason = "", duration = os.time() / "perm", mod = userID, user = userID}
-		deletecmd = true,
+		deletecmd = false,
 		modonly = false,
 		mutedrole = "nil",
     auditignore = {},
