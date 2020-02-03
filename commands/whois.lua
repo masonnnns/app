@@ -23,10 +23,10 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I couldn't find the user you mentioned."}
   else
     if inGuild then
-      local perm = utils.getPermission(message,client,user.id)
+      local perm = utils.getPermission(message,false,user.id)
       local roles = {}
       for _,items in pairs(user.roles) do roles[1+#roles] = items.mentionString end
-      message:reply{embed = {
+      local data = {embed = {
 				author = {name = user.tag, icon_url = user:getAvatarURL()},
         --title = "**Whois Lookup Results**",
         fields = {
@@ -57,13 +57,23 @@ command.execute = function(message,args,client)
           },
           {
             name = "Server Permission",
-            value = (perm == 1 and "Server Moderator" or (perm == 2 and "Server Administrator" or ())),
+            value = (perm == 1 and "Server Moderator" or (perm == 2 and "Server Administrator" or (perm == 3 and "Server Owner" or "User"))),
             inline = true
           },
           {
-            name = "Roles ["..#roles.."]",
+            name = "Role"..(#roles == 1 and "" or "s").." ["..#roles.."]",
             value = (#roles == 0 and "No Roles!" or table.concat(roles, " ")),
             inline = false
+          },
+          {
+            name = "Created At",
+            value = Date.fromSnowflake(user.id):toISO(' ', ''),
+            inline = true,
+          },
+          {
+            name = "Joined At",
+            value = (message.guild:getMember(user.id).joinedAt and message.guild:getMember(user.id).joinedAt:gsub('%..*', ''):gsub('T', ' ') or "ERROR"),
+            inline = true,
           },
         },
 				thumbnail = {
@@ -72,6 +82,10 @@ command.execute = function(message,args,client)
 				footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
 				color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
 			}}
+      if user.id == client.owner.id then
+        table.insert(data.embed.fields,#data.embed.fields+1, {name = "Notes", value = "AA-R0N Owner & Developer", inline = false})
+      end
+      message:reply(data)
       return {success = "stfu", msg = ""}
     else
       local data = {embed = {

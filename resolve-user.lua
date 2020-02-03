@@ -64,7 +64,7 @@ module.getPermission = function(message,client,id)
 	if id == nil then id = message.author.id end
 	if message.guild:getMember(id) == nil then
 		return 0
-	elseif id == client.owner.id then
+	elseif client ~= false and id == client.owner.id then
 		--print('owner')
 		return 5
 	elseif id == message.guild.owner.id then
