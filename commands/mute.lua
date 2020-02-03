@@ -29,7 +29,7 @@ end
 
 local config = require("/app/config.lua")
 local utils = require("/app/resolve-user.lua")
-
+local cache = require("/app/server.lua")
 
 command.info = {
   Name = "Mute",
@@ -41,6 +41,8 @@ command.info = {
 
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
+  local roleCache = cache.getCache("role",data.mutedrole)
+  print(message.guild:getRole(data.mutedrole).position,message.guild:getMember(client.user.id).highestRole.position)
   if data.mutedrole == "nil" then
     return {success = false, msg = "**Config Error:** You don't have a muted role setup."}
   elseif message.guild:getRole(data.mutedrole) == nil then

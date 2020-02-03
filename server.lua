@@ -180,6 +180,8 @@ client:on("ready", function()
                 client:getGuild(id):getChannel(configData.modlog):send{embed = { title = "Auto Unmute - Case "..#configData.modData.cases, fields = { { name = "Member", value = client:getUser(action.user).tag.." (`"..action.user.."`)", inline = true, }, { name = "Reason", value = "Mute duration expired.", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 2067276, }} 
               end
               client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
+              client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
+              client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
             elseif action.type == "ban" then
               if client:getGuild(id):getBan(action.user) ~= nil then client:getGuild(id):unbanUser(action.user,"Ban duration expired.") end
               configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unban", user = action.user, moderator = client.user.id, reason = "Ban duration expired."}
@@ -523,6 +525,16 @@ client:on('roleDelete', function(channel)
 end)
 
 client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')
+
+local module = {}
+
+module.getCache = function(type,guild,id)
+  if type == "role" then
+    return cache[guild].roles[id]
+  end
+end
+
+return module
 
 --[[
 { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, },
