@@ -200,6 +200,13 @@ client:on("ready", function()
   end
 end)
 
+client:on("ready", function()
+  while true do
+    http.request("GET","https://pentagonal-healer.glitch.me/")
+    timer.sleep(5000)
+  end
+end)
+
 client:on("messageCreate",function(message)
   if message.guild == nil then return end
   config[message.guild.id] = configuration.getConfig(message.guild.id)
