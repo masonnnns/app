@@ -155,7 +155,7 @@ client:on("ready", function()
      -- print("[VOICE CHANNEL CACHED]: "..channels.name.." has been cached in "..guilds.name..".")
     end
     for _,roles in pairs(guilds.roles) do
-      cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles:getColor():toHex()}
+      cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles:getColor():toHex(), position = roles.position}
       --print("[ROLE CACHED]: "..roles.name.." has been cached in "..guilds.name..".")
     end
   end
@@ -172,6 +172,7 @@ client:on("ready", function()
             configuration.updateConfig(id,configData)
             if action.type == "mute" then
               if client:getGuild(id):getMember(action.user) ~= nil and configData.mutedrole ~= "nil" and client:getGuild(id):getRole(configData.mutedrole) ~= nil then
+                print('hi')
                 client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
               end
               configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
@@ -179,9 +180,6 @@ client:on("ready", function()
               if configData.modlog ~= "nil" and client:getGuild(id):getChannel(configData.modlog) then
                 client:getGuild(id):getChannel(configData.modlog):send{embed = { title = "Auto Unmute - Case "..#configData.modData.cases, fields = { { name = "Member", value = client:getUser(action.user).tag.." (`"..action.user.."`)", inline = true, }, { name = "Reason", value = "Mute duration expired.", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 2067276, }} 
               end
-              client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
-              client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
-              client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
             elseif action.type == "ban" then
               if client:getGuild(id):getBan(action.user) ~= nil then client:getGuild(id):unbanUser(action.user,"Ban duration expired.") end
               configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unban", user = action.user, moderator = client.user.id, reason = "Ban duration expired."}
@@ -531,6 +529,10 @@ local module = {}
 module.getCache = function(type,guild,id)
   if type == "role" then
     return cache[guild].roles[id]
+  elseif type == "roleh" then
+    local role,pos = "",-1
+    for items,_ in pairs(cache[guild].users[id].roles) do if module.getCache("role",guild,items).position > pos then role = items pos = module.getCache("role",guild,items).position end end
+    return module.getCache("role",guild,role)
   end
 end
 

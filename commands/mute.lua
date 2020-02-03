@@ -1,7 +1,8 @@
 command = {}
 
 local durationTable = {
-	["min"] = {60, "Minute"},
+	["s"] = {1, "Second"},
+  ["min"] = {60, "Minute"},
 	["mi"] = {60, "Minute"},
 	["m"] = {60, "Minute"},
 	["h"] = {3600, "Hour"},
@@ -41,13 +42,13 @@ command.info = {
 
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
-  local roleCache = cache.getCache("role",data.mutedrole)
-  print(message.guild:getRole(data.mutedrole).position,message.guild:getMember(client.user.id).highestRole.position)
+  local mutedRole, botRole = cache.getCache("role",message.guild.id,data.mutedrole), cache.getCache("roleh",message.guild.id,client.user.id)
+  print(mutedRole.position, botRole.position)
   if data.mutedrole == "nil" then
     return {success = false, msg = "**Config Error:** You don't have a muted role setup."}
   elseif message.guild:getRole(data.mutedrole) == nil then
     return {success = false, msg = "**Config Error:** The setup muted role was deleted."}
-  elseif message.guild:getRole(data.mutedrole).position > message.guild:getMember(client.user.id).highestRole.position then
+  elseif mutedRole.position > botRole.position then
     return {success = false, msg = "**Config Error:** The muted role is above my highest role, please move it down so I can manage it."}
   elseif args[2] == nil then
     return {success = false, msg = "You must provide a **member to mute** in argument 2."}
