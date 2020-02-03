@@ -23,12 +23,9 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I couldn't find the user you mentioned."}
   else
     if inGuild then
-      local joinPos = {}
-      for _,items in pairs(message.guild.members) do joinPos[1+#joinPos] = items end
-      local sorted = table.sort(joinPos, function(a,b) print(a.joinedAt) return a.joinedAt < b.joinedAt end)
-      print(sorted)
-      for num,items in pairs(sorted) do if joinPos.id == user.id then joinPos = num end end
-      table.sort()
+      local perm = utils.getPermission(message,client,user.id)
+      local roles = {}
+      for _,items in pairs(user.roles) do roles[1+#roles] = items.mentionString end
       message:reply{embed = {
 				author = {name = user.tag, icon_url = user:getAvatarURL()},
         --title = "**Whois Lookup Results**",
@@ -49,14 +46,24 @@ command.execute = function(message,args,client)
             inline = true,
           },
           {
-            name = "Join Position",
-            value = num.."/"..#message.guild.members,
+            name = "Status",
+            value = user.status,
             inline = true
           },
           {
             name = "Activity",
             value = (user.activity == nil and "Nothing" or (user.activity.type == 2 and "Listening to "..user.activity.name or (user.activity.type == 1 and "Streaming "..user.activity.name or user.activity.name))),
             inline = true,
+          },
+          {
+            name = "Server Permission",
+            value = (perm == 1 and "Server Moderator" or (perm == 2 and "Server Administrator" or ())),
+            inline = true
+          },
+          {
+            name = "Roles ["..#roles.."]",
+            value = (#roles == 0 and "No Roles!" or table.concat(roles, " ")),
+            inline = false
           },
         },
 				thumbnail = {
