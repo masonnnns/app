@@ -173,7 +173,14 @@ client:on("ready", function()
             if action.type == "mute" then
               if client:getGuild(id):getMember(action.user) ~= nil and configData.mutedrole ~= "nil" and client:getGuild(id):getRole(configData.mutedrole) ~= nil then
                 print('hi')
-                client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
+                repeat
+                  local xd = client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
+                  print(xd)
+                  print('take role')
+                  timer.sleep(1000)
+                until
+                cache[id].users[action.user].roles[configData.mutedrole] == nil
+                print('snatched')
               end
               configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
               configuration.updateConfig(id,configData)
