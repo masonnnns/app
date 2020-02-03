@@ -33,19 +33,14 @@ command.execute = function(message,args,client)
             inline = true
           },
           {
-            name = "Tag",
-            value = user.tag,
-            inline = true
-          },
-          {
             name = "ID",
             value = user.id,
             inline = true
           },
           {
-            name = "Created At",
-            value = Date.fromSnowflake(user.id):toISO(' ', ''),
-            inline = true
+            name = "Nickname"
+            value = (user.nickname == nil and "None Set." or user.nickname),
+            inline = true,
           },
           {
             name = "Activity",
@@ -69,11 +64,6 @@ command.execute = function(message,args,client)
           {
             name = "Mention",
             value = user.mentionString,
-            inline = true
-          },
-          {
-            name = "Tag",
-            value = user.tag,
             inline = true
           },
           {
