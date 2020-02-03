@@ -171,16 +171,13 @@ client:on("ready", function()
             table.remove(configData.modData.actions,num)
             configuration.updateConfig(id,configData)
             if action.type == "mute" then
-              if client:getGuild(id):getMember(action.user) ~= nil and configData.mutedrole ~= "nil" and client:getGuild(id):getRole(configData.mutedrole) ~= nil then
-                print('hi')
+              if client:getGuild(id):getMember(action.user) ~= nil and configData.mutedrole ~= "nil" and client:getGuild(id):getRole(configData.mutedrole) ~= nil and cache[id].users[action.user].roles[configData.mutedrole] ~= nil then
                 repeat
-                  local xd = client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
-                  print(xd)
-                  print('take role')
+                  client:getGuild(id):getMember(action.user):addRole(configData.mutedrole)
+                  client:getGuild(id):getMember(action.user):removeRole(configData.mutedrole)
                   timer.sleep(1000)
                 until
                 cache[id].users[action.user].roles[configData.mutedrole] == nil
-                print('snatched')
               end
               configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
               configuration.updateConfig(id,configData)
@@ -536,6 +533,8 @@ local module = {}
 module.getCache = function(type,guild,id)
   if type == "role" then
     return cache[guild].roles[id]
+  elseif type == "user" then
+    return cache[guild].users[id]
   elseif type == "roleh" then
     local role,pos = "",-1
     for items,_ in pairs(cache[guild].users[id].roles) do if module.getCache("role",guild,items).position > pos then role = items pos = module.getCache("role",guild,items).position end end

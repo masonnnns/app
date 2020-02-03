@@ -1,6 +1,7 @@
 command = {}
 
 local utils = require("/app/resolve-user.lua")
+local cache = require("/app/server.lua")
 
 command.info = {
   Name = "Role",
@@ -18,18 +19,19 @@ command.execute = function(message,args,client)
   else
     local user = utils.resolveUser(message,args[2])
     local role = utils.resolveRole(message,table.concat(args," ",3))
+    local roleInfo, theirRoleInfo, myRoleInfo, userInfo = cache.getCache("role",message.guild.id,role.id), cache.getCache("roleh",message.guild.id,user.id), cache.getCache("roleh",message.guild.id,client.user.id), cache.getCache("user",message.guild.id,user.id)
     if user == false then
       return {success = false, msg = "I couldn't find the member you mentioned."}
     elseif role == false then
       return {success = false, msg = "I couldn't find the role you mentioned."}
     elseif role:getPermissions():has("administrator") or role:getPermissions():has("manageGuild") then
       return {success = false, msg = "I won't manage that role because it's an **admin role**."}
-    elseif role.position > message.guild:getMember(message.author.id).highestRole.position then
+    elseif roleInfo.position > theirRoleInfo.position then
       return {success = false, msg = "The **"..role.name.."** role is above your highest role, you cannot manage it."}
-    elseif role.position > message.guild:getMember(client.user.id).highestRole.position then
+    elseif role.position > myRoleInfo.position then
       return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
     else
-      if message.guild:getMember(user.id):hasRole(role) == false then
+      if userInfo.roles[role.id] == nil then
         message.guild:getMember(user.id):addRole(role)
         return {success = true, msg = "Gave **"..user.username.."** the **"..role.name.."** role."}
       else
