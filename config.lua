@@ -23,6 +23,7 @@ end
 
 
 module.setupConfigs = function()
+  --if 1 == 1 then return end
   print("[DB]: Starting Data Loading Process.")
   local decode = json.decode(io.open("./data.txt","r"):read())
   for a,b in pairs(decode) do
