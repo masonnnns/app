@@ -275,6 +275,25 @@ client:on("guildCreate",function(guild)
     cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles:getColor():toHex()}
   end
   print("[NEW GUILD]: "..guild.name.." owned by "..guild.owner.name.." with "..#guild.members.." members.")
+  client:getGuild("551017079797579795"):getChannel("551758183274905600"):send{embed ={
+    title = "Guild Added",
+    description = "I've just been added to a new guild.",
+    thumbnail = {
+		  url = (guild.icon == nil and "https://cdn.discordapp.com/avatars/414030463792054282/1480299878553601b74f094273647589.png" or guild.iconURL)
+	  },
+    fields = {
+      {
+        name = "Guild",
+        value = guild.name.." (`"..guild.id.."`)",
+        inline = true,
+      },
+      {
+        name = "Members",
+        value = guild.name.." (`"..guild.id.."`)",
+        inline = true,
+      },
+    },
+  }}
 end)
 
 client:on("memberJoin", function(member)
@@ -524,6 +543,10 @@ client:on('roleDelete', function(channel)
       channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Role Deleted", fields = { { name = "Role", value = channel.name, inline = true, }, { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = true, }, }, color = 10038562, }}
     end
   end
+end)
+
+client:on('roleUpdate', function(role)
+  cache[role.guild.id].roles[role.id] = {name = role.name, hoisted = role.hoisted, mentionable = role.mentionable, color = role:getColor():toHex(), position = role.position}
 end)
 
 client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')
