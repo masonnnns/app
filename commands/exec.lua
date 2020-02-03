@@ -63,6 +63,7 @@ command.execute = function(message,args,client)
   if args[2] == nil then return {success = false, msg = "You must provide **code to execute**."} end
   sandbox.client = client
   sandbox.config = require("/app/config.lua")
+  sandbox.date = require("discordia").Date
   local code = exec(string.sub(message.content,string.len(args[1])+1),message)
   message:reply{embed = {
     title = "Exec Result",
