@@ -301,7 +301,7 @@ command.execute = function(message,args,client)
         return {success = true, msg = "Changed the **leave message**."}
       end 
     elseif args[3] == "view" then
-      if data.welcome.joinchannel == "nil" or data.welcome.leavechannel == "ni"
+      if data.welcome.joinchannel == "nil" or data.welcome.leavechannel == "nil" then return {success = false, msg = "No **join/leave message** to display."} end
       message:reply{embed = {
         title = "Welcome Messages",
         description = (data.welcome.joinchannel ~= "nil" and "**Join Message:** ```"..data.welcome.joinmsg.."```Sending to "..(data.welcome.joinchannel == "dm" and "**User DMs**" or (message.guild:getChannel(data.welcome.joinchannel) == nil and "**Nowhere.**" or message.guild:getChannel(data.welcome.joinchannel).mentionString)) or "")..(data.welcome.leavechannel ~= "nil" and "\n\n**Leave Message:** ```"..data.welcome.leavemsg.."``` Sending to "..(message.guild:getChannel(data.welcome.leavechannel) == nil and "**Nowhere.**" or message.guild:getChannel(data.welcome.leavechannel).mentionString)),
