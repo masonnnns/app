@@ -538,7 +538,7 @@ module.getCache = function(type,guild,id)
   elseif type == "roleh" then
     local role,pos = "",-1
     for items,_ in pairs(cache[guild].users[id].roles) do if module.getCache("role",guild,items).position > pos then role = items pos = module.getCache("role",guild,items).position end end
-    return module.getCache("role",guild,role)
+    return (role == "" and client:getGuild(guild):getRole(guild) or module.getCache("role",guild,role))
   end
 end
 

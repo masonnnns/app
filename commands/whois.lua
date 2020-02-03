@@ -17,7 +17,7 @@ command.info = {
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   if args[2] == nil then args[2] = message.author.id end
-  local user = utils.resolveUser(message,args[2])
+  local user = utils.resolveUser(message,table.concat(args," ",2))
   local inGuild = true
   if user == false and tonumber(args[2]) ~= nil then if client:getUser(args[2]) ~= nil then user = client:getUser(args[2]) inGuild = false else user = false end end
   if user == false then
