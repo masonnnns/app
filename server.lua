@@ -249,6 +249,8 @@ end)
 
 -- AUDIT LOGGING
 
+client:on("guildC")
+
 client:on("memberJoin", function(member)
   if member.guild == nil then return end
   config[member.guild.id] = configuration.getConfig(member.guild.id)

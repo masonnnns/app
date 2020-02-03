@@ -22,7 +22,7 @@ command.execute = function(message,args,client)
   else
     if inGuild then
     else
-      message:reply{embed = {
+      local data = {embed = {
 				author = {name = user.tag, icon_url = user:getAvatarURL()},
         --title = "**Whois Lookup Results**",
         description = "**This user isn't in the guild.**",
@@ -42,11 +42,6 @@ command.execute = function(message,args,client)
             value = user.id,
             inline = true
           },
-          {
-            name = "Status",
-            value = user.id,
-            inline = true
-          },
         },
 				thumbnail = {
 					url = user:getAvatarURL()
@@ -54,6 +49,13 @@ command.execute = function(message,args,client)
 				footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
 				color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
 			}}
+      local useGuild
+      for a,b in pairs(user.mutualGuilds) do useGuild = b.id break end
+      if useGuild == nil then
+        message:reply(data)
+      else
+        message:reply('ok'..useGuild)
+      end
       return {success = "stfu",msg = ""}
     end
   end
