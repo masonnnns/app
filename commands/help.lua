@@ -1,6 +1,7 @@
 command = {}
 
 local fs = require('fs')
+local cache = require("/app/server.lua")
 local config = require("/app/config.lua")
 
 local function getPermission(message,id)
@@ -45,7 +46,7 @@ command.execute = function(message,args,client)
         txt = txt.."\n**"..config.getConfig(message.guild.id).prefix..cmd.info.Name:lower().." -** "..cmd.info.Description
       end end
     end
-    local result = message.author:getPrivateChannel():send{embed ={ title = "**AA-R0N Commands**", description = txt, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color), }}
+    local result = message.author:getPrivateChannel():send{embed ={ title = "**AA-R0N Commands**", description = txt, color = (cache:getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache:getCache("roleh",message.guild.id,message.author.id).color), }}
     if result ~= nil then
       return {success = true, msg = "I sent you a **direct message** with the list of commands."}
     else
@@ -78,7 +79,7 @@ command.execute = function(message,args,client)
         txt = txt.."\n**"..config.getConfig(message.guild.id).prefix..cmd.info.Name:lower().." -** "..cmd.info.Description
       end end
     end
-    local result = message.author:getPrivateChannel():send{embed ={ title = "**AA-R0N Commands**", description = txt, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color), }}
+    local result = message.author:getPrivateChannel():send{embed ={ title = "**AA-R0N Commands**", description = txt, color = (cache:getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache:getCache("roleh",message.guild.id,message.author.id).color), }}
     if result ~= nil then
       return {success = true, msg = "I sent you a **direct message** with the list of commands."}
     else

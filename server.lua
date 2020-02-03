@@ -155,7 +155,7 @@ client:on("ready", function()
      -- print("[VOICE CHANNEL CACHED]: "..channels.name.." has been cached in "..guilds.name..".")
     end
     for _,roles in pairs(guilds.roles) do
-      cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles:getColor():toHex(), position = roles.position}
+      cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles.color, position = roles.position}
       --print("[ROLE CACHED]: "..roles.name.." has been cached in "..guilds.name..".")
     end
   end
@@ -272,7 +272,7 @@ client:on("guildCreate",function(guild)
     cache[guilds.id].channels[channels.id] = {name = channels.name, userlimit = channels.userLimit, bitrate = channels.bitrate, permissions = channels.permissionOverwrites, category = (channels.category == nil and "nil" or channels.category.id)}
   end
   for _,roles in pairs(guilds.roles) do
-    cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles:getColor():toHex()}
+    cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles.color, position = roles.position}
   end
   print("[NEW GUILD]: "..guild.name.." owned by "..guild.owner.name.." with "..#guild.members.." members.")
   client:getGuild("551017079797579795"):getChannel("551758183274905600"):send{embed ={
@@ -555,7 +555,7 @@ end)
 
 client:on('roleCreate', function(channel)
   if config[channel.guild.id] == nil then return end
-  cache[channel.guild.id].roles[channel.id] = {name = channel.name, hoisted = channel.hoisted, mentionable = channel.mentionable, color = channel:getColor():toHex()}
+  cache[channel.guild.id].roles[channel.id] = {name = channel.name, hoisted = channel.hoisted, mentionable = channel.mentionable, color = role.color, position = role.position}
   local auditLog
   for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end
   if auditLog == nil or auditLog:getMember() == nil or auditLog.actionType ~= 30 then
@@ -588,7 +588,7 @@ client:on('roleDelete', function(channel)
 end)
 
 client:on('roleUpdate', function(role)
-  cache[role.guild.id].roles[role.id] = {name = role.name, hoisted = role.hoisted, mentionable = role.mentionable, color = role:getColor():toHex(), position = role.position}
+  cache[role.guild.id].roles[role.id] = {name = role.name, hoisted = role.hoisted, mentionable = role.mentionable, color = role.color, position = role.position}
 end)
 
 client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')
