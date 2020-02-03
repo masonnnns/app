@@ -2,6 +2,8 @@ command = {}
 
 local config = require("/app/config.lua")
 local utils = require("/app/resolve-user.lua")
+local discordia = require("discordia")
+local Date = discordia.Date
 
 command.info = {
   Name = "Whois",
@@ -21,6 +23,43 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I couldn't find the user you mentioned."}
   else
     if inGuild then
+      message:reply{embed = {
+				author = {name = user.tag, icon_url = user:getAvatarURL()},
+        --title = "**Whois Lookup Results**",
+        fields = {
+          {
+            name = "Mention",
+            value = user.mentionString,
+            inline = true
+          },
+          {
+            name = "Tag",
+            value = user.tag,
+            inline = true
+          },
+          {
+            name = "ID",
+            value = user.id,
+            inline = true
+          },
+          {
+            name = "Created At",
+            value = Date.fromSnowflake(user.id):toISO(' ', ''),
+            inline = true
+          },
+          {
+            name = "Activity",
+            value = (user.activity == nil and "Nothing" or (user.activity.type == 2 and "Listening to "..user.activity.name or (user.activity.type == 1 and "Streaming "..user.activity.name or user.activity.name))),
+            inline = true,
+          },
+        },
+				thumbnail = {
+					url = user:getAvatarURL()
+				},
+				footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+				color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+			}}
+      return {success = "stfu", msg = ""}
     else
       local data = {embed = {
 				author = {name = user.tag, icon_url = user:getAvatarURL()},
@@ -42,6 +81,11 @@ command.execute = function(message,args,client)
             value = user.id,
             inline = true
           },
+          {
+            name = "Created At",
+            value = Date.fromSnowflake(user.id):toISO(' ', ''),
+            inline = true
+          },
         },
 				thumbnail = {
 					url = user:getAvatarURL()
@@ -54,8 +98,8 @@ command.execute = function(message,args,client)
       if useGuild == nil then
         message:reply(data)
       else
-        table.insert(data.embed.fields,#data.embed.fields+1, {name = "Activity", value = (useGuild.activity == nil and "Nothing" or ((useGuild.activity.type == 2 and "Listening to "..useGuild.activity.name or (useGuild.activity.type == 1 and "Streaming "..useGuild.activity.name or useGuild.activity.name))), inline = true})
-        table.insert(data.embed.fields,#data.embed.fields+1, {name = "Status", value = })
+        table.insert(data.embed.fields,#data.embed.fields+1, {name = "Activity", value = (useGuild.activity == nil and "Nothing" or (useGuild.activity.type == 2 and "Listening to "..useGuild.activity.name or (useGuild.activity.type == 1 and "Streaming "..useGuild.activity.name or useGuild.activity.name))), inline = true})
+        table.insert(data.embed.fields,#data.embed.fields+1, {name = "Status", value = useGuild.status, inline = true})
         message:reply(data)
       end
       return {success = "stfu",msg = ""}
