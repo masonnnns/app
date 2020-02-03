@@ -279,7 +279,7 @@ client:on("guildCreate",function(guild)
     title = "Guild Added",
     description = "I've just been added to a new guild.",
     thumbnail = {
-		  url = (guild.icon == nil and "https://cdn.discordapp.com/avatars/414030463792054282/1480299878553601b74f094273647589.png" or guild.iconURL)
+		  url = (guild.iconURL == nil and "https://cdn.discordapp.com/avatars/414030463792054282/1480299878553601b74f094273647589.png" or guild.iconURL)
 	  },
     fields = {
       {
@@ -289,10 +289,46 @@ client:on("guildCreate",function(guild)
       },
       {
         name = "Members",
-        value = guild.name.." (`"..guild.id.."`)",
+        value = #guild.members,
+        inline = true,
+      },
+      {
+        name = "Guild Owner",
+        value = guild.owner.mentionString.." (`"..guild.ownerId.."`)",
         inline = true,
       },
     },
+    footer = {text = "I'm now in "..#client.guilds.." servers"},
+    color = 2067276,
+  }}
+end)
+
+client:on("guildRemove", function(guild)
+  client:getGuild("551017079797579795"):getChannel("551758183274905600"):send{embed ={
+      title = "Guild Removed",
+      description = "I've just been kicked from a guild.",
+      thumbnail = {
+        url = (guild.iconURL == nil and "https://cdn.discordapp.com/avatars/414030463792054282/1480299878553601b74f094273647589.png" or guild.iconURL)
+      },
+      fields = {
+        {
+          name = "Guild",
+          value = guild.name.." (`"..guild.id.."`)",
+          inline = true,
+        },
+        {
+          name = "Members",
+          value = #guild.members,
+          inline = true,
+        },
+        {
+          name = "Guild Owner",
+          value = guild.owner.mentionString.." (`"..guild.ownerId.."`)",
+          inline = true,
+        },
+      },
+      footer = {text = "I'm now in "..#client.guilds.." servers"},
+      color = 10038562,
   }}
 end)
 
@@ -334,6 +370,7 @@ client:on("memberJoin", function(member)
 end)
 
 client:on("memberLeave", function(member)
+  timer.sleep(100)
   if member.guild == nil then return end
   config[member.guild.id] = configuration.getConfig(member.guild.id)
   if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
@@ -358,6 +395,7 @@ client:on("memberLeave", function(member)
 end)
 
 client:on("memberUpdate", function(member)
+  timer.sleep(100)
   if member.guild == nil then return end
   config[member.guild.id] = configuration.getConfig(member.guild.id)
   if cache[member.guild.id] == nil then return end
