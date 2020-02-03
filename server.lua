@@ -139,23 +139,23 @@ client:on("ready", function()
     for _,users in pairs(guilds.members) do
        cache[guilds.id].users[users.id] = {roles = {}, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
        for _,items in pairs(users.roles) do cache[guilds.id].users[users.id].roles[items.id] = true end
-       print("[USER CACHED]: "..users.name.." has been cached in "..guilds.name..".")
+       --print("[USER CACHED]: "..users.name.." has been cached in "..guilds.name..".")
     end
     for _,channels in pairs(guilds.textChannels) do
       cache[guilds.id].channels[channels.id] = {name = channels.name, nsfw = channels.nsfw, ratelimit = channels.rateLimit, topic = (channels.topic ~= nil and channels.topic or "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D"), permissions = channels.permissionOverwrites, position = channels.position, category = (channels.category == nil and "nil" or channels.category.id)}
-      print("[CHANNEL CACHED]: "..channels.name.." has been cached in "..guilds.name..".")
+      --print("[CHANNEL CACHED]: "..channels.name.." has been cached in "..guilds.name..".")
     end
     for _,channels in pairs(guilds.categories) do
       cache[guilds.id].channels[channels.id] = {name = channels.name, permissions = channels.permissionOverwrites, position = channels.position}
-      print('[CATEGORY CACHED]: '..channels.name.." has been cached in "..guilds.name..".")
+      --print('[CATEGORY CACHED]: '..channels.name.." has been cached in "..guilds.name..".")
     end
     for _,channels in pairs(guilds.voiceChannels) do
       cache[guilds.id].channels[channels.id] = {name = channels.name, userlimit = channels.userLimit, bitrate = channels.bitrate, permissions = channels.permissionOverwrites, category = (channels.category == nil and "nil" or channels.category.id)}
-      print("[VOICE CHANNEL CACHED]: "..channels.name.." has been cached in "..guilds.name..".")
+     -- print("[VOICE CHANNEL CACHED]: "..channels.name.." has been cached in "..guilds.name..".")
     end
     for _,roles in pairs(guilds.roles) do
       cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles:getColor():toHex()}
-      print("[ROLE CACHED]: "..roles.name.." has been cached in "..guilds.name..".")
+      --print("[ROLE CACHED]: "..roles.name.." has been cached in "..guilds.name..".")
     end
   end
   print("[TEMP-ACTION LOOP]: Starting timed-actions loop.")

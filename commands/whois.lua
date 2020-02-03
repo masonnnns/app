@@ -23,6 +23,11 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I couldn't find the user you mentioned."}
   else
     if inGuild then
+      local joinPos = message.guild.members
+      local sorted
+      sorted = table.sort(joinPos, function(a,b) print(a,b) return a.joinedAt < b.joinedAt end)
+      for num,items in pairs(sorted) do if joinPos.id == user.id then joinPos = num end end
+      table.sort()
       message:reply{embed = {
 				author = {name = user.tag, icon_url = user:getAvatarURL()},
         --title = "**Whois Lookup Results**",
@@ -38,9 +43,14 @@ command.execute = function(message,args,client)
             inline = true
           },
           {
-            name = "Nickname"
+            name = "Nickname",
             value = (user.nickname == nil and "None Set." or user.nickname),
             inline = true,
+          },
+          {
+            name = "Join Position",
+            value = num.."/"..#message.guild.members,
+            inline = true
           },
           {
             name = "Activity",
