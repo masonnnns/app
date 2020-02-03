@@ -134,6 +134,7 @@ end
 end
 
 client:on("ready", function()
+  client:setGame("!!help | AA-R0N")
   for _,guilds in pairs(client.guilds) do
     cache[guilds.id] = {users = {}, channels = {}, roles = {}}
     for _,users in pairs(guilds.members) do
@@ -521,7 +522,7 @@ client:on('roleDelete', function(channel)
   end
 end)
 
-client:run('Bot NDYzODQ1ODQxMDM2MTE1OTc4.XjNGOg.nO_mTiCpbeGqyGnlhz5KGGHYn6I')
+client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')
 
 --[[
 { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, },
