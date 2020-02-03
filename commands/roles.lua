@@ -9,10 +9,11 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  local roles = {}  for _,items in pairs(message.guild.roles) do roles[1+#roles] = items.mentionString end
+  local roles = {}  for _,items in pairs(message.guild.roles) do if items.id ~= message.guild.id then roles[1+#roles] = items.mentionString end end
+  if #roles == 0 then return {success = false, msg = "There are **no roles** to display."} end
   message:reply{embed = {
-    title = "Roles",
-    description = table.concat()
+    title = "Roles ["..#roles.."]",
+    description = table.concat(roles,", "),
     footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
 	  color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
   }}

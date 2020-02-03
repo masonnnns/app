@@ -28,7 +28,7 @@ command.execute = function(message,args,client)
       return {success = false, msg = "I won't manage that role because it's an **admin role**."}
     elseif roleInfo.position >= theirRoleInfo.position and utils.getPermission(message,false) <= 2 then
       return {success = false, msg = "The **"..role.name.."** role is above your highest role, you cannot manage it."}
-    elseif role.position >= myRoleInfo.position then
+    elseif role.position >= myRoleInfo.position or role.managed then
       return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
     else
       if userInfo.roles[role.id] == nil then
