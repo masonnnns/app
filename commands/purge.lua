@@ -18,8 +18,31 @@ command.execute = function(message,args,client)
     return {success = false, msg = "The number of messages must be between **1 and 100**."}
   else
     local num = 0
-    for a,items in pairs(msgs) do if math.floor(items.createdAt) + 1209600 >= os.time() then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] + 1 else table.remove(msgs,a) end end
-
+    local msgs = message.channel:getMessages(tonumber(args[2]))
+    for a,items in pairs(msgs) do if math.floor(items.createdAt) + 1209600 >= os.time() and items.id ~= message.id then num = num + 1 else table.remove(msgs,a) end end
+    if num == 0 then
+      return {success = false, msg = "I couldn't delete **any messages**."} 
+    else
+      data.purgeignore[message.channel.id] = num
+      config.updateConfig(message.guild.id,data)
+      local purge = message.channel:bulkDelete(msgs)
+      if purge then
+        if message then message:delete() end
+        if data.auditlog ~= "nil" and message.guild:getChannel(data.auditlog) then
+          local messages = {}
+          for _,items in pairs(msgs) do messages[1+#messages] = "["..message.author.username.." ("..message.author.id..")]: "..message.content end
+          message.guild:getChannel(data.auditlog):reply{
+            embed = {title = "Bulk Message Deletion", fields = {{name = "Channel", value = message.channel.mentionString, inline = true}, {name = "Number of Messages", value = num, inline = true}, {name = "Responsible Member", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = false}, color = 3447003}},
+          }
+          message:reply{
+            file = {"purgedMessages.txt", table.concat(messages, "\n")}
+          }
+        end
+        return {success = true, msg = "Purged **"..num.."** message"..(num == 1 and "" or "s").."."}
+      else
+        return {success = false, msg = "Failed to purge."}
+      end
+    end
   end
 end
 
