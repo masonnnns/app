@@ -182,14 +182,18 @@ client:on("ready", function()
               configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
               configuration.updateConfig(id,configData)
               if configData.modlog ~= "nil" and client:getGuild(id):getChannel(configData.modlog) then
-                client:getGuild(id):getChannel(configData.modlog):send{embed = { title = "Auto Unmute - Case "..#configData.modData.cases, fields = { { name = "Member", value = client:getUser(action.user).tag.." (`"..action.user.."`)", inline = true, }, { name = "Reason", value = "Mute duration expired. (Case "..action.case..")", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 2067276, }} 
-              end
+                if action.case ~= nil then 
+                  client:getGuild(id):getChannel(configData.modlog):send{embed = { title = "Auto Unmute - Case "..#configData.modData.cases, fields = { { name = "Member", value = client:getUser(action.user).tag.." (`"..action.user.."`)", inline = true, }, { name = "Reason", value = "Mute duration expired. (Case "..action.case..")", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 2067276, }} 
+                end 
+             end
             elseif action.type == "ban" then
               if client:getGuild(id):getBan(action.user) ~= nil then client:getGuild(id):unbanUser(action.user,"Ban duration expired.") end
               configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unban", user = action.user, moderator = client.user.id, reason = "Ban duration expired."}
               configuration.updateConfig(id,configData)
               if configData.modlog ~= "nil" and client:getGuild(id):getChannel(configData.modlog) then
-                client:getGuild(id):getChannel(configData.modlog):send{embed = { title = "Auto Unban - Case "..#configData.modData.cases, fields = { { name = "Member", value = client:getUser(action.user).tag.." (`"..action.user.."`)", inline = true, }, { name = "Reason", value = "Ban duration expired. (Case "..action.case..")", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 2067276, }} 
+                if action.case ~= nil then
+                  client:getGuild(id):getChannel(configData.modlog):send{embed = { title = "Auto Unban - Case "..#configData.modData.cases, fields = { { name = "Member", value = client:getUser(action.user).tag.." (`"..action.user.."`)", inline = true, }, { name = "Reason", value = "Ban duration expired. (Case "..action.case..")", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 2067276, }} 
+                end
               end
             end
           end
