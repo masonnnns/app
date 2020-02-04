@@ -9,7 +9,11 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
- if args[2] == nil then return {success = false, msg = "ok arg 2"} else return {success = true, msg = "there we go"} end
+  lines = {"xd","hi","test"}
+  message.channel:send {
+		file = {"lines.txt", table.concat(lines, "\n")} -- concatenate and send the collected lines in a file
+	}
+  return {success = "stfu"}
 end
 
 return command
