@@ -1,5 +1,7 @@
 command = {}
 
+local cache = require("/app/server.lua")
+
 command.info = {
   Name = "Invite",
   Alias = {},
@@ -13,7 +15,7 @@ command.execute = function(message,args,client)
       title = "Invite",
       description = "[Click here](https://discordapp.com/oauth2/authorize?client_id=414030463792054282&scope=bot&permissions=502787319) to invite me to your server.",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
     }}
   return {success = "stfu", msg = ""}
 end

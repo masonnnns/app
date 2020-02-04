@@ -81,7 +81,7 @@ command.execute = function(message,args,client)
 					url = user:getAvatarURL()
 				},
 				footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-				color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
 			}}
       if user.id == client.owner.id then
         table.insert(data.embed.fields,#data.embed.fields+1, {name = "Notes", value = "AA-R0N Owner & Developer", inline = false})
@@ -114,7 +114,7 @@ command.execute = function(message,args,client)
 					url = user:getAvatarURL()
 				},
 				footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-				color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
 			}}
       local useGuild
       for a,b in pairs(client.guilds) do if b:getMember(user.id) ~= nil then print('xd',b.id) useGuild = b:getMember(user.id)break end end

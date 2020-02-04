@@ -16,7 +16,7 @@ command.execute = function(message,args,client)
       title = "Uptime",
       description = utils.getTimeString(os.time() - cache.getCache("ostime"))..".",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
     }}
   return {success = "stfu", msg = "PONG!!", emote = ":ping_pong:"}
 end

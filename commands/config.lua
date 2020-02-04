@@ -2,6 +2,7 @@ command = {}
 
 local config = require("/app/config.lua")
 local utils = require("/app/resolve-user.lua")
+local cache = require("/app/server.lua")
 
 command.info = {
   Name = "Config",
@@ -25,7 +26,7 @@ command.execute = function(message,args,client)
 					inline = true,
 				},
       },
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
     }}
     return {success = "stfu", msg = ""}
@@ -129,7 +130,7 @@ command.execute = function(message,args,client)
 				  	inline = true,
 			  	},
         },
-        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       }}
       return {success = "stfu", msg = ""}
@@ -195,7 +196,7 @@ command.execute = function(message,args,client)
           message:reply{embed = {
             title = "Tags",
             description = "To view a specific tag's content say **"..data.prefix.."config tags view <tag name>**\n"..txts,
-            color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+            color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
             footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
           }}
           return {success = "stfu", msg = ""}
@@ -209,7 +210,7 @@ command.execute = function(message,args,client)
           message:reply{embed = {
             title = data.tags.tags[found].term.." Tag",
             description = "```\n"..data.tags.tags[found].response.."\n```",
-            color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+            color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
             footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
           }}
           return {success = "stfu", msg = ""}
@@ -238,7 +239,7 @@ command.execute = function(message,args,client)
             inline = false,
           },
         },
-        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       }}
       return {success = "stfu", msg = ""}
@@ -305,7 +306,7 @@ command.execute = function(message,args,client)
       message:reply{embed = {
         title = "Welcome Messages",
         description = (data.welcome.joinchannel ~= "nil" and "**Join Message:** ```"..data.welcome.joinmsg.."```Sending to "..(data.welcome.joinchannel == "dm" and "**User DMs**" or (message.guild:getChannel(data.welcome.joinchannel) == nil and "**Nowhere.**" or message.guild:getChannel(data.welcome.joinchannel).mentionString)) or "")..(data.welcome.leavechannel ~= "nil" and "\n\n**Leave Message:** ```"..data.welcome.leavemsg.."``` Sending to "..(message.guild:getChannel(data.welcome.leavechannel) == nil and "**Nowhere.**" or message.guild:getChannel(data.welcome.leavechannel).mentionString)),
-        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       }}
       return {success = "stfu", msg = ""}
@@ -351,7 +352,7 @@ command.execute = function(message,args,client)
 				  	inline = true,
 			  	},
         },
-        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       }} 
       return {success = "stfu", msg = ""}
@@ -363,7 +364,7 @@ command.execute = function(message,args,client)
       if #data.terms == 0 then
         return {success = false, msg = "There are no **filtered terms** to display."}
       else
-        local success, error = pcall(function() result = message.author:getPrivateChannel():send{embed = {title = "Filtered Words in "..message.guild.name, description = "The following could contain sensitive content. Click to view.\n||"..table.concat(data.terms,", ").."||", footer = {text = "From "..message.guild.name}, color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color)}} end)
+        local success, error = pcall(function() result = message.author:getPrivateChannel():send{embed = {title = "Filtered Words in "..message.guild.name, description = "The following could contain sensitive content. Click to view.\n||"..table.concat(data.terms,", ").."||", footer = {text = "From "..message.guild.name}, color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color)}} end)
         if success and result ~= nil then
            return {success = true, msg = "I sent you a **direct message** with the list of filtered terms."}
         else
@@ -484,7 +485,7 @@ command.execute = function(message,args,client)
           inline = true,
         },
       },
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
     }}
     return {success = "stfu", msg = ""}

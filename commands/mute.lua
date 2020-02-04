@@ -43,7 +43,6 @@ command.info = {
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   local mutedRole, botRole = cache.getCache("role",message.guild.id,data.mutedrole), cache.getCache("roleh",message.guild.id,client.user.id)
-  print(mutedRole.position, botRole.position)
   if data.mutedrole == "nil" then
     return {success = false, msg = "**Config Error:** You don't have a muted role setup."}
   elseif message.guild:getRole(data.mutedrole) == nil then
@@ -67,7 +66,7 @@ command.execute = function(message,args,client)
       if args[3] == nil then
         local reason = "No Reason Provided."
         user:addRole(message.guild:getRole(data.mutedrole))
-        data.modData.actions[1+#data.modData.actions] = {type = "mute", duration = "Permanent", moderator = message.author.id, user = user.id}
+        data.modData.actions[1+#data.modData.actions] = {type = "mute", duration = "Permanent", moderator = message.author.id, user = user.id, case = 1+#data.modData.cases}
         data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, moderator = message.author.id, user = user.id, duration = "Permanent"}
         config.updateConfig(message.guild.id,data)
         if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
@@ -77,7 +76,7 @@ command.execute = function(message,args,client)
       elseif durationTable[table.concat(duration.char,"")] == nil then
         local reason = (table.concat(args," ",3))
         user:addRole(message.guild:getRole(data.mutedrole))
-        data.modData.actions[1+#data.modData.actions] = {type = "mute", duration = "Permanent", moderator = message.author.id, user = user.id}
+        data.modData.actions[1+#data.modData.actions] = {type = "mute", duration = "Permanent", moderator = message.author.id, user = user.id, case = 1+#data.modData.cases}
         data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, moderator = message.author.id, user = user.id, duration = "Permanent"}
         config.updateConfig(message.guild.id,data)
         if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
@@ -89,7 +88,7 @@ command.execute = function(message,args,client)
           return {success = false, msg = "Invalid duration."}
         else
           local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
-          data.modData.actions[1+#data.modData.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], moderator = message.author.id, user = user.id}
+          data.modData.actions[1+#data.modData.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], moderator = message.author.id, user = user.id, case = 1+#data.modData.cases}
           user:addRole(message.guild:getRole(data.mutedrole))
           data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, moderator = message.author.id, user = user.id, duration = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s")}
           config.updateConfig(message.guild.id,data)
