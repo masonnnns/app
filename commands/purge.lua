@@ -21,7 +21,7 @@ command.execute = function(message,args,client)
     args[2] = args[2] + 1
     local num = 0
     local msgs = message.channel:getMessages(tonumber(args[2]))
-    for a,items in pairs(msgs) do if math.floor(items.createdAt) + 1209600 >= os.time() then num = num + 1 else table.remove(msgs,a) end end
+    for a,items in pairs(msgs) do if math.floor(items.createdAt) + 1209600 >= os.time() and items.id ~= message.id then num = num + 1 else table.remove(msgs,a) end end
     if num == 0 then
       return {success = false, msg = "I couldn't delete **any messages**."} 
     else
@@ -29,10 +29,9 @@ command.execute = function(message,args,client)
       config.updateConfig(message.guild.id,data)
       local purge = message.channel:bulkDelete(msgs)
       if purge then
-        if message.channel then message:delete() end
         if data.auditlog ~= "nil" and message.guild:getChannel(data.auditlog) then
           local messages = {}
-          for _,items in pairs(msgs) do messages[1+#messages] = "["..message.author.username.." ("..message.author.id..")]: "..message.content end
+          for _,items in pairs(msgs) do messages[1+#messages] = "["..items.author.tag.." ("..items.author.id..")]: "..items.content end
           message.guild:getChannel(data.auditlog):send{embed = {
             title = "Bulk Message Deletion",
             fields = {
@@ -43,21 +42,21 @@ command.execute = function(message,args,client)
               },
               {
                 name = "Number of Messages",
-                value = tostring(num - 1),
+                value = tostring(num),
                 inline = true,
               },
               {
                 name = "Responsible Member",
                 value = message.author.mentionString.." (`"..message.author.id.."`)",
-                inline = true,
+                inline = false,
               },
             },
             color = 3447003,
-          },
-            file = {"purgedMessages.txt", table.concat(messages, "\n")},
-          }
+          }}
+         require("timer").sleep(500)
+         message.guild:getChannel(data.auditlog):send{file = {"purgedMessages.txt", table.concat(messages, "\n")}}
         end
-        return {success = true, msg = "Purged **"..(num - 1).."** message"..(num == 1 and "" or "s").."."}
+        return {success = true, msg = "Purged **"..(num).."** message"..(num == 1 and "" or "s").."."}
       else
         return {success = false, msg = "Failed to purge."}
       end

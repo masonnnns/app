@@ -492,6 +492,7 @@ client:on("memberUpdate", function(member)
 end)
 
 client:on("messageDelete", function(message)
+  timer.sleep(1000)
   if message.guild == nil then return end
   if message.author.bot then return end
   config[message.guild.id] = configuration.getConfig(message.guild.id)
