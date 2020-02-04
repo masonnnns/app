@@ -1,7 +1,7 @@
 command = {}
 
-local uptimeOS = os.time()
 local utils = require("/app/utils.lua")
+local cache = require("/app/server.lua")
 
 command.info = {
   Name = "Uptime",
@@ -14,7 +14,7 @@ command.info = {
 command.execute = function(message,args,client)
   message:reply{embed = {
       title = "Uptime",
-      description = utils.getTimeString(os.time() - uptimeOS)..".",
+      description = utils.getTimeString(os.time() - cache.getCache("ostime"))..".",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
     }}

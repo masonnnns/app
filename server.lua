@@ -200,8 +200,11 @@ client:on("ready", function()
   end
 end)
 
+local uptimeOS = os.time()
+
 client:on("ready", function()
   while true do
+    if os.time() - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
     http.request("GET","https://pentagonal-healer.glitch.me/")
     timer.sleep(5000)
   end
@@ -603,7 +606,9 @@ client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')
 local module = {}
 
 module.getCache = function(type,guild,id)
-  if type == "role" then
+  if type == "ostime" then
+    return uptimeOS
+  elseif type == "role" then
     return cache[guild].roles[id]
   elseif type == "user" then
     return cache[guild].users[id]
