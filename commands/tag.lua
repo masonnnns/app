@@ -21,6 +21,7 @@ command.execute = function(message,args,client)
   if found == nil then
     return {success = false, msg = "There is **no tag** with that name."}
   else
+    if data.tags.delete and message ~= nil then message:delete() end
     message:reply(found)
     return {success = "stfu", msg = found}
   end

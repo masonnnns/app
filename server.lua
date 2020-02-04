@@ -495,9 +495,11 @@ client:on("messageDelete", function(message)
   if message.guild == nil then return end
   if message.author.bot then return end
   config[message.guild.id] = configuration.getConfig(message.guild.id)
+  if config[message.guild.id].purgeignore[message.channel.id] ~= nil and config[message.guild.id].purgeignore[message.channel.id] >= 1 then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] - 1 print('purge ignored?') return end
   if config[message.guild.id].auditlog == "nil" and message.guild:getChannel(config[message.guild.id].auditlog) == nil then return end
   local auditLog
   for a,items in pairs(message.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id and items.actionType == 72 then auditLog = items break end end
+  if auditLog ~= nil and auditLog:getMember().id ~= nil and auditLog:getMember().id == client.user.id then return end 
   if auditLog == nil or auditLog:getMember().id == message.author.id then
     message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={ title = "Message Deleted", fields = { { name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true, }, { name = "Message Location", value = message.channel.mentionString, inline = true, }, { name = "Message Content", value = message.content, inline = false, }, }, color = 3447003, }}
   else
