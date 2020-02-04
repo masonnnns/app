@@ -1,6 +1,7 @@
 command = {}
 
 local config = require("/app/config.lua")
+local cache = require("/app/server.lua")
 
 command.info = {
   Name = "Case",
@@ -41,7 +42,7 @@ command.execute = function(message,args,client)
           },
         },
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
       }}
       return {success = "stfu", message = ""}
     elseif string.lower(case.type) == "kick" then
@@ -65,7 +66,7 @@ command.execute = function(message,args,client)
           },
         },
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
       }}
       return {success = "stfu", message = ""}
     elseif string.lower(case.type) == "mute" then
@@ -94,7 +95,7 @@ command.execute = function(message,args,client)
           },
         },
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
       }}
       return {success = "stfu", message = ""}
     elseif string.lower(case.type) == "auto unmute" then
@@ -118,7 +119,7 @@ command.execute = function(message,args,client)
           },
         },
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
       }}
       return {success = "stfu", message = ""}
     elseif string.lower(case.type) == "ban" then
@@ -147,7 +148,7 @@ command.execute = function(message,args,client)
           },
         },
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-        color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
       }}
       return {success = "stfu", message = ""} 
     elseif string.lower(case.type) == "auto unban" then
