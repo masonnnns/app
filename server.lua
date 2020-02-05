@@ -89,6 +89,9 @@ local detect = false
 	return detect
 end
 
+local automodInfractions = {
+},
+
 function autoMod(msg)
 --if "x" == "x" then return end
 local message = msg
@@ -130,7 +133,7 @@ if message.author.bot == false  then
     local antiSpam = require("/app/antispam.lua")(message)
     --print(antiSpam.safe)
     if antiSpam.safe == false then
-      for _,items in pairs(antiSpam.messages) do message.channel:getMessage(items):delete() end
+     -- for _,items in pairs(antiSpam.messages) do message.channel:getMessage(items):delete() end
       local reply = message:reply(message.author.mentionString..", no spamming.")
       print("[WARNING]: "..antiSpam.reason)
       timer.sleep(3000)

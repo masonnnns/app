@@ -12,7 +12,7 @@ local module = {}
 module = function(message)
   local now = os.time()
   print("now",now)
-  authors[1+#authors] = {time = now, author = message.author.id}
+  authors[1+#authors] = {time = now, author = message.author.id, id = message.id}
   messageLog[1+#messageLog] = {time = now, author = message.author.id, message = message.content, id = message.id}
   
   if #messageLog > 200 then messageLog = {} end --// Let's not kill glith's RAM.
@@ -34,20 +34,23 @@ module = function(message)
   for a,items in pairs(messageLog) do
     if items.message:lower() == message.content:lower() and items.id ~= message.id and items.author == message.author.id and message.author.id ~= 414030463792054282 and message.channel:getMessage(items.id) then
       msgMatch[1+#msgMatch] = items.id
-      print('strike!',#msgMatch)
+      print('strike!!',#msgMatch)
     end
   end
   
   --// Check if we found an infraction
   if #msgMatch >= maxDuplicatesWarning then
+    for a,items in pairs(messageLog) do if items.author == message.author.id then table.remove(messageLog,a) print(a,"removed") end end
     return {safe = false, reason = "Sending "..#msgMatch.." of the same message in seven seconds.", messages = msgMatch}
   end
 
   local matched = {}
   for a,items in pairs(authors) do
     if items.time > now - interval and now ~= false then
+      print("strike!",#matched + 1)
       matched[1+#matched] = items.id
       if #matched >= warnBuffer then
+        for b,c in pairs(authors) do if c.author == message.author.id then table.remove(authors,b) print(c,"removed") end end
         return {safe = false, reason = "Sent "..#matched.." messages in three seconds.", messages = matched}
       end
     elseif items.time < now - interval then
