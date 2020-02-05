@@ -348,7 +348,7 @@ command.execute = function(message,args,client)
         fields = {
           {
 			  		name = "Automod Settings",
-            value = "**Toggle:** "..(data.automod.enabled and "Disables" or "Enables").." the plugin.\n**View:** Displays a list of filtered terms.\n**Log:** Sets the automod log channel.\n**Invites:** Toggles the invites filter.\n**Mentions:** Toggles the mass-mentions filter, or sets a mention limit.\n**Spoilers:** Toggles the spoiler filter, or sets a spoiler limit.\n**Newline:** Toggles the newline filter, or sets a newline limit.\n**Filter:** Toggles the words filter, or adds/removes a term from the filter.",
+            value = "**Toggle:** "..(data.automod.enabled and "Disables" or "Enables").." the plugin.\n**View:** Displays a list of filtered terms.\n**Log:** Sets the automod log channel.\n**Invites:** Toggles the invites filter.\n**Mentions:** Toggles the mass-mentions filter, or sets a mention limit.\n**Spoilers:** Toggles the spoiler filter, or sets a spoiler limit.\n**Newline:** Toggles the newline filter, or sets a newline limit.\n**Spam:** Toggles the anti-spam filter.\n**Filter:** Toggles the words filter, or adds/removes a term from the filter.",
 				  	inline = true,
 			  	},
         },
@@ -389,6 +389,10 @@ command.execute = function(message,args,client)
           config.updateConfig(message.guild.id,data)
           return {success = true, msg = "Set the **automod log channel** to "..channel.mentionString.."."} end
       end
+    elseif args[3] == "spam" then
+      data.automod.types.spam[1] = not data.automod.types.spam[1]
+      config.updateConfig(message.guild.id,data)
+      return {success = true, msg = "**"..(data.automod.types.spam[1] and "Enabled" or "Disabled").."** the **anti-spam** filter."}
     elseif args[3] == "invites" then
       data.automod.types.invites[1] = not data.automod.types.invites[1]
       config.updateConfig(message.guild.id,data)
@@ -494,7 +498,7 @@ command.execute = function(message,args,client)
         },
         {
           name = "Automod",
-          value = "**Enabled:** "..(data.automod.enabled and "Yes." or "No.").."\n**Automod Log:** "..(data.automod.log == "nil" and "Disabled." or (message.guild:getChannel(data.automod.log) == nil and "Channel was Deleted." or message.guild:getChannel(data.automod.log).mentionString)).."\n**Invites Filter:** "..(data.automod.types.invites[1] and "Enabled." or "Disabled.").."\n**Mass-Mention Filter:** "..(data.automod.types.mentions[1] and "Enabled. (Limit: "..data.automod.types.mentions[2].."/msg)" or "Disabled.").."\n**Spoilers Filter:** "..(data.automod.types.spoilers[1] and "Enabled. (Limit: "..data.automod.types.spoilers[2].."/msg)" or "Disabled.").."\n**Newline Filter:** "..(data.automod.types.newline[1] and "Enabled. (Limit: "..data.automod.types.newline[2]..")" or "Disabled.").."\n**Words Filter:** "..(data.automod.types.filter[1] and "Enabled." or "Disabled."),
+          value = "**Enabled:** "..(data.automod.enabled and "Yes." or "No.").."\n**Automod Log:** "..(data.automod.log == "nil" and "Disabled." or (message.guild:getChannel(data.automod.log) == nil and "Channel was Deleted." or message.guild:getChannel(data.automod.log).mentionString)).."\n**Invites Filter:** "..(data.automod.types.invites[1] and "Enabled." or "Disabled.").."\n**Mass-Mention Filter:** "..(data.automod.types.mentions[1] and "Enabled. (Limit: "..data.automod.types.mentions[2].."/msg)" or "Disabled.").."\n**Spoilers Filter:** "..(data.automod.types.spoilers[1] and "Enabled. (Limit: "..data.automod.types.spoilers[2].."/msg)" or "Disabled.").."\n**Newline Filter:** "..(data.automod.types.newline[1] and "Enabled. (Limit: "..data.automod.types.newline[2].."/msg)" or "Disabled.").."\n**Words Filter:** "..(data.automod.types.filter[1] and "Enabled." or "Disabled.").."\n**Spam Filter:** "..(data.automod.types.spam[1] and "Enabled." or "Disabled."),
           inline = true,
         },
         {

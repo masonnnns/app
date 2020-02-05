@@ -141,7 +141,7 @@ function autoMod(msg)
 local message = msg
 local a, b = string.gsub(message.content,"\n","")
 local c, d = string.gsub(message.content,"||","")
-if message.author.bot == false  then
+if message.author.bot == false then
 	if (b + 1 >= tonumber(config[message.guild.id].automod.types.newline[2]) == true) and config[message.guild.id].automod.types.newline[1] and config[message.guild.id].automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", too many lines.")
@@ -179,6 +179,7 @@ if message.author.bot == false  then
 		reply:delete()
 		return false
 	else
+    if config[message.guild.id].automod.types.spam[1] == false then return true end
     local antiSpam = require("/app/antispam.lua")(message)
     --print(antiSpam.safe)
     if antiSpam.safe == false then
@@ -190,7 +191,6 @@ if message.author.bot == false  then
 		  reply:delete()
       return false
     else
-		  print("[NEW MESSAGE] [AUTHOR: "..string.upper(message.author.username).."] [GUILD: "..string.upper(message.guild.name).."] [CHANNEL: "..string.upper(message.channel.name).."]: "..message.content)
       return true
     end
 	end
@@ -701,8 +701,13 @@ return module
 { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, },
 
 channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={
-      title = "Channel Created",
+      title = "Auto Mod: Newline Filter",
       fields = {
+        {
+					name = "Member",
+					value = message.author.tag.." (`"..message.author.id.."`)",
+					inline = true,
+				},
         {
 					name = "Channel",
 					value = channel.mentionString,
