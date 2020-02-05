@@ -90,7 +90,22 @@ local detect = false
 end
 
 local automodInfractions = {
-},
+  -- [GUILD ID..USER ID] = {1, 2, 3}
+}
+
+local function doPunish(msg)
+  if automodInfractions[msg.guild.id..msg.author.id] == nil then
+    automodInfractions[msg.guild.id..msg.author.id] = {}
+  end
+  automodInfractions[msg.guild.id..msg.author.id][1+#automodInfractions[msg.guild.id..msg.author.id]] = os.time()
+  local found = {ten = 0, thirty = 0}
+  for _,items in pairs(automodInfractions[msg.guild.id..msg.author.id]) do
+    if items + 600 > os.time() then
+      found.ten = found.ten + 1    
+    end
+  end
+  print(found)
+end
 
 function autoMod(msg)
 --if "x" == "x" then return end
@@ -102,30 +117,35 @@ if message.author.bot == false  then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", too many lines.")
 		--message.author:getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\nPlease do not exceed the newline limit of 5 in "..message.guild.name..".\n\nHere's your message if you wish to edit it:```"..message.content.."```")
-		timer.sleep(3000)
+		doPunish(msg)
+    timer.sleep(3000)
 		reply:delete()
 		return false
 	elseif checkMany("curse",string.lower(msg.content),message.guild.id) == true and config[message.guild.id].automod.types.filter[1] and config[message.guild.id].automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", watch your language.")
+    doPunish(msg)
 		timer.sleep(3000)
 		reply:delete()
 		return false
 	elseif checkMany("invites",msg.content,msg.guild.id) == true and config[message.guild.id].automod.types.invites[1] and config[message.guild.id].automod.enabled or string.match(message.content,"discord.gg") and client:getInvite(xd) and config[message.guild.id].automod.types.invites[1] and config[message.guild.id].automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", no invites.")
+    doPunish(msg)
 		timer.sleep(3000)
 		reply:delete()
 		return false
 	elseif d/2 >= config[message.guild.id].automod.types.spoilers[2] and config[message.guild.id].automod.types.spoilers[1] and config[message.guild.id].automod.enabled then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", too many spoilers.")
+    doPunish(msg)
 		timer.sleep(3000)
 		reply:delete()
 		return false
 	elseif #msg.mentionedRoles + #msg.mentionedUsers >= config[message.guild.id].automod.types.mentions[2] and config[message.guild.id].automod.types.mentions[1] and config[message.guild.id].automod.enabled  then
 		message:delete()
 		local reply = message:reply(message.author.mentionString..", no mass-mentioning.")
+    doPunish(msg)
 		timer.sleep(3000)
 		reply:delete()
 		return false
@@ -133,8 +153,8 @@ if message.author.bot == false  then
     local antiSpam = require("/app/antispam.lua")(message)
     --print(antiSpam.safe)
     if antiSpam.safe == false then
-     -- for _,items in pairs(antiSpam.messages) do message.channel:getMessage(items):delete() end
       local reply = message:reply(message.author.mentionString..", no spamming.")
+      doPunish(msg)
       print("[WARNING]: "..antiSpam.reason)
       timer.sleep(3000)
 		  reply:delete()
