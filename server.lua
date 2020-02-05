@@ -142,7 +142,7 @@ local message = msg
 local a, b = string.gsub(message.content,"\n","")
 local c, d = string.gsub(message.content,"||","")
 if message.author.bot == false then
-	if (b + 1 >= tonumber(config[message.guild.id].automod.types.newline[2]) == true) and config[message.guild.id].automod.types.newline[1] and config[message.guild.id].automod.enabled then
+	if (b + 1 > tonumber(config[message.guild.id].automod.types.newline[2]) == true) and config[message.guild.id].automod.types.newline[1] and config[message.guild.id].automod.enabled then
 	 if config[message.guild.id].automod.log ~= "nil" and message.guild:getChannel(config[message.guild.id].automod.log) ~= nil then
   	  message.guild:getChannel(config[message.guild.id].automod.log):send{embed ={ title = "Auto Mod: Newline Filter", fields = { { name = "Member", value = message.author.tag.." (`"..message.author.id.."`)", inline = true, }, { name = "Channel", value = message.channel.mentionString, inline = true, }, { name = "Reason", value = "Exceeded the newline limit. ("..(b+1).."/"..config[message.guild.id].automod.types.newline[2]..")", inline = false, }, { name = "Message", value = "```\n"..message.content.."\n```", inline = false, }, }, color = 15105570, }}
    end
@@ -164,21 +164,30 @@ if message.author.bot == false then
 		reply:delete()
 		return false
 	elseif checkMany("invites",msg.content,msg.guild.id) == true and config[message.guild.id].automod.types.invites[1] and config[message.guild.id].automod.enabled or string.match(message.content,"discord.gg") and client:getInvite(xd) and config[message.guild.id].automod.types.invites[1] and config[message.guild.id].automod.enabled then
-		message:delete()
+		if config[message.guild.id].automod.log ~= "nil" and message.guild:getChannel(config[message.guild.id].automod.log) ~= nil then
+  	  message.guild:getChannel(config[message.guild.id].automod.log):send{embed ={ title = "Auto Mod: Invites Filter", fields = { { name = "Member", value = message.author.tag.." (`"..message.author.id.."`)", inline = true, }, { name = "Channel", value = message.channel.mentionString, inline = true, }, { name = "Reason", value = "Message contained an invite link.", inline = false, }, { name = "Message", value = "```\n"..message.content.."\n```", inline = false, }, }, color = 15105570, }}
+    end
+    message:delete()
 		local reply = message:reply(message.author.mentionString..", no invites.")
     doPunish(msg)
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif d/2 >= config[message.guild.id].automod.types.spoilers[2] and config[message.guild.id].automod.types.spoilers[1] and config[message.guild.id].automod.enabled then
-		message:delete()
+	elseif d/2 > config[message.guild.id].automod.types.spoilers[2] and config[message.guild.id].automod.types.spoilers[1] and config[message.guild.id].automod.enabled then
+		if config[message.guild.id].automod.log ~= "nil" and message.guild:getChannel(config[message.guild.id].automod.log) ~= nil then
+  	  message.guild:getChannel(config[message.guild.id].automod.log):send{embed ={ title = "Auto Mod: Spoilers Filter", fields = { { name = "Member", value = message.author.tag.." (`"..message.author.id.."`)", inline = true, }, { name = "Channel", value = message.channel.mentionString, inline = true, }, { name = "Reason", value = "Exceeded the spoiler limit. ("..(d/2).."/"..config[message.guild.id].automod.types.spoilers[2]..")", inline = false, }, { name = "Message", value = "```\n"..message.content.."\n```", inline = false, }, }, color = 15105570, }}
+    end
+    message:delete()
 		local reply = message:reply(message.author.mentionString..", too many spoilers.")
     doPunish(msg)
 		timer.sleep(3000)
 		reply:delete()
 		return false
-	elseif #msg.mentionedRoles + #msg.mentionedUsers >= config[message.guild.id].automod.types.mentions[2] and config[message.guild.id].automod.types.mentions[1] and config[message.guild.id].automod.enabled  then
-		message:delete()
+	elseif #msg.mentionedRoles + #msg.mentionedUsers > config[message.guild.id].automod.types.mentions[2] and config[message.guild.id].automod.types.mentions[1] and config[message.guild.id].automod.enabled  then
+		if config[message.guild.id].automod.log ~= "nil" and message.guild:getChannel(config[message.guild.id].automod.log) ~= nil then
+  	  message.guild:getChannel(config[message.guild.id].automod.log):send{embed ={ title = "Auto Mod: Mass-Mention Filter", fields = { { name = "Member", value = message.author.tag.." (`"..message.author.id.."`)", inline = true, }, { name = "Channel", value = message.channel.mentionString, inline = true, }, { name = "Reason", value = "Exceeded the mentions limit. ("..(#msg.mentionedRoles + #msg.mentionedUsers).."/"..config[message.guild.id].automod.types.mentions[2]..")", inline = false, }, { name = "Message", value = "```\n"..message.content.."\n```", inline = false, }, }, color = 15105570, }}
+    end
+    message:delete()
 		local reply = message:reply(message.author.mentionString..", no mass-mentioning.")
     doPunish(msg)
 		timer.sleep(3000)
@@ -189,6 +198,9 @@ if message.author.bot == false then
     local antiSpam = require("/app/antispam.lua")(message)
     --print(antiSpam.safe)
     if antiSpam.safe == false then
+      if config[message.guild.id].automod.log ~= "nil" and message.guild:getChannel(config[message.guild.id].automod.log) ~= nil then
+  	    message.guild:getChannel(config[message.guild.id].automod.log):send{embed ={ title = "Auto Mod: Spam Filter", fields = { { name = "Member", value = message.author.tag.." (`"..message.author.id.."`)", inline = true, }, { name = "Channel", value = message.channel.mentionString, inline = true, }, { name = "Reason", value = antiSpam.reason, inline = false, }, { name = "Messages Deleted", value = tostring(#antiSpam.messages), inline = false, }, }, color = 15105570, }}
+      end
       local reply = message:reply(message.author.mentionString..", no spamming.")
       doPunish(msg)
       print("[WARNING]: "..antiSpam.reason)
@@ -312,7 +324,7 @@ client:on("messageCreate",function(message)
 	  end
   end
   if found == nil or getPermission(message) < 1 and config[message.guild.id].modonly then
-    autoMod(message)
+    if getPermission(message) < 1 then autoMod(message) end
   else
     if config[message.guild.id].modonly and getPermission(message) < 1 then return end
     if config[message.guild.id].deletecmd then message:delete() end
@@ -328,7 +340,7 @@ client:on("messageCreate",function(message)
         message:reply((execute.emote == nil and ":ok_hand:" or execute.emote).." "..execute.msg)
       end
     else
-      autoMod(message)
+      if getPermission(message) < 1 then autoMod(message) end
       local m = message:reply(":no_entry: You **don't have permissions** to use this command!")
       timer.sleep(5000)
       m:delete()

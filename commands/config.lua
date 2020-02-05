@@ -457,7 +457,8 @@ command.execute = function(message,args,client)
     elseif args[3] == "filter" then
       if args[4] == nil then
         data.automod.types.filter[1] = not data.automod.types.filter[1]
-        config.updateConfig
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "**"..(data.automod.types.filter[1] and "Enabled" or "Disabled").."** the **words filter**."}
       else
         local found
         for a,items in pairs(data.terms) do if items:lower() == table.concat(args," ",4):lower() then found = a break end end
