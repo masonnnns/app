@@ -3,7 +3,7 @@ local banned = {}
 local warned = {}
 local messageLog = {}
 
-local warnBuffer = 3
+local warnBuffer = 5
 local maxDuplicatesWarning = 5
 local interval = 5050
 
@@ -18,36 +18,37 @@ module = function(message)
   if #messageLog > 200 then messageLog = {} end --// Let's not kill glith's RAM.
   
   for a,items in pairs(messageLog) do
-    if now == false or now >= items.time + 10 then
+    if now == false or now >= items.time + 7 then
       table.remove(messageLog,a) --// Get rid of old messages to prevent false warnings.
     end
   end
   
   for a,items in pairs(authors) do
-    if now == false or now >= items.time + 10 then
+    if now == false or now >= items.time + 3 then
       table.remove(authors,a) --// Get rid of old messages to prevent false warnings.
     end
   end
 
   --// Check how many times the same message has been sent.
-  local msgMatch = 0
+  local msgMatch = {}
   for a,items in pairs(messageLog) do
-    if items.message:lower() == message.content and items.author == message.author.id and message.author.id ~= 414030463792054282 and message.channel:getMessage(items.id) then
-      msgMatch = msgMatch + 1
+    if items.message:lower() == message.content:lower() and items.id ~= message.id and items.author == message.author.id and message.author.id ~= 414030463792054282 and message.channel:getMessage(items.id) then
+      msgMatch[1+#msgMatch] = items.id
+      print('strike!',#msgMatch)
     end
   end
   
   --// Check if we found an infraction
-  if msgMatch >= maxDuplicatesWarning then
-    return {safe = false, reason = "Sending "..msgMatch.." of the same message in five seconds."}
+  if #msgMatch >= maxDuplicatesWarning then
+    return {safe = false, reason = "Sending "..#msgMatch.." of the same message in seven seconds.", messages = msgMatch}
   end
 
-  local matched = 0
+  local matched = {}
   for a,items in pairs(authors) do
     if items.time > now - interval and now ~= false then
-      matched = matched + 1
-      if matched >= warnBuffer then
-        return {safe = false, reason = "Sent "..matched.." messages in five seconds."}
+      matched[1+#matched] = items.id
+      if #matched >= warnBuffer then
+        return {safe = false, reason = "Sent "..#matched.." messages in three seconds.", messages = matched}
       end
     elseif items.time < now - interval then
       table.remove(authors,a)

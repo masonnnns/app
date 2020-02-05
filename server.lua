@@ -130,7 +130,11 @@ if message.author.bot == false  then
     local antiSpam = require("/app/antispam.lua")(message)
     --print(antiSpam.safe)
     if antiSpam.safe == false then
+      for _,items in pairs(antiSpam.messages) do message.channel:getMessage(items):delete() end
+      local reply = message:reply(message.author.mentionString..", no spamming.")
       print("[WARNING]: "..antiSpam.reason)
+      timer.sleep(3000)
+		  reply:delete()
       return false
     else
 		  print("[NEW MESSAGE] [AUTHOR: "..string.upper(message.author.username).."] [GUILD: "..string.upper(message.guild.name).."] [CHANNEL: "..string.upper(message.channel.name).."]: "..message.content)
@@ -499,6 +503,7 @@ client:on("memberUpdate", function(member)
 end)
 
 client:on("messageDeleteUncached", function(ID, channel)
+  if channel.guild == nil then return end
   if config[channel.guild.id].purgeignore[channel.id] ~= nil and config[channel.guild.id].purgeignore[channel.id] >= 1 then config[channel.guild.id].purgeignore[channel.id] = config[channel.guild.id].purgeignore[channel.id] - 1 print('purge ignored?') configuration.updateConfig(channel.guild.id,config[channel.guild.id]) return end
 end)
 
