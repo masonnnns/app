@@ -128,9 +128,9 @@ command.execute = function(message,args,client)
         }}
       end
       return {success = "stfu", message = ""}
-    elseif string.lower(case.type) == "auto unmute" then
+    elseif string.lower(case.type) == "auto unmute" or string.lower(case.type) == "unmute" then
       message:reply{embed = {
-        title = "Auto Unmute - Case "..args[2],
+        title = (case.moderator == client.user.id and "Auto " or "").."Unmute - Case "..args[2],
         fields = {
           {
             name = "Member",

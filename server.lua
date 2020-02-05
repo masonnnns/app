@@ -261,7 +261,7 @@ client:on("ready", function()
                 until
                 cache[id].users[action.user].roles[configData.mutedrole] == nil
               end
-              configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
+              configData.modData.cases[1+#configData.modData.cases] = {type = "Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
               configuration.updateConfig(id,configData)
               if configData.modlog ~= "nil" and client:getGuild(id):getChannel(configData.modlog) then
                 if action.case ~= nil then 
@@ -270,7 +270,7 @@ client:on("ready", function()
              end
             elseif action.type == "ban" then
               if client:getGuild(id):getBan(action.user) ~= nil then client:getGuild(id):unbanUser(action.user,"Ban duration expired.") end
-              configData.modData.cases[1+#configData.modData.cases] = {type = "Auto Unban", user = action.user, moderator = client.user.id, reason = "Ban duration expired."}
+              configData.modData.cases[1+#configData.modData.cases] = {type = "Unban", user = action.user, moderator = client.user.id, reason = "Ban duration expired."}
               configuration.updateConfig(id,configData)
               if configData.modlog ~= "nil" and client:getGuild(id):getChannel(configData.modlog) then
                 if action.case ~= nil then
