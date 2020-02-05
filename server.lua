@@ -143,7 +143,9 @@ local a, b = string.gsub(message.content,"\n","")
 local c, d = string.gsub(message.content,"||","")
 if message.author.bot == false then
 	if (b + 1 >= tonumber(config[message.guild.id].automod.types.newline[2]) == true) and config[message.guild.id].automod.types.newline[1] and config[message.guild.id].automod.enabled then
-		message.guild:getChannel(config[message.guild.id].automod.log):send{embed ={ title = "Auto Mod: Newline Filter", fields = { { name = "Member", value = message.author.tag.." (`"..message.author.id.."`)", inline = true, }, { name = "Channel", value = message.channel.mentionString, inline = true, }, { name = "Reason", value = "Exceeded the newline limit. ("..(b+1).."/"..config[message.guild.id].automod.types.newline[2]..")", inline = false, }, { name = "Message", value = "```\n"..message.content.."\n```", inline = false, }, }, color = 16580705, }}
+	 if config[message.guild.id].automod.log ~= "nil" and message.guild:getChannel(config[message.guild.id].automod.log) ~= nil then
+  	  message.guild:getChannel(config[message.guild.id].automod.log):send{embed ={ title = "Auto Mod: Newline Filter", fields = { { name = "Member", value = message.author.tag.." (`"..message.author.id.."`)", inline = true, }, { name = "Channel", value = message.channel.mentionString, inline = true, }, { name = "Reason", value = "Exceeded the newline limit. ("..(b+1).."/"..config[message.guild.id].automod.types.newline[2]..")", inline = false, }, { name = "Message", value = "```\n"..message.content.."\n```", inline = false, }, }, color = 15105570, }}
+   end
     message:delete()
 		local reply = message:reply(message.author.mentionString..", too many lines.")
 		--message.author:getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\nPlease do not exceed the newline limit of 5 in "..message.guild.name..".\n\nHere's your message if you wish to edit it:```"..message.content.."```")
@@ -152,7 +154,10 @@ if message.author.bot == false then
 		reply:delete()
 		return false
 	elseif checkMany("curse",string.lower(msg.content),message.guild.id) == true and config[message.guild.id].automod.types.filter[1] and config[message.guild.id].automod.enabled then
-		message:delete()
+		if config[message.guild.id].automod.log ~= "nil" and message.guild:getChannel(config[message.guild.id].automod.log) ~= nil then
+  	  message.guild:getChannel(config[message.guild.id].automod.log):send{embed ={ title = "Auto Mod: Words Filter", fields = { { name = "Member", value = message.author.tag.." (`"..message.author.id.."`)", inline = true, }, { name = "Channel", value = message.channel.mentionString, inline = true, }, { name = "Reason", value = "Message contained a blacklisted term.", inline = false, }, { name = "Message", value = "```\n"..message.content.."\n```", inline = false, }, }, color = 15105570, }}
+    end
+    message:delete()
 		local reply = message:reply(message.author.mentionString..", watch your language.")
     doPunish(msg)
 		timer.sleep(3000)
