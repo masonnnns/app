@@ -491,6 +491,10 @@ client:on("memberUpdate", function(member)
   end
 end)
 
+client:on("messageDeleteUncached", function(ID, channel)
+  if config[channel.guild.id].purgeignore[channel.id] ~= nil and config[channel.guild.id].purgeignore[channel.id] >= 1 then config[channel.guild.id].purgeignore[channel.id] = config[channel.guild.id].purgeignore[channel.id] - 1 print('purge ignored?') configuration.updateConfig(channel.guild.id,config[channel.guild.id]) return end
+end)
+
 client:on("messageDelete", function(message)
   timer.sleep(1000)
   if message.guild == nil then return end

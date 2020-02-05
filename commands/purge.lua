@@ -31,7 +31,12 @@ command.execute = function(message,args,client)
       if purge then
         if data.auditlog ~= "nil" and message.guild:getChannel(data.auditlog) then
           local messages = {}
-          for _,items in pairs(msgs) do messages[1+#messages] = "["..items.author.tag.." ("..items.author.id..")]: "..items.content end
+          for _,items in pairs(msgs) do messages[1+#messages] = {math.floor(items.createdAt), "["..items.author.tag.." ("..items.author.id..")]: "..items.content} end
+          local sortedTable = table.sort(tableToSort,
+	          function(a,b)
+		return a[2] > b[2]
+	end
+	)
           message.guild:getChannel(data.auditlog):send{embed = {
             title = "Bulk Message Deletion",
             fields = {
