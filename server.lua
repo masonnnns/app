@@ -127,6 +127,8 @@ if message.author.bot == false  then
 		reply:delete()
 		return false
 	else
+    local antiSpam = require("/app/antispam.lua")(message)
+    --antiSpam(message)
 		print("[NEW MESSAGE] [AUTHOR: "..string.upper(message.author.username).."] [GUILD: "..string.upper(message.guild.name).."] [CHANNEL: "..string.upper(message.channel.name).."]: "..message.content)
     return true
 	end

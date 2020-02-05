@@ -31,7 +31,7 @@ command.execute = function(message,args,client)
       if purge then
         if data.auditlog ~= "nil" and message.guild:getChannel(data.auditlog) then
           local messages = {}
-          for _,items in pairs(msgs) do messages[items.createdAt] = {items.createdAt, "["..items.author.tag.." ("..items.author.id..")]: "..items.content} end
+          for _,items in pairs(msgs) do messages[1+#messages] = "["..items.author.tag.." ("..items.author.id..")]: "..items.content end
           message.guild:getChannel(data.auditlog):send{embed = {
             title = "Bulk Message Deletion",
             fields = {
@@ -54,9 +54,7 @@ command.execute = function(message,args,client)
             color = 3447003,
           }}
          require("timer").sleep(500)
-         print(sorted)
-         for a,b in pairs(messages) do print(a,b) end
-        -- message.guild:getChannel(data.auditlog):send{file = {"purgedMessages.txt", table.concat(messages, "\n")}}
+         message.guild:getChannel(data.auditlog):send{file = {"purgedMessages.txt", table.concat(messages, "\n")}}
         end
         return {success = true, msg = "Purged **"..(num).."** message"..(num == 1 and "" or "s").."."}
       else
