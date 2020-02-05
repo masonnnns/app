@@ -21,6 +21,7 @@ command.execute = function(message,args,client)
     args[2] = args[2] + 1
     local num = 0
     local msgs = message.channel:getMessages(tonumber(args[2]))
+    if msgs == nil or type(msgs) ~= "table" then return {success = false, msg = "I couldn't delete **any messages**."} end
     for a,items in pairs(msgs) do if math.floor(items.createdAt) + 1209600 >= os.time() and items.id ~= message.id then num = num + 1 else table.remove(msgs,a) end end
     if num == 0 then
       return {success = false, msg = "I couldn't delete **any messages**."} 
