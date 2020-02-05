@@ -11,7 +11,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  local roles = {}  for _,items in pairs(message.guild.roles) do if items.id ~= message.guild.id then roles[1+#roles] = items.mentionString end end
+  local roles = {}  for _,items in pairs(message.guild.roles) do if items.id ~= message.guild.id then roles[items.position] = items.mentionString end end
   if #roles == 0 then return {success = false, msg = "There are **no roles** to display."} end
   message:reply{embed = {
     title = "Roles ["..#roles.."]",
