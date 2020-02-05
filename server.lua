@@ -114,7 +114,7 @@ local function doPunish(message)
     timer.sleep(500)
     if cache[message.guild.id].users[message.author.id].roles[config[message.guild.id].mutedrole] ~= nil then
       config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = os.time() + 3600, moderator = client.user.id, user = message.author.id, case = 1+#config[message.guild.id].modData.cases}
-      config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "mute", reason = reason, moderator = client.user.id, user = message.author.id, duration = "60 Minutes"}
+      config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "mute", reason = "Five automod violations in 30 minutes.", moderator = client.user.id, user = message.author.id, duration = "60 Minutes"}
       message.guild:getChannel(config[message.guild.id].modlog):send{embed = { title = "Auto Mute - Case "..#data.modData.cases, fields = { { name = "Member", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true, }, { name = "Duration", value = "60 Minutes", inline = true, }, { name = "Reason", value = "Five automod violations in 30 minutes.", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 10038562, }}
       configuration.updateConfig(message.guild.id,config[message.guild.id])
     end
@@ -125,11 +125,13 @@ local function doPunish(message)
     if cache[message.guild.id].users[message.author.id].roles[config[message.guild.id].mutedrole] ~= nil then
       print('hi')
       config[message.guild.id].modData.actions[1+#config[message.guild.id].modData.actions] = {type = "mute", duration = os.time() + 900, moderator = client.user.id, user = message.author.id, case = 1+#config[message.guild.id].modData.cases}
-      config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "mute", reason = reason, moderator = client.user.id, user = message.author.id, duration = "15 Minutes"}
+      config[message.guild.id].modData.cases[1+#config[message.guild.id].modData.cases] = {type = "mute", reason = "Three automod violations in 10 minutes.", moderator = client.user.id, user = message.author.id, duration = "15 Minutes"}
       message.guild:getChannel(config[message.guild.id].modlog):send{embed = { title = "Auto Mute - Case "..#config[message.guild.id].modData.cases, fields = { { name = "Member", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true, }, { name = "Duration", value = "15 Minutes", inline = true, }, { name = "Reason", value = "Three automod violations in 10 minutes.", inline = false, }, { name = "Responsible Moderator", value = client.user.mentionString.." (`"..client.user.id.."`)", inline = false, }, }, color = 10038562, }}
       configuration.updateConfig(message.guild.id,config[message.guild.id])
     end
     return false
+  else
+    return true
   end
 end
 

@@ -70,33 +70,63 @@ command.execute = function(message,args,client)
       }}
       return {success = "stfu", message = ""}
     elseif string.lower(case.type) == "mute" then
-      message:reply{embed = {
-        title = "Mute - Case "..args[2],
-        fields = {
-          {
-            name = "Member",
-            value = client:getUser(case.user).tag.." (`"..case.user.."`)",
-            inline = false,
+      if case.moderator == client.user.id then
+        message:reply{embed = {
+          title = "Auto Mute - Case "..args[2],
+          fields = {
+            {
+              name = "Member",
+              value = client:getUser(case.user).tag.." (`"..case.user.."`)",
+              inline = false,
+            },
+            {
+              name = "Reason",
+              value = case.reason,
+              inline = true,
+            },
+            {
+              name = "Duration",
+              value = case.duration,
+              inline = true,
+            },
+            {
+              name = "Responsible Moderator",
+              value = client.user.tag.." (`"..case.moderator.."`)",
+              inline = false,
+            },
           },
-          {
-            name = "Reason",
-            value = case.reason,
-            inline = true,
+          footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+          color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
+        }}
+      else
+        message:reply{embed = {
+          title = "Mute - Case "..args[2],
+          fields = {
+            {
+              name = "Member",
+              value = client:getUser(case.user).tag.." (`"..case.user.."`)",
+              inline = false,
+            },
+            {
+              name = "Reason",
+              value = case.reason,
+              inline = true,
+            },
+            {
+              name = "Duration",
+              value = case.duration,
+              inline = true,
+            },
+            {
+              name = "Responsible Moderator",
+              value = client:getUser(case.moderator).tag.." (`"..case.moderator.."`)",
+              inline = false,
+            },
           },
-          {
-            name = "Duration",
-            value = case.duration,
-            inline = true,
-          },
-          {
-            name = "Responsible Moderator",
-            value = client:getUser(case.moderator).tag.." (`"..case.moderator.."`)",
-            inline = false,
-          },
-        },
-        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
-      }}
+          footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+          color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
+        }}
+      end
       return {success = "stfu", message = ""}
     elseif string.lower(case.type) == "auto unmute" then
       message:reply{embed = {
