@@ -143,7 +143,8 @@ local a, b = string.gsub(message.content,"\n","")
 local c, d = string.gsub(message.content,"||","")
 if message.author.bot == false then
 	if (b + 1 >= tonumber(config[message.guild.id].automod.types.newline[2]) == true) and config[message.guild.id].automod.types.newline[1] and config[message.guild.id].automod.enabled then
-		message:delete()
+		message.guild:getChannel(config[message.guild.id].automod.log):send{embed ={ title = "Auto Mod: Newline Filter", fields = { { name = "Member", value = message.author.tag.." (`"..message.author.id.."`)", inline = true, }, { name = "Channel", value = message.channel.mentionString, inline = true, }, { name = "Reason", value = "Exceeded the newline limit. ("..(b+1).."/"..config[message.guild.id].automod.types.newline[2]..")", inline = false, }, { name = "Message", value = "```\n"..message.content.."\n```", inline = false, }, }, color = 16580705, }}
+    message:delete()
 		local reply = message:reply(message.author.mentionString..", too many lines.")
 		--message.author:getPrivateChannel():send("⛔ **You've been warned in "..message.guild.name.."!**\nPlease do not exceed the newline limit of 5 in "..message.guild.name..".\n\nHere's your message if you wish to edit it:```"..message.content.."```")
 		doPunish(msg)
@@ -700,7 +701,7 @@ return module
 --[[
 { name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = false, },
 
-channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={
+channel.guild:getChannel(config[message.guild.id].auditlog):send{embed ={
       title = "Auto Mod: Newline Filter",
       fields = {
         {
@@ -714,9 +715,14 @@ channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={
 					inline = true,
 				},
         {
-					name = "Channel Location",
-					value = (channel.category == nil and "Not Categorized" or channel.category.name),
-					inline = true,
+					name = "Reason",
+					value = "Exceeded the newline limit.",
+					inline = false,
+				},
+        {
+					name = "Message",
+					value = message.content,
+					inline = false,
 				},
       },
       color = 16580705,
