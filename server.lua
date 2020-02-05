@@ -128,7 +128,7 @@ if message.author.bot == false  then
 		return false
 	else
     local antiSpam = require("/app/antispam.lua")(message)
-    print(antiSpam.safe)
+    --print(antiSpam.safe)
     if antiSpam.safe == false then
       print("[WARNING]: "..antiSpam.reason)
       return false
