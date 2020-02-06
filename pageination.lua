@@ -12,11 +12,11 @@ module.processReaction = function(reaction,user)
       if reaction.emojiName == "⬅️" then
         if setup.page == 1 then return end
         setup.page = setup.page - 1
-        setup.message:setContent(setup.pages[setup.page+1])
+        setup.message:setContent(setup.pages[setup.page])
       elseif reaction.emojiName == "➡️" then
         if setup.page + 1 > #setup.pages then return end
         setup.page = setup.page + 1
-        setup.message:setContent(setup.pages[setup.page+1])
+        --setup.message:setContent(embed = (setup.pages[setup.page]))
       end
     end
   end

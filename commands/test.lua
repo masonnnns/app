@@ -16,7 +16,9 @@ command.execute = function(message,args,client)
     description = "lol"
   }}
   local msg = message:reply(data)
-  dictionary.addDictionary(msg,{data,{embed = {title = "2/2", description = "ok"}}}, message.author.id)
+  dictionary.addDictionary(msg,{data,{title = "2/2", description = "ok"}}, message.author.id)
+  msg:addReaction(":arrow_left:")
+  msg:addReaction(":arrow_right:")
   return {success = "stfu"}
 end
 
