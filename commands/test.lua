@@ -1,5 +1,7 @@
 command = {}
 
+local dictionary = require("/app/pageination.lua")
+
 command.info = {
   Name = "Test",
   Alias = {},
@@ -9,10 +11,12 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  lines = {"xd","hi","test"}
-  message.channel:send {
-		file = {"lines.txt", table.concat(lines, "\n")} -- concatenate and send the collected lines in a file
-	}
+  local data = {embed = {
+    title = "xd",
+    description = "lol",
+  }},
+  message:reply(data)
+  dictionary.addDictionary(message,{data,{embed = {title = "2/2", description = "ok"}}})
   return {success = "stfu"}
 end
 
