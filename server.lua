@@ -697,7 +697,7 @@ client:on('roleUpdate', function(role)
 end)
 
 client:on('reactionAdd', function(reaction,user)
-  print('xd',reaction.emojiName)
+  print('xd',user)
   require("/app/pageination.lua").processReaction(reaction,user)
 end)
 
