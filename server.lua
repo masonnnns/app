@@ -696,6 +696,11 @@ client:on('roleUpdate', function(role)
   cache[role.guild.id].roles[role.id] = {name = role.name, hoisted = role.hoisted, mentionable = role.mentionable, color = role.color, position = role.position}
 end)
 
+client:on('reactionAdd', function(reaction,user)
+  print('xd',reaction.emojiName)
+  require("/app/pageination.lua").processReaction(reaction,user)
+end)
+
 client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')
 
 local module = {}
