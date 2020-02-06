@@ -261,7 +261,7 @@ client:on("ready", function()
                 until
                 cache[id].users[action.user].roles[configData.mutedrole] == nil
               end
-              configData.modData.cases[1+#configData.modData.cases] = {type = "Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired."}
+              configData.modData.cases[1+#configData.modData.cases] = {type = "Unmute", user = action.user, moderator = client.user.id, reason = "Mute duration expired. (Case "..action.case..")"}
               configuration.updateConfig(id,configData)
               if configData.modlog ~= "nil" and client:getGuild(id):getChannel(configData.modlog) then
                 if action.case ~= nil then 
@@ -270,7 +270,7 @@ client:on("ready", function()
              end
             elseif action.type == "ban" then
               if client:getGuild(id):getBan(action.user) ~= nil then client:getGuild(id):unbanUser(action.user,"Ban duration expired.") end
-              configData.modData.cases[1+#configData.modData.cases] = {type = "Unban", user = action.user, moderator = client.user.id, reason = "Ban duration expired."}
+              configData.modData.cases[1+#configData.modData.cases] = {type = "Unban", user = action.user, moderator = client.user.id, reason = "Ban duration expired. (Case "..action.case..")"}
               configuration.updateConfig(id,configData)
               if configData.modlog ~= "nil" and client:getGuild(id):getChannel(configData.modlog) then
                 if action.case ~= nil then
@@ -326,6 +326,7 @@ client:on("messageCreate",function(message)
   if found == nil or getPermission(message) < 1 and config[message.guild.id].modonly then
     if getPermission(message) < 1 then autoMod(message) end
   else
+    print("[COMMAND RAN]: "..message.author.username.." ("..message.author.id..") ran command "..found.info.Name.." in "..message.guild.name.." ("..message.guild.id..")")
     if config[message.guild.id].modonly and getPermission(message) < 1 then return end
     if config[message.guild.id].deletecmd then message:delete() end
     if found.info.PermLvl <= getPermission(message) then

@@ -181,9 +181,9 @@ command.execute = function(message,args,client)
         color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
       }}
       return {success = "stfu", message = ""} 
-    elseif string.lower(case.type) == "auto unban" then
+    elseif string.lower(case.type) == "auto unban" or string.lower(case.type) == "unban" then
       message:reply{embed = {
-        title = "Auto Unban - Case "..args[2],
+        title = (case.moderator == client.user.id and "Auto " or "").."Unban - Case "..args[2],
         fields = {
           {
             name = "Member",
