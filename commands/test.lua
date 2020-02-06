@@ -17,8 +17,9 @@ command.execute = function(message,args,client)
   }}
   local msg = message:reply(data)
   dictionary.addDictionary(msg,{data,{title = "2/2", description = "ok"}}, message.author.id)
-  msg:addReaction(":arrow_left:")
-  msg:addReaction(":arrow_right:")
+  local emoji = message.guild.emojis:find(function(e) return e.name == 'Lua' end)
+  message:addReaction("👍")
+  msg:addReaction("👍")
   return {success = "stfu"}
 end
 
