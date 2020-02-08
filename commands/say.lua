@@ -13,6 +13,7 @@ command.execute = function(message,args,client)
     return {success = false, msg = "You must provide a **message to repeat** in argument 2."}
   else
     local sayMsg = string.sub(message.content,string.len(args[1])+1)
+    message:delete()
     message:reply(sayMsg)
     return {success = "stfu", msg = ""}
   end
