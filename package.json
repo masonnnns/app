@@ -1,6 +1,6 @@
 {
   "name": "discordia-bot",
-  "version": "0.0.1",
+  "version": "^0.0.1",
   "description": "Start your new Discord Bot with Lua!",
   "main": "server.lua",
   "scripts": {
