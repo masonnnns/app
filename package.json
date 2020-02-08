@@ -7,8 +7,7 @@
     "start": "./luvit server.lua"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "discordia": "^0.0.0"
+    "express": "^4.17.1"
   },
   "engines": {
     "node": "8.x"
