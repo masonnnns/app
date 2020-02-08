@@ -12,6 +12,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
+  print(cache.getCache("roleh",message.guild.id,message.author.id).color)
   message:reply{embed = {
       title = "Uptime",
       description = utils.getTimeString(os.time() - cache.getCache("ostime"))..".",
