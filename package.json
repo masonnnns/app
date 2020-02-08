@@ -1,19 +1,20 @@
 {
   "name": "discordia-bot",
-  "version": "^0.0.1",
+  "version": "0.0.1",
   "description": "Start your new Discord Bot with Lua!",
   "main": "server.lua",
   "scripts": {
     "start": "./luvit server.lua"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "discordia": "^0.0.0"
   },
   "engines": {
     "node": "8.x"
   },
   "repository": {
-    "url": "https://github.com/SinisterRectus/Discordia.git"
+    "url": "https://sinisterrectus-discordia-1.glitch.me/"
   },
   "license": "MIT",
   "keywords": [
