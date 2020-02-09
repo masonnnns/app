@@ -248,6 +248,7 @@ client:on("ready", function()
       if client:getGuild(id) == nil or config[id] == nil then
         --// not in guild, we won't do their math >:*(
       else
+        --print('doing')
         for num,action in pairs(configData.modData.actions) do
           if tonumber(action.duration) ~= nil and os.time() >= action.duration then --// the duration isn't permanent and it's expired.
             table.remove(configData.modData.actions,num)
