@@ -301,7 +301,7 @@ client:on("messageCreate",function(message)
   config[message.guild.id] = configuration.getConfig(message.guild.id)
   local args = sepMsg(message.content)
   if args[1] == nil then return end
-  if string.lower(args[1]) == "!!prefix?" then message:reply("The prefix for **"..message.guild.name.."** is **"..config[message.guild.id].prefix.."**") return end
+  if string.lower(args[1]) == "?prefix?" then message:reply("The prefix for **"..message.guild.name.."** is **"..config[message.guild.id].prefix.."**") return end
   if args[1] == "<@!"..client.user.id..">" or args[1] == "<@"..client.user.id..">" then
     table.remove(args,1)
     args[1] = config[message.guild.id].prefix..args[1]
@@ -326,7 +326,7 @@ client:on("messageCreate",function(message)
   if found == nil or getPermission(message) < 1 and config[message.guild.id].modonly then
     if getPermission(message) < 1 then autoMod(message) end
   else
-    print("[COMMAND RAN]: "..message.author.username.." ("..message.author.id..") ran command "..found.info.Name.." in "..message.guild.name.." ("..message.guild.id..")")
+    print("[COMMAND RAN]: "..message.author.username.." ("..message.author.id..") ran command "..found.info.Name.." in #"..message.channel.name.." in "..message.guild.name.." ("..message.guild.id..")\nArgs: "..table.concat(args," "))
     if config[message.guild.id].modonly and getPermission(message) < 1 then return end
     if config[message.guild.id].deletecmd then message:delete() end
     if found.info.PermLvl <= getPermission(message) then
