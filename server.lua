@@ -472,7 +472,7 @@ client:on("memberLeave", function(member)
   config[member.guild.id] = configuration.getConfig(member.guild.id)
   if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
     local roles = {}
-    for _,items in pairs(member.roles) do roles[1+#roles] = items.mentionString end
+    for _,items in pairs(cache[member.guild.id].users[member.id].roles) do roles[1+#roles] = member.guild:getRole(items) end
     member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Member Left", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Roles", value = (#roles == 0 and "No Roles!" or table.concat(roles,", ")), inline = true, }, }, color = 15158332, }}
   end
   if config[member.guild.id].welcome.enabled and config[member.guild.id].welcome.leavechannel ~= "nil" and config[member.guild.id].welcome.leavemsg ~= "nil" then

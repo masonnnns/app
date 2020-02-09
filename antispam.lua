@@ -34,13 +34,13 @@ module = function(message)
   for a,items in pairs(messageLog) do
     if items.message:lower() == message.content:lower() and items.id ~= message.id and items.author == message.author.id and message.author.id ~= 414030463792054282 and message.channel:getMessage(items.id) then
       msgMatch[1+#msgMatch] = items.id
-      print('strike!!',#msgMatch)
     end
   end
   
   --// Check if we found an infraction
   if #msgMatch >= maxDuplicatesWarning then
-    for a,items in pairs(messageLog) do if items.author == message.author.id then table.remove(messageLog,a) print(a,"removed") end end
+    for a,items in pairs(messageLog) do if items.author == message.author.id then table.remove(messageLog,a) end end
+    for b,c in pairs(authors) do if c.author == message.author.id then table.remove(authors,b) end end
     return {safe = false, reason = "Sending "..#msgMatch.." of the same message in seven seconds.", messages = msgMatch}
   end
 
@@ -51,6 +51,7 @@ module = function(message)
       matched[1+#matched] = items.id
       if #matched >= warnBuffer then
         for b,c in pairs(authors) do if c.author == message.author.id then table.remove(authors,b) print(c,"removed") end end
+        for d,items in pairs(messageLog) do if items.author == message.author.id then table.remove(messageLog,d) end end
         return {safe = false, reason = "Sent "..#matched.." messages in three seconds.", messages = matched}
       end
     elseif items.time < now - interval then
