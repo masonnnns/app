@@ -25,6 +25,15 @@ command.execute = function(message,args,client)
   else
     if inGuild then
       local perm = utils.getPermission(message,false,user.id)
+      if perm == 1 then
+        perm = "Server Moderator"
+      elseif perm == 2 then
+        perm = "Server Administrator"
+      elseif perm == 3 then
+        perm = "Server Owner"
+      else
+        perm = "Member"
+      end
       local roles = {}
       for items,_ in pairs(cache.getCache("user",message.guild.id,user.id).roles) do roles[1+#roles] = message.guild:getRole(items).mentionString end
       local data = {embed = {
@@ -58,7 +67,7 @@ command.execute = function(message,args,client)
           },
           {
             name = "Server Permission",
-            value = (perm == 1 and "Server Moderator" or (perm == 2 and "Server Administrator" or (perm == 3 and "Server Owner" or "User"))),
+            value = perm,
             inline = true
           },
           {
