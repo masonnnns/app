@@ -25,9 +25,6 @@ local function getPermission(message,id)
 	if id == nil then id = message.author.id end
 	if message.guild:getMember(id) == nil then
 		return 0
-	elseif id == client.owner.id then
-		--print('owner')
-		return 5
 	elseif id == message.guild.owner.id then
 		--print('guild owner')
 		return 3
@@ -329,8 +326,8 @@ client:on("messageCreate",function(message)
   else
     print("[COMMAND RAN]: "..message.author.username.." ("..message.author.id..") ran command "..found.info.Name.." in #"..message.channel.name.." in "..message.guild.name.." ("..message.guild.id..")\nArgs: "..table.concat(args," "))
     if config[message.guild.id].modonly and getPermission(message) < 1 then return end
-    if config[message.guild.id].deletecmd then message:delete() end
-    if found.info.PermLvl <= getPermission(message) then
+    if found.info.PermLvl <= getPermission(message) or found.info.PermLvl == 5 and message.author.id == client.owner.id then
+      if config[message.guild.id].deletecmd then message:delete() end
       local execute = found.execute(message,args,client)
       if execute == nil or type(execute) ~= "table" then
         message:reply(":no_entry: An **unknown error** occured.")
@@ -501,7 +498,7 @@ client:on("memberUpdate", function(member)
   if cache[member.guild.id].users[member.id] == nil then return end
   local auditLog
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end
-  if auditLog == nil then print("no log found for action.") return end
+  if auditLog == nil then return end
   if auditLog.actionType == 25 then
     local theirRoles = {} for _,items in pairs(member.roles) do table.insert(theirRoles,#theirRoles+1,items.id) end
     local roles = {added = {}, removed = {}}
