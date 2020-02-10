@@ -53,7 +53,7 @@ command.execute = function(message,args,client)
       end end
     end
     for a,b in pairs(cmdList) do end
-    -- table.insert(data.embed.fields,#data.embed.fields+1, {name = "Status", value = useGuild.status, inline = true})
+      table.insert(data.embed.fields,#data.embed.fields+1, {name = a, value = "`"..table.concat(b,",`")"`", inline = false})
   end
 end
 
