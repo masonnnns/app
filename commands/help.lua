@@ -40,10 +40,9 @@ command.execute = function(message,args,client)
     cmdList = {}
     local dataa = {embed = {
 				--author = {name = user.tag, icon_url = user:getAvatarURL()},
-        --title = "**Whois Lookup Results**",
-        description = "To use a command, say **"..data.prefix.."<command name>\nTo view more information about a command say **"..data.prefix.."help <command name>**",
-        fields = {{name = "ok", value = "k", inline = true}},
-				footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+        title = "AA-R0N Commands",
+        description = "To use a command, say **"..data.prefix.."<command name>**\nTo view more information about a command say **"..data.prefix.."help <command name>**",
+        fields = {},
         color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
 			}}
     for file, _type in fs.scandirSync("/app/commands") do
@@ -57,9 +56,10 @@ command.execute = function(message,args,client)
     end
     for a,b in pairs(cmdList) do
       local xd = "`"..table.concat(b,"`, `").."`"
-      table.insert(dataa.embed.fields,#dataa.embed.fields+1, {name = a, value = "test", inline = false})
+      table.insert(dataa.embed.fields,#dataa.embed.fields+1, {name = a, value = xd, inline = false})
     end
     message:reply(dataa)
+    return {success = "stfu"}
   end
 end
 
