@@ -213,7 +213,7 @@ end
 end
 
 client:on("ready", function()
-  client:setGame("?help | AA-R0N")
+  client:setGame("?help")
   for _,guilds in pairs(client.guilds) do
     cache[guilds.id] = {users = {}, channels = {}, roles = {}}
     for _,users in pairs(guilds.members) do
