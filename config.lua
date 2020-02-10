@@ -4,6 +4,7 @@ local config = {}
 local function addConfig(id)
 	config[id] = {
 		prefix = "?",
+    raidmode = false,
     automod = {enabled = false, log = "nil", types = {invites = {false,0}, spam = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
     tags = {enabled = false, tags = {}, delete = false},
     welcome = {enabled = false, joinmsg = "nil", joinchannel = "nil", leavechannel = "nil", leavemsg = "nil", joinchannel = "nil", autorole = "nil"},
