@@ -17,8 +17,6 @@ command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   if args[2] == nil then
     return {success = false, msg = "You must provide **a member to unmute** in argument 2."}
-  elseif #data.modData.actions == 0 then
-    return {success = false, msg = "There are currently **no muted users**."}
   else
     local user = utils.resolveUser(message,args[2])
     if user == false then
@@ -28,9 +26,7 @@ command.execute = function(message,args,client)
     elseif user.id == client.user.id then
       return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
     else
-      local found
-      for a,items in pairs(data.modData.actions) do if items.user == user.id then found = a break end end
-      if found == nil then
+      if cache.getCache("user",message.guild.id,user.id).roles[data.mutedrole] == nil then
         return {success = false, msg = "**"..user.name.."** isn't currently muted."}
       else
         local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
