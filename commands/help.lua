@@ -42,7 +42,7 @@ command.execute = function(message,args,client)
 				--author = {name = user.tag, icon_url = user:getAvatarURL()},
         --title = "**Whois Lookup Results**",
         description = "**This user isn't in the guild.**",
-        fields = {},
+        fields = {{name = "ok", value = "k", inline = true}},
 				footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
         color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
 			}}
@@ -61,6 +61,7 @@ command.execute = function(message,args,client)
     end
   end
   message:reply(dataa)
+  message:reply{dataa}
 end
 
 return command
