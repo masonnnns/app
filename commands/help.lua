@@ -8,9 +8,6 @@ local function getPermission(message,id)
 	if id == nil then id = message.author.id end
 	if message.guild:getMember(id) == nil then
 		return 0
-	elseif id == "276294288529293312" then
-		--print('owner')
-		return 5
 	elseif id == message.guild.owner.id then
 		--print('guild owner')
 		return 3
@@ -32,6 +29,7 @@ command.info = {
   Name = "Help",
   Alias = {"cmds", "commands"},
   Usage = "help <optional command>",
+  Category = "Information"
   Description = "View a list of all commands, or view a specific command.",
   PermLvl = 0,
 }
