@@ -11,7 +11,7 @@ command.info = {
   Alias = {"w","userinfo"},
   Usage = "whois <optional user>",
   Description = "Views information on a specified user.",
-  PermLvl = 1,
+  PermLvl = 0,
 }
 
 command.execute = function(message,args,client)
@@ -35,7 +35,7 @@ command.execute = function(message,args,client)
         perm = "Member"
       end
       local roles = {}
-      for items,_ in pairs(cache.getCache("user",message.guild.id,user.id).roles) do roles[1+#roles] = message.guild:getRole(items).mentionString end
+      pcall(function() for items,_ in pairs(cache.getCache("user",message.guild.id,user.id).roles) do roles[1+#roles] = message.guild:getRole(items).mentionString end end)
       local data = {embed = {
 				author = {name = user.tag, icon_url = user:getAvatarURL()},
         --title = "**Whois Lookup Results**",

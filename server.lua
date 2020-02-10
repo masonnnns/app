@@ -231,7 +231,7 @@ client:on("ready", function()
     end
     for _,channels in pairs(guilds.voiceChannels) do
       cache[guilds.id].channels[channels.id] = {name = channels.name, userlimit = channels.userLimit, bitrate = channels.bitrate, permissions = channels.permissionOverwrites, category = (channels.category == nil and "nil" or channels.category.id)}
-     -- print("[VOICE CHANNEL CACHED]: "..channels.name.." has been cached in "..guilds.name..".")
+      --print("[VOICE CHANNEL CACHED]: "..channels.name.." has been cached in "..guilds.name..".")
     end
     for _,roles in pairs(guilds.roles) do
       cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles.color, position = roles.position}
@@ -712,7 +712,7 @@ module.getCache = function(type,guild,id)
     return cache[guild].users[id]
   elseif type == "roleh" then
     local role,pos = "",-1
-    for items,_ in pairs(cache[guild].users[id].roles) do if module.getCache("role",guild,items).position > pos then role = items pos = module.getCache("role",guild,items).position end end
+    pcall(function() for items,_ in pairs(cache[guild].users[id].roles) do if module.getCache("role",guild,items).position > pos then role = items pos = module.getCache("role",guild,items).position end end end)
     return (role == "" and client:getGuild(guild):getRole(guild) or module.getCache("role",guild,role))
   end
 end
