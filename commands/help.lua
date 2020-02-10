@@ -58,7 +58,12 @@ command.execute = function(message,args,client)
       local xd = "`"..table.concat(b,"`, `").."`"
       table.insert(dataa.embed.fields,#dataa.embed.fields+1, {name = a, value = xd, inline = false})
     end
-    message:reply(dataa)
+    local result = message.author:getPrivateChannel():send(dataa)
+    if result == nil or result == false then
+      return {success = false, msg = "I couldn't **direct message** you."}
+    else
+      return {success = true, msg = "I sent you a **direct message** with the list of commands."}
+    end
     return {success = "stfu"}
   else
     local found
