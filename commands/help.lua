@@ -39,11 +39,13 @@ command.execute = function(message,args,client)
   if args[2] == nil then
     cmdList = {}
     local dataa = {embed = {
-      title = "AA-R0N Commands",
-      description = "To use a command say **"..data.prefix.."<command name>**\nTo learn more about a command, say **"..data.prefix.."help <command name>**",
-      fields = {},
-      color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
-    }}
+				--author = {name = user.tag, icon_url = user:getAvatarURL()},
+        --title = "**Whois Lookup Results**",
+        description = "**This user isn't in the guild.**",
+        fields = {},
+				footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
+			}}
     for file, _type in fs.scandirSync("/app/commands") do
 	    if _type ~= "directory" then
       local cmd = require("/app/commands/" .. file)
@@ -54,8 +56,8 @@ command.execute = function(message,args,client)
       end end
     end
     for a,b in pairs(cmdList) do
-      
-      table.insert(dataa.embed.fields,#dataa.embed.fields+1, {name = a, value = "`"..table.concat(b,"`, `").."`", inline = false})
+      local xd = "`"..table.concat(b,"`, `").."`"
+      table.insert(dataa.embed.fields,#dataa.embed.fields+1, {name = "xd", value = "test", inline = false})
     end
   end
   message:reply(dataa)
