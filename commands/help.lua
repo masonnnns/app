@@ -38,7 +38,7 @@ command.execute = function(message,args,client)
   data = config.getConfig(message.guild.id)
   if args[2] == nil then
     cmdList = {}
-    local data = {embed = {
+    local dataa = {embed = {
       title = "AA-R0N Commands",
       description = "To use a command say **"..data.prefix.."<command name>**\nTo learn more about a command, say **"..data.prefix.."help <command name>**",
       fields = {},
@@ -54,11 +54,11 @@ command.execute = function(message,args,client)
       end end
     end
     for a,b in pairs(cmdList) do
-      if a ~= "Misc" then
-      table.insert(data.embed.fields,#data.embed.fields+1, {name = a, value = "`"..table.concat(b,"`, `").."`", inline = false})
-    end end
+      
+      table.insert(dataa.embed.fields,#dataa.embed.fields+1, {name = a, value = "`"..table.concat(b,"`, `").."`", inline = false})
+    end
   end
-  message:reply(data)
+  message:reply(dataa)
 end
 
 return command
