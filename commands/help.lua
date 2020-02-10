@@ -41,6 +41,7 @@ command.execute = function(message,args,client)
     local data = {embed = {
       title = "AA-R0N Commands",
       description = "To use a command say **"..data.prefix.."<command name>**\nTo learn more about a command, say **"..data.prefix.."help <command name>**",
+      fields = {},
       color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
     }}
     for file, _type in fs.scandirSync("/app/commands") do
@@ -52,9 +53,12 @@ command.execute = function(message,args,client)
           cmdList[cmd.info.Category][1+#cmdList[cmd.info.Category]] = cmd.info.Name:lower()
       end end
     end
-    for a,b in pairs(cmdList) do end
-      table.insert(data.embed.fields,#data.embed.fields+1, {name = a, value = "`"..table.concat(b,",`")"`", inline = false})
+    for a,b in pairs(cmdList) do
+      if a ~= "Misc" then
+      table.insert(data.embed.fields,#data.embed.fields+1, {name = a, value = "`"..table.concat(b,"`, `").."`", inline = false})
+    end end
   end
+  message:reply(data)
 end
 
 return command
