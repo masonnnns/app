@@ -4,6 +4,7 @@ command.info = {
   Name = "Username",
   Alias = {},
   Usage = "username <new username>",
+  Category = "Private",
   Description = "Change AA-R0N's username.",
   PermLvl = 5,
 }

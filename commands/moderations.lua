@@ -8,6 +8,7 @@ command.info = {
   Name = "Moderations",
   Alias = {},
   Usage = "moderations",
+  Category = "Administration",
   Description = "View all the active moderations in the server.",
   PermLvl = 2,
 }

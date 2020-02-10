@@ -7,6 +7,7 @@ command.info = {
   Name = "Kick",
   Alias = {},
   Usage = "kick <user> <reason>",
+  Category = "Moderation",
   Description = "Kick a user from the server.",
   PermLvl = 1,
 }

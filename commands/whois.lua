@@ -10,6 +10,7 @@ command.info = {
   Name = "Whois",
   Alias = {"w","userinfo"},
   Usage = "whois <optional user>",
+  Category = "Utility",
   Description = "Views information on a specified user.",
   PermLvl = 0,
 }

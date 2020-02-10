@@ -8,6 +8,7 @@ command.info = {
   Name = "Config",
   Alias = {},
   Usage = "config <setting/plugin> <path/new value> <new value>",
+  Category = "Administration",
   Description = "Edit AA-R0N's configuation in your server.",
   PermLvl = 2,
 }

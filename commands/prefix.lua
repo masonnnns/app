@@ -6,6 +6,7 @@ command.info = {
   Name = "Prefix",
   Alias = {},
   Usage = "prefix <new prefix>",
+  Category = "Administration",
   Description = "Change the server's prefix.",
   PermLvl = 2,
 }

@@ -6,6 +6,7 @@ command.info = {
   Name = "Invite",
   Alias = {},
   Usage = "invite",
+  Category = "Information",
   Description = "Get the link to invite the bot.",
   PermLvl = 0,
 }

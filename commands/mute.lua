@@ -36,6 +36,7 @@ command.info = {
   Name = "Mute",
   Alias = {},
   Usage = "mute <user> <optional duration> <reason>",
+  Category = "Moderation",
   Description = "Suspend a user's ability to talk in your server.",
   PermLvl = 1,
 }

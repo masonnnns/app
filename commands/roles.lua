@@ -6,6 +6,7 @@ command.info = {
   Name = "Roles",
   Alias = {},
   Usage = "roles",
+  Category = "Administration",
   Description = "Displays a list of all the roles in the guild.",
   PermLvl = 2,
 }

@@ -4,6 +4,7 @@ command.info = {
   Name = "Restart",
   Alias = {},
   Usage = "restart",
+  Category = "Private",
   Description = "restart the bot.",
   PermLvl = 5,
 }

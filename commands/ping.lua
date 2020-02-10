@@ -4,6 +4,7 @@ command.info = {
   Name = "Ping",
   Alias = {},
   Usage = "ping",
+  Category = "Information",
   Description = "Test AA-R0N's connection to Discord.",
   PermLvl = 0,
 }

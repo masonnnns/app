@@ -26,12 +26,12 @@ local function getPermission(message,id)
 end	
 
 command.info = {
-  Name = "Helps",
+  Name = "Help",
   Alias = {},
   Usage = "help <optional command>",
   Category = "Information",
   Description = "View a list of all commands, or view a specific command.",
-  PermLvl = 5,
+  PermLvl = 0,
 }
 
 command.execute = function(message,args,client)
@@ -60,6 +60,38 @@ command.execute = function(message,args,client)
     end
     message:reply(dataa)
     return {success = "stfu"}
+  else
+    local found
+    for file, _type in fs.scandirSync("/app/commands") do
+      if _type ~= "directory" then
+      local cmd = require("/app/commands/" .. file)
+        if string.lower(cmd.info.Name) == string.lower(args[2]) then
+          found = cmd
+          break
+        elseif #cmd.info.Alias >= 1 then
+          for _,items in pairs(cmd.info.Alias) do
+            if string.lower(items) == string.lower(args[2]) then
+              found = cmd
+              break
+            end
+          end
+        end
+	    end
+    end
+    if found == nil then
+      local redoCmd = command.execute(message,{data.prefix.."help"},client)
+      return redoCmd
+    else
+      if getPermission(message) < found.info.PermLvl then local reCmd = command.execute(message,{"xd"},client) return {success = reCmd.success, msg = reCmd.msg} end
+      local txts = "**Command:** "..config.getConfig(message.guild.id).prefix..string.lower(found.info.Name).."\n**Description:** "..found.info.Description..(#found.info.Alias == 0 and "" or "\n**Alias:** "..config.getConfig(message.guild.id).prefix..table.concat(found.info.Alias,", "..config.getConfig(message.guild.id).prefix)).."\n**Usage:** "..config.getConfig(message.guild.id).prefix..found.info.Usage.."\n**Permission Level:** "..(found.info.PermLvl == 0 and "Everyone" or (found.info.PermLvl == 1 and "Server Moderator" or (found.info.PermLvl == 2 and "Server Administrator" or (found.info.PermLvl == 3 and "Server Owner" or "Aaron Only!"))))
+      message:reply{embed ={
+        title = "**"..found.info.Name.." Command**",
+        description = txts,
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      }}
+      return {success = "stfu"}
+    end
   end
 end
 

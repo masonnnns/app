@@ -6,6 +6,7 @@ command.info = {
   Name = "Purge",
   Alias = {},
   Usage = "purge <amount of messages 1-100>",
+  Category = "Administration",
   Description = "Bulk Delete messages from a channel.",
   PermLvl = 2,
 }

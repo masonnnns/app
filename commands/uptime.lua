@@ -7,6 +7,7 @@ command.info = {
   Name = "Uptime",
   Alias = {"up"},
   Usage = "uptime",
+  Category = "Information",
   Description = "Shows how long the bot has been online.",
   PermLvl = 0,
 }

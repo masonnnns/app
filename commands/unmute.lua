@@ -8,6 +8,7 @@ command.info = {
   Name = "Unmute",
   Alias = {},
   Usage = "unmute <user> <reason>",
+  Category = "Moderation",
   Description = "Unmutes the specified user.",
   PermLvl = 1,
 }

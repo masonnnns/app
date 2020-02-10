@@ -7,6 +7,7 @@ command.info = {
   Name = "Warn",
   Alias = {},
   Usage = "warn <user> <reason>",
+  Category = "Moderation",
   Description = "Issue a warning to a specified user.",
   PermLvl = 1,
 }

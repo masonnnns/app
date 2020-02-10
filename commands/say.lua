@@ -4,6 +4,7 @@ command.info = {
   Name = "Say",
   Alias = {},
   Usage = "say <text>",
+  Category = "Fun",
   Description = "Have AA-R0N repeat text after you.",
   PermLvl = 0,
 }

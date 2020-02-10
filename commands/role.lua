@@ -7,6 +7,7 @@ command.info = {
   Name = "Role",
   Alias = {},
   Usage = "role <user> <role>",
+  Category = "Administration",
   Description = "Gives or takes a specified role.",
   PermLvl = 2,
 }

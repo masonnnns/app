@@ -6,6 +6,7 @@ command.info = {
   Name = "Test",
   Alias = {},
   Usage = "test",
+  Category = "Private",
   Description = "test.",
   PermLvl = 5,
 }

@@ -55,6 +55,7 @@ command.info = {
   Name = "Exec",
   Alias = {"eval","e"},
   Usage = "exec <code>",
+  Category = "Private",
   Description = "run cool code right from discord isnt that neat",
   PermLvl = 5,
 }

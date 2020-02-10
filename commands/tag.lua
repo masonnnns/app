@@ -6,6 +6,7 @@ command.info = {
   Name = "Tag",
   Alias = {},
   Usage = "tag <tag name>",
+  Category = "Utility",
   Description = "Replies with the specified tag.",
   PermLvl = 1,
 }

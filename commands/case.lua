@@ -7,6 +7,7 @@ command.info = {
   Name = "Case",
   Alias = {},
   Usage = "case <case number>",
+  Category = "Moderation",
   Description = "View information on a specific case.",
   PermLvl = 1,
 }
