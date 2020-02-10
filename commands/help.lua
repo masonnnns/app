@@ -26,74 +26,34 @@ local function getPermission(message,id)
 end	
 
 command.info = {
-  Name = "Help",
-  Alias = {"cmds", "commands"},
+  Name = "Helps",
+  Alias = {},
   Usage = "help <optional command>",
-  Category = "Information"
+  Category = "Information",
   Description = "View a list of all commands, or view a specific command.",
-  PermLvl = 0,
+  PermLvl = 5,
 }
 
 command.execute = function(message,args,client)
+  data = config.getConfig(message.guild.id)
   if args[2] == nil then
-    local txt = "To view more information about a command, say **"..config.getConfig(message.guild.id).prefix.."help <command name>**\n"
+    cmdList = {}
+    local data = {embed = {
+      title = "AA-R0N Commands",
+      description = "To use a command say **"..data.prefix.."<command name>**\nTo learn more about a command, say **"..data.prefix.."help <command name>**",
+      color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
+    }}
     for file, _type in fs.scandirSync("/app/commands") do
 	    if _type ~= "directory" then
       local cmd = require("/app/commands/" .. file)
         if cmd.info.PermLvl >= 5 and message.author.id ~= client.owner.id then else
-        txt = txt.."\n**"..config.getConfig(message.guild.id).prefix..cmd.info.Name:lower().." -** "..cmd.info.Description
+          if cmd.info.Category == nil then cmd.info.Category = "Misc" end
+          if cmdList[cmd.info.Category] == nil then cmdList[cmd.info.Category] = {} end
+          cmdList[cmd.info.Category][1+#cmdList[cmd.info.Category]] = cmd.info.Name:lower()
       end end
     end
-    local result = message.author:getPrivateChannel():send{embed ={ title = "**AA-R0N Commands**", description = txt, color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color), }}
-    if result ~= nil then
-      return {success = true, msg = "I sent you a **direct message** with the list of commands."}
-    else
-      return {success = false, msg = "I **couldn't direct message** you, adjust your privacy settings and try again."}
-    end
-  else
-    local found
-    for file, _type in fs.scandirSync("/app/commands") do
-      if _type ~= "directory" then
-      local cmd = require("/app/commands/" .. file)
-        if string.lower(cmd.info.Name) == string.lower(args[2]) then
-          found = cmd
-          break
-        elseif #cmd.info.Alias >= 1 then
-          for _,items in pairs(cmd.info.Alias) do
-            if string.lower(items) == string.lower(args[2]) then
-              found = cmd
-              break
-            end
-          end
-        end
-	    end
-    end
-  if found == nil then
-    local txt = "To view more information about a command, say **"..config.getConfig(message.guild.id).prefix.."help <command name>**\n"
-    for file, _type in fs.scandirSync("/app/commands") do
-	    if _type ~= "directory" then
-      local cmd = require("/app/commands/" .. file)
-        if getPermission(message) < cmd.info.PermLvl then else
-        txt = txt.."\n**"..config.getConfig(message.guild.id).prefix..cmd.info.Name:lower().." -** "..cmd.info.Description
-      end end
-    end
-    local result = message.author:getPrivateChannel():send{embed ={ title = "**AA-R0N Commands**", description = txt, color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color), }}
-    if result ~= nil then
-      return {success = true, msg = "I sent you a **direct message** with the list of commands."}
-    else
-      return {success = false, msg = "I **couldn't direct message** you, adjust your privacy settings and try again."}
-    end
-  else
-    if getPermission(message) < found.info.PermLvl then local reCmd = command.execute(message,{"xd"},client) return {success = reCmd.success, msg = reCmd.msg} end
-    local txts = "**Command:** "..config.getConfig(message.guild.id).prefix..string.lower(found.info.Name).."\n**Description:** "..found.info.Description..(#found.info.Alias == 0 and "" or "\n**Alias:** "..config.getConfig(message.guild.id).prefix..table.concat(found.info.Alias,", "..config.getConfig(message.guild.id).prefix)).."\n**Usage:** "..config.getConfig(message.guild.id).prefix..found.info.Usage.."\n**Permission Level:** "..(found.info.PermLvl == 0 and "Everyone" or (found.info.PermLvl == 1 and "Server Moderator" or (found.info.PermLvl == 2 and "Server Administrator" or (found.info.PermLvl == 3 and "Server Owner" or "Aaron Only!"))))
-    message:reply{embed ={
-      title = "**"..found.info.Name.." Command**",
-      description = txts,
-      color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
-      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-    }}
-    return {success = "stfu"}
-  end
+    for a,b in pairs(cmdList) do end
+    -- table.insert(data.embed.fields,#data.embed.fields+1, {name = "Status", value = useGuild.status, inline = true})
   end
 end
 
