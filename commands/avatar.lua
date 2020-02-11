@@ -14,7 +14,6 @@ command.info = {
 
 command.execute = function(message,args,client)
   if args[2] == nil then args[2] = message.author.mentionString end
-  error("gay")
   local user = utils.resolveUser(message,table.concat(args," ",2))
   if user == false then user = message.author end
   message:reply{embed = {

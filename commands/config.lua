@@ -503,6 +503,11 @@ command.execute = function(message,args,client)
           value = "**Enabled:** "..(data.welcome.enabled and "Yes." or "No.").."\n**Join Message Channel:** "..(data.welcome.joinchannel == "nil" and "Disabled." or (data.welcome.joinchannel == "dm" and "DM User." or (message.guild:getChannel(data.welcome.joinchannel) == nil and "Channel was Deleted." or message.guild:getChannel(data.welcome.joinchannel).mentionString))).."\n**Leave Message Channel:** "..(data.welcome.leavechannel == "nil" and "Disabled." or (message.guild:getChannel(data.welcome.leavechannel) == nil and "Channel was Deleted." or message.guild:getChannel(data.welcome.leavechannel).mentionString)).."\n**Autorole:** "..(data.welcome.autorole == "nil" and "Disabled." or (message.guild:getRole(data.welcome.autorole) == nil and "Role was Deleted" or message.guild:getRole(data.welcome.autorole).mentionString)),
           inline = true,
         },
+        {
+          name = "Tickets",
+          value = "**Enabled:** "..(data.tickets.enabled and "Yes." or "No.").."\n**Category:** "..(data.tickets.category == "nil" and "Not Set." or (message.guild:getChannel(data.tickets.category) == nil and "Category was Deleted." or message.guild:getChannel(data.tickets.category).name)),
+          inline = true
+        },
       },
       color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
