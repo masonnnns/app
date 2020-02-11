@@ -339,7 +339,25 @@ command.execute = function(message,args,client)
       local redoCmd = command.execute(message,{data.prefix.."config","welcome"},client)
       return redoCmd
     end
-  -- [ END OF WELCOME ] [ START OF AUTOMOD ]
+  -- [ END OF WELCOME] [ START OF TICKETS ]
+  elseif args[2] == "tickets" then
+    if args[3] then args[3] = args[3]:lower() end
+    if args[3] == nil then
+      message:reply{embed = {
+        title = "Tickets Configuration Help",
+        description = "To edit a ticket setting say **"..data.prefix.."config tickets <setting name>**\nTo view the current configuration settings say **"..data.prefix.."config view**",
+        fields = {
+          {
+			  		name = "Tickets Settings",
+            value = "**Toggle:** "..(data.tickets.enabled and "Disables" or "Enables").." the plugin.\n",
+				  	inline = true,
+			  	},
+        },
+        color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      }} 
+    end
+  -- [ END OF TICKETS ] [ START OF AUTOMOD ]
   elseif args[2] == "automod" then
     if args[3] then args[3] = args[3]:lower() end
     if args[3] == nil then
