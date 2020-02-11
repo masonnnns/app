@@ -24,9 +24,9 @@ command.execute = function(message,args,client)
     if found + 1 > data.tickets.max then
       return {success = false, msg = "You already have **"..found.." ticket"..(found == 1 and "" or "s").."** open, you cannot open anymore."}
     else
-      local channel = message.guild:createTextChannel("ticket-"..data.tickets.ticket+1)
+      local channel = message.guild:getChannel(data.tickets.category):createTextChannel("ticket-"..data.tickets.ticket+1)
       if channel == nil or channel == false then return {success = false, msg = "**Config Error:** I couldn't create the ticket, make sure I have permissions!"} end
-      channel:setCategory(data.tickets.category)
+      channel:setTopic('test')
     end
   end
 end
