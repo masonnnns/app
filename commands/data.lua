@@ -1,69 +1,45 @@
 command = {}
 
-local function MakeTable( t, nice, indent, done )
-	local str = ""
-	local done = done or {}
-	local indent = indent or 0
-	local idt = ""
-	if nice then idt = string.rep( "\t", indent ) end
-	local nl, tab  = "", ""
-	if ( nice ) then nl, tab = "\n", "\t" end
-
-	local sequential = table.IsSequential( t )
-
-	for key, value in pairs( t ) do
-
-		str = str .. idt .. tab .. tab
-
-		if not sequential then
-			if ( isnumber( key ) or isbool( key ) ) then
-				key = "[" .. tostring( key ) .. "]" .. tab .. "="
-			else
-				key = tostring( key ) .. tab .. "="
-			end
-		else
-			key = ""
+local function getNames(tab,name,res,lev)
+	res = res or {[tab]="ROOT"}
+	local pls = {} lev = lev or 0
+	for k,v in pairs(tab) do
+		if type(v) == "table" and not res[v] then
+			local n = name.."."..tostring(k)
+			res[v] = n pls[v] = n
 		end
-
-		if ( istable( value ) && !done[ value ] ) then
-
-			if ( IsColor( value ) ) then
-				done[ value ] = true
-				value = "Color(" .. value.r .. "," .. value.g .. "," .. value.b .. "," .. value.a .. ")"
-				str = str .. key .. tab .. value .. "," .. nl
-			else
-				done[ value ] = true
-				str = str .. key .. tab .. '{' .. nl .. MakeTable (value, nice, indent + 1, done)
-				str = str .. idt .. tab .. tab ..tab .. tab .."},".. nl
-			end
-
-		else
-
-			if ( isstring( value ) ) then
-				value = '"' .. tostring( value ) .. '"'
-			elseif ( isvector( value ) ) then
-				value = "Vector(" .. value.x .. "," .. value.y .. "," .. value.z .. ")"
-			elseif ( isangle( value ) ) then
-				value = "Angle(" .. value.pitch .. "," .. value.yaw .. "," .. value.roll .. ")"
-			else
-				value = tostring( value )
-			end
-
-			str = str .. key .. tab .. value .. "," .. nl
-
-		end
-
 	end
-	return str
+	for k,v in pairs(pls) do
+		getNames(k,v,res)
+		pls[k] = lev
+	end return res,pls
 end
 
-function tToString( t, n, nice )
-	local nl, tab  = "", ""
-	if ( nice ) then nl, tab = "\n", "\t" end
-
-	local str = ""
-	if ( n ) then str = n .. tab .. "=" .. tab end
-	return str .. "{" .. nl .. MakeTable( t, nice ) .. "}"
+local function tableToString(tab,a,b,c,d)
+	a,b = a or 0, b or {[tab]=true}
+	local name = b[tab]
+	local white = ("\t"):rep(a+1)
+	if not c then
+		c,d = getNames(tab,"ROOT")
+	end local res = {"{"}
+	for k,v in pairs(tab) do
+		local value
+		if type(v) == "table" then
+			if d[v] == a and not b[v] then
+				b[v] = true
+				value = tableToString(v,a+1,b,c,d)
+			else
+				value = c[v]
+			end
+		elseif type(v) == "string" then
+			value = '"'..v:gsub("\n","\\n"):gsub("\t","\\t")..'"'
+		else
+			value = tostring(v)
+		end
+		table.insert(res,white..tostring(k).." = "..value)
+	end white = white:sub(2)
+	table.insert(res,white.."}")
+	return table.concat(res,"\n")
 end
 
 local config = require("/app/config.lua")
@@ -85,7 +61,7 @@ command.execute = function(message,args,client)
   local data = config.getConfig(args[2])
   message:reply{embed = {
     title = guild.name.." Config",
-    description = "```\n"..tToString(data).."\n```",
+    description = "```\n"..tableToString(data).."\n```",
     footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
     color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
   }}
