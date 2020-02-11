@@ -336,7 +336,6 @@ client:on("messageCreate",function(message)
       local cmdSuccess, cmdMsg = pcall(function()
         execute = found.execute(message,args,client)
       end)
-      print(cmdSuccess)
       if not cmdSuccess then message:reply(":rotating_light: **An error has occured!** Please report this to our support team.```[ERR: "..tostring(cmdMsg):upper().."]```") return end
       if execute == nil or type(execute) ~= "table" then
         message:reply(":no_entry: An **unknown error** occured.")

@@ -8,7 +8,7 @@ local function addConfig(id)
     automod = {enabled = false, log = "nil", types = {invites = {false,0}, spam = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
     tags = {enabled = false, tags = {}, delete = false},
     welcome = {enabled = false, joinmsg = "nil", joinchannel = "nil", leavechannel = "nil", leavemsg = "nil", joinchannel = "nil", autorole = "nil"},
-    tickets = {enabled = false, category = "nil", channels = {}, ticket = 0},
+    tickets = {enabled = false, category = "nil", channels = {}, ticket = 0, max = 1},
     terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
     modlog = "nil",
 		modrole = "nil",
