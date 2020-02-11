@@ -365,8 +365,11 @@ command.execute = function(message,args,client)
       if args[4] == nil then
         return {success = false, msg = "You must provide **a category name** in argument 4."}
       else
-        local getCategory = utils.resolveCategory(message,args[4])
-        if getCategory == 
+        local getCategory = utils.resolveCategory(message,table.concat(args," ",4))
+        if getCategory == false then return {success = false, msg = "I couldn't find the category you mentioned."} end
+        data.tickets.category = getCategory.id
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Set the **ticket category** to **"..getCategory.name.."**."}
       end
     end
   -- [ END OF TICKETS ] [ START OF AUTOMOD ]
