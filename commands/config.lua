@@ -349,13 +349,20 @@ command.execute = function(message,args,client)
         fields = {
           {
 			  		name = "Tickets Settings",
-            value = "**Toggle:** "..(data.tickets.enabled and "Disables" or "Enables").." the plugin.\n",
+            value = "**Toggle:** "..(data.tickets.enabled and "Disables" or "Enables").." the plugin.\n**Category:** Sets the category for the tickets to be made in.\n**Max:** Sets the max amount of tickets a single user can open.",
 				  	inline = true,
 			  	},
         },
         color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       }} 
+      return {success = "stfu"}
+    elseif args[3] == "toggle" then
+      data.tickets.enabled = not data.tickets.enabled
+      config.updateConfig(message.guild.id,data)
+      return {success = true, msg = "**"..(data.tickets.enabled and "Enabled" or "Disabled").."** the **tickets** plugin."}
+    elseif args[3] == "category" then
+      
     end
   -- [ END OF TICKETS ] [ START OF AUTOMOD ]
   elseif args[2] == "automod" then

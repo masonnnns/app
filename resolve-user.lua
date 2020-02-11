@@ -44,6 +44,18 @@ module.resolveChannel = function(message,user)
   return false
 end
 
+module.resolveCategory = function(message,user)
+  if tonumber(user) ~= nil and message.guild:getChannel(user) ~= nil then
+    return message.guild:getChannel(user)
+  end
+  for _,items in pairs(message.guild.categories) do
+    if string.sub(items.name,1,string.len(user)):lower() == user:lower() then
+      return items
+    end
+  end
+  return false
+end
+
 module.resolveRole = function(message,user)
   if #message.mentionedRoles >= 1 then
     if user == "<@&"..message.mentionedRoles[1][1]..">" then
