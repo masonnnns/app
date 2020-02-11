@@ -362,7 +362,12 @@ command.execute = function(message,args,client)
       config.updateConfig(message.guild.id,data)
       return {success = true, msg = "**"..(data.tickets.enabled and "Enabled" or "Disabled").."** the **tickets** plugin."}
     elseif args[3] == "category" then
-      
+      if args[4] == nil then
+        return {success = false, msg = "You must provide **a category name** in argument 4."}
+      else
+        local getCategory = utils.resolveCategory(message,args[4])
+        if getCategory == 
+      end
     end
   -- [ END OF TICKETS ] [ START OF AUTOMOD ]
   elseif args[2] == "automod" then
