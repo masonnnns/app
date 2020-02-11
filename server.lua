@@ -294,9 +294,12 @@ client:on("ready", function()
   end
 end)
 
+local commandsRan, messagesSeen = 0,0
+
 client:on("messageCreate",function(message)
   if message.guild == nil then return end
   config[message.guild.id] = configuration.getConfig(message.guild.id)
+  messagesSeen = messagesSeen + 1
   local args = sepMsg(message.content)
   if args[1] == nil then return end
   if string.lower(args[1]) == "?prefix?" then message:reply("The prefix for **"..message.guild.name.."** is **"..config[message.guild.id].prefix.."**") return end
@@ -324,6 +327,7 @@ client:on("messageCreate",function(message)
   if found == nil or getPermission(message) < 1 and config[message.guild.id].modonly then
     if getPermission(message) < 1 then autoMod(message) end
   else
+    commandsRan = commandsRan + 1
     print("[COMMAND RAN]: "..message.author.username.." ("..message.author.id..") ran command "..found.info.Name.." in #"..message.channel.name.." in "..message.guild.name.." ("..message.guild.id..")\nArgs: "..table.concat(args," "))
     if config[message.guild.id].modonly and getPermission(message) < 1 then return end
     if found.info.PermLvl <= getPermission(message) or found.info.PermLvl == 5 and message.author.id == client.owner.id then
@@ -701,6 +705,8 @@ local module = {}
 module.getCache = function(type,guild,id)
   if type == "ostime" then
     return uptimeOS
+  elseif type == "getstats" then
+    return {commands = commandsRan, messages = messagesSeen}
   elseif type == "role" then
     return cache[guild].roles[id]
   elseif type == "user" then
