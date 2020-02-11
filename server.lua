@@ -332,7 +332,12 @@ client:on("messageCreate",function(message)
     if config[message.guild.id].modonly and getPermission(message) < 1 then return end
     if found.info.PermLvl <= getPermission(message) or found.info.PermLvl == 5 and message.author.id == client.owner.id then
       if config[message.guild.id].deletecmd then message:delete() end
-      local execute = found.execute(message,args,client)
+      local execute
+      local cmdSuccess, cmdMsg = pcall(function()
+        execute = found.execute(message,args,client)
+      end)
+      print(cmdSuccess)
+      if not cmdSuccess then return {success = false, msg = "**An error has occured.** Please report this issue to our support team.\n```[ERR: OK]"} end
       if execute == nil or type(execute) ~= "table" then
         message:reply(":no_entry: An **unknown error** occured.")
       elseif execute.success == false then
