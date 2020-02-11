@@ -3,7 +3,6 @@ command = {}
 local cache = require("/app/server.lua")
 local utils = require("/app/resolve-user.lua")
 
-
 command.info = {
   Name = "Avatar",
   Alias = {"av"},
