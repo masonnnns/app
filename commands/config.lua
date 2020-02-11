@@ -371,6 +371,17 @@ command.execute = function(message,args,client)
         config.updateConfig(message.guild.id,data)
         return {success = true, msg = "Set the **ticket category** to **"..getCategory.name.."**."}
       end
+    elseif args[3] == "max" then
+      if tonumber(args[4]) == nil or tonumber(args[4]) < 1 then
+        return {success = false, msg = "You must provide a **number higher than 1** in argument 4."}
+      else
+        data.tickets.max = tonumber(args[4])
+        config.updateConfig(message.guild.id,data)
+        return {success = true, msg = "Set the **max tickets per user** to **"..args[4].."**."}
+      end
+    else
+      local redoCmd = command.execute(message,{data.prefix.."config","tickets"},client)
+      return redoCmd
     end
   -- [ END OF TICKETS ] [ START OF AUTOMOD ]
   elseif args[2] == "automod" then
@@ -538,7 +549,7 @@ command.execute = function(message,args,client)
         },
         {
           name = "Tickets",
-          value = "**Enabled:** "..(data.tickets.enabled and "Yes." or "No.").."\n**Category:** "..(data.tickets.category == "nil" and "Not Set." or (message.guild:getChannel(data.tickets.category) == nil and "Category was Deleted." or message.guild:getChannel(data.tickets.category).name)),
+          value = "**Enabled:** "..(data.tickets.enabled and "Yes." or "No.").."\n**Category:** "..(data.tickets.category == "nil" and "Not Set." or (message.guild:getChannel(data.tickets.category) == nil and "Category was Deleted." or message.guild:getChannel(data.tickets.category).name)).."\n**Max:** "..data.tickets.max,
           inline = true
         },
       },
