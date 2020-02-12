@@ -26,8 +26,16 @@ command.execute = function(message,args,client)
     else
       local channel = message.guild:getChannel(data.tickets.category):createTextChannel("ticket-"..data.tickets.ticket+1)
       if channel == nil or channel == false then return {success = false, msg = "**Config Error:** I couldn't create the ticket, make sure I have permissions!"} end
-      channel:setTopic('test')
-      channel:getPermissionOverwriteFor(member.author):setPermissions({readMessages = true})
+      channel:setTopic('Ticket opened by '..message.author.tag..".")
+      data.tickets.ticket = data.tickets.ticket + 1
+      data.tickets.channels[1+#data.tickets.channels] = {id = channel.id, creator = message.author.id, topic = (args[2] == nil and "nil" or table.concat(args," ",2))}
+      message.channel.send{content = message.author.mentionString, embed = {
+        title = "Ticket "..data.tickets.ticket,
+        description = "Thank you for creating a ticket, we'll be with you shortly."..(args[2] ~= nil and "\n**Topic:** "..table.concat(args," ",2) or ""),
+        color = 3066993,
+        footer = "Ticket opened by "..message.author.tag    
+      }}
+      .channel:getPermissionOverwriteFor(message.guild:getMember(message.author.id)):setAllowedPermissions("0x00000400")
     end
   end
 end
