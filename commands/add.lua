@@ -10,11 +10,10 @@ command.info = {
   Usage = "add <reason>",
   Category = "Tickets",
   Description = "Create a ticket with the specified reason. **[DEV]**",
-  PermLvl = 3,
+  PermLvl = 0,
 }
 
 command.execute = function(message,args,client)
-  if message.author.id ~= client.owner.id then return {success = "stfu"} end
   local data = config.getConfig(message.guild.id)
   if data.tickets.enabled == false then return {success = "stfu"} end
   if data.tickets.category == "nil" or message.guild:getChannel(data.tickets.category) == nil then
@@ -29,13 +28,15 @@ command.execute = function(message,args,client)
       channel:setTopic('Ticket opened by '..message.author.tag..".")
       data.tickets.ticket = data.tickets.ticket + 1
       data.tickets.channels[1+#data.tickets.channels] = {id = channel.id, creator = message.author.id, topic = (args[2] == nil and "nil" or table.concat(args," ",2))}
-      message.channel.send{content = message.author.mentionString, embed = {
+      channel:getPermissionOverwriteFor(message.guild:getMember(message.author.id)):setAllowedPermissions("0x00000400")
+      channel:send{content = "@everyone", embed = {
         title = "Ticket "..data.tickets.ticket,
         description = "Thank you for creating a ticket, we'll be with you shortly."..(args[2] ~= nil and "\n**Topic:** "..table.concat(args," ",2) or ""),
         color = 3066993,
-        footer = "Ticket opened by "..message.author.tag    
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},  
       }}
-      .channel:getPermissionOverwriteFor(message.guild:getMember(message.author.id)):setAllowedPermissions("0x00000400")
+      config.updateConfig(message.guild.id,data)
+      return {success = true, msg = "Ticket created! "..channel.mentionString}
     end
   end
 end
