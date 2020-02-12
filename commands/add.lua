@@ -27,6 +27,7 @@ command.execute = function(message,args,client)
       local channel = message.guild:getChannel(data.tickets.category):createTextChannel("ticket-"..data.tickets.ticket+1)
       if channel == nil or channel == false then return {success = false, msg = "**Config Error:** I couldn't create the ticket, make sure I have permissions!"} end
       channel:setTopic('test')
+      channel:setPermissions({readMessages = true})
     end
   end
 end
