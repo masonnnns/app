@@ -131,7 +131,7 @@ command.execute = function(message,args,client)
 				  	inline = true,
 			  	},
           {
-            name = (data.tags.enabled and "Disabled" or "Enabled").." Command",
+            name = (data.tags.enabled and "Enabled" or "Disabled").." Command",
             value = data.prefix.."tag",
             inline = false,
           },
@@ -358,7 +358,7 @@ command.execute = function(message,args,client)
 				  	inline = true,
 			  	},
           {
-            name = (data.tickets.enabled and "Disabled" or "Enabled").." Commands",
+            name = (data.tickets.enabled and "Enabled" or "Disabled").." Commands",
             value = data.prefix.."new, "..data.prefix.."close",
             inline = false,
           },
