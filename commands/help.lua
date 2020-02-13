@@ -52,6 +52,7 @@ command.execute = function(message,args,client)
           if cmd.info.Category == nil then cmd.info.Category = "Misc" end
           if cmdList[cmd.info.Category] == nil then cmdList[cmd.info.Category] = {} end
           cmdList[cmd.info.Category][1+#cmdList[cmd.info.Category]] = cmd.info.Name:lower()
+          if cmd.info.Category == "Tickets" and data.tickets.enabled == false then cmdList[cmd.info.Category] = nil end
       end end
     end
     for a,b in pairs(cmdList) do

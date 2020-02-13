@@ -7,9 +7,9 @@ local config = require("/app/config.lua")
 command.info = {
   Name = "New",
   Alias = {"create"},
-  Usage = "add <reason>",
+  Usage = "add <topic>",
   Category = "Tickets",
-  Description = "Create a ticket with the specified reason. **[DEV]**",
+  Description = "Create a ticket with the specified reason.",
   PermLvl = 0,
 }
 

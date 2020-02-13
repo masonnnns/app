@@ -130,6 +130,11 @@ command.execute = function(message,args,client)
             value = "**Toggle:** "..(data.tags.enabled and "Disables" or "Enables").." the plugin.\n**DelCmd:** Deletes the tag invocation message __only.__\n**Add:** Creates a new tag.\n**Edit:** Edits an existing tag.\n**Delete:** Deletes an existing tag.\n**View:** Views all existing tags, or a specified one.",
 				  	inline = true,
 			  	},
+          {
+            name = (data.tags.enabled and "Disabled" or "Enabled").." Command",
+            value = data.prefix.."tag",
+            inline = false,
+          },
         },
         color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
@@ -352,6 +357,11 @@ command.execute = function(message,args,client)
             value = "**Toggle:** "..(data.tickets.enabled and "Disables" or "Enables").." the plugin.\n**Category:** Sets the category for the tickets to be made in.\n**Max:** Sets the max amount of tickets a single user can open.",
 				  	inline = true,
 			  	},
+          {
+            name = (data.tickets.enabled and "Disabled" or "Enabled").." Commands",
+            value = data.prefix.."new, "..data.prefix.."close",
+            inline = false,
+          },
         },
         color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
