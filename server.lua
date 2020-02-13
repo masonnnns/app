@@ -299,6 +299,8 @@ local commandsRan, messagesSeen = 0,0
 
 client:on("messageCreate",function(message)
   if message.guild == nil then return end
+  local blacklists = require("/app/blacklist.lua")
+  if blacklists.getBlacklist(message.author.id) ~= true then print('blacklisted') return end
   config[message.guild.id] = configuration.getConfig(message.guild.id)
   messagesSeen = messagesSeen + 1
   local args = sepMsg(message.content)

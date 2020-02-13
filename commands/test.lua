@@ -1,27 +1,18 @@
 command = {}
 
-local dictionary = require("/app/pageination.lua")
+local blacklists = require("/app/blacklist.lua")
 
 command.info = {
-  Name = "Test",
+  Name = "Blacklist",
   Alias = {},
-  Usage = "test",
+  Usage = "blacklist <id> <reason>",
   Category = "Private",
-  Description = "test.",
+  Description = "Blacklist the specified user.",
   PermLvl = 5,
 }
 
 command.execute = function(message,args,client)
-  local data = {embed = {
-    title = "xd",
-    description = "lol"
-  }}
-  local msg = message:reply(data)
-  dictionary.addDictionary(msg,{data,{title = "2/2", description = "ok"}}, message.author.id)
-  local emoji = message.guild.emojis:find(function(e) return e.name == 'Lua' end)
-  message:addReaction("👍")
-  msg:addReaction("👍")
-  return {success = "stfu"}
+  if bl
 end
 
 return command

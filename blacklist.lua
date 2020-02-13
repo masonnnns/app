@@ -1,12 +1,11 @@
 local json = require('json')
 module = {}
-local blacklist = {}
 
-module.getBlacklist(id)
-  if io.open("./blacklist.txt","r"):read() == nil then return end
+module.getBlacklist = function(id)
+  if io.open("./blacklist.txt","r"):read() == nil then return true end
   local decode = json.decode(io.open("./blacklist.txt","r"):read())
   for a,b in pairs(decode) do
-    if b.user == id then
+    if a == id then
       if b.notified == false then
         return "notTold"
       else
@@ -14,5 +13,33 @@ module.getBlacklist(id)
       end
     end
   end
-  return
+  return true
 end
+
+module.blacklist = function(id,reason)
+  local blacklists = {}
+  local decode = json.decode(io.open("./blacklist.txt","r"):read())
+  for a,b in pairs(decode) do 
+    blacklists[a] = b
+  end
+  blacklists[id] = {notified = false, reason = reason}
+  file = io.open("./blacklist.txt", "w+") 
+  file:write(json.encode(configForSaving.guilds))
+	file:close()
+  return true
+end
+
+module.unblacklist = function(id,reason)
+  local blacklists = {}
+  local decode = json.decode(io.open("./blacklist.txt","r"):read())
+  for a,b in pairs(decode) do
+    blacklists[a] = b
+  end
+  if blacklists[id] ~= nil then table.remove(blacklists,id) end
+  file = io.open("./blacklist.txt", "w+") 
+  file:write(json.encode(configForSaving.guilds))
+	file:close()
+  return true
+end
+
+return module
