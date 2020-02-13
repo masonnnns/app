@@ -17,7 +17,14 @@ command.execute = function(message,args,client)
   elseif tonumber(args[2]) == nil then
     return {success = false, msg = "You must provide a **user ID to blacklist** in argument 2."}
   else
-    if args[3] == "get"
+    if args[3] ~= nil and args[3]:lower() == "get" then
+      local isBlacklisted = blacklists.getBlacklist(args[2])
+      if isBlacklisted == true then
+        return {success = true, msg = "That ID **is not** blacklisted."}
+      else
+        return {success = true, msg = "That ID **is** blacklisted."}
+      end
+      return {success = "stfu"}
     elseif blacklists.getBlacklist(args[2]) == true then
       blacklists.blacklist(args[2],(args[3] == nil and "No Reason Provided" or table.concat(args," ",3)))
       return {success = true, msg = "Blacklisted **"..client:getUser(args[2]).name.."**."}
