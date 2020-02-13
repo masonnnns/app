@@ -22,6 +22,7 @@ for a,b in pairs(client.guilds) do config[b.id] = configuration.getConfig(b.id) 
 
 
 local function getPermission(message,id)
+  if message.guild == nil then return end
 	if id == nil then id = message.author.id end
 	if message.guild:getMember(id) == nil then
 		return 0
