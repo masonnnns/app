@@ -22,7 +22,7 @@ command.execute = function(message,args,client)
       if isBlacklisted == true then
         return {success = true, msg = "That ID **is not** blacklisted."}
       else
-        return {success = true, msg = "That ID **is** blacklisted."}
+        return {success = true, msg = "That ID **is** blacklisted.\n**Reason:** "..isBlacklisted.reason}
       end
       return {success = "stfu"}
     elseif blacklists.getBlacklist(args[2]) == true then
