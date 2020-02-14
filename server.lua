@@ -291,7 +291,7 @@ client:on("ready", function()
   while true do
     if os.time() - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
     http.request("GET","https://pentagonal-healer.glitch.me/")
-    timer.sleep(5000)
+    timer.sleep(1000)
   end
 end)
 
