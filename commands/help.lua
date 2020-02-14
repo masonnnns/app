@@ -36,7 +36,19 @@ command.info = {
 
 command.execute = function(message,args,client)
   data = config.getConfig(message.guild.id)
-  if args[2] == nil then
+  if args[2] ~= nil and args[2]:lower() == "me" then
+    message:reply{embed = {
+      title = "AA-R0N Help",
+      description = "You said you needed help, so here we are! 🚑",
+      fields = {
+        {name = "Bot Invite", value = "[Click here](https://discordapp.com/oauth2/authorize?client_id=414030463792054282&scope=bot&permissions=502787319)", inline = true},
+        {name = "Support Server", value = "[Click here](https://discordapp.com/invite/PjKaAXx)", inline = true},
+      },
+      color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+    }}
+    return {success = "stfu"}
+  elseif args[2] == nil then
     cmdList = {}
     local dataa = {embed = {
 				--author = {name = user.tag, icon_url = user:getAvatarURL()},
