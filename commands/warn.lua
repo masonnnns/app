@@ -23,34 +23,12 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I cannot warn myself."}
   else
     local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
-    user:getPrivateChannel():send("⚠️ **You've been warned in "..message.guild.name.."!**\nPlease do not continue to break the rules.\n\n**Reason:** "..reason)
-    local data = config.getConfig(message.guild.id)
-    data.modData.cases[1+#data.modData.cases] = {type = "Warn", user = user.id, moderator = message.author.id, reason = reason}
-    config.updateConfig(message.guild.id,data)
-    if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
-      message.guild:getChannel(data.modlog):send{embed = {
-        title = "Warning - Case "..#data.modData.cases,
-        fields = {
-          {
-            name = "Member",
-            value = user.mentionString.." (`"..user.id.."`)",
-            inline = false,
-          },
-          {
-            name = "Reason",
-            value = reason,
-            inline = false,
-          },
-          {
-            name = "Responsible Moderator",
-            value = message.author.mentionString.." (`"..message.author.id.."`)",
-            inline = false,
-          },
-        },
-        color = 11027200,
-        }}
-    end 
-    return {success = true, msg = "**"..user.username.."** has been warned. `[Case: #"..#data.modData.cases.."]`"}
+    local result = message.author:getPrivateChannel():send("")
+    if result ~= nil and result ~= false then
+      result = true
+    else
+      result = false
+    end
   end
 end
 
