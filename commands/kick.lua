@@ -10,6 +10,7 @@ command.info = {
   Category = "Moderation",
   Description = "Kick a user from the server.",
   PermLvl = 1,
+  Cooldown = 3,
 }
 
 command.execute = function(message,args,client)
@@ -21,7 +22,7 @@ command.execute = function(message,args,client)
     return {success = false, msg = "You cannot "..command.info.Name:lower().." people with **higher than or equal permissions as you.**"}
   elseif user.id == client.user.id then
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
-  elseif message.guild:getMember(client.user.id):hasPermission("kickMembers") ~= true then
+  elseif message.guild:getMember(client.user.id):hasPermission("kickMembers") == false then
 			return {success = false, msg = "I need the **Kick Members** permission to do this."}
   else
     local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))

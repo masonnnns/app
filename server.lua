@@ -213,6 +213,23 @@ if message.author.bot == false then
 end
 end
 
+local cooldownStrikes = {}
+local blacklist = require("/app/blacklist.lua")
+
+local function coolDown(id,reset,message)
+  if reset then
+    table.remove(cooldownStrikes,id)
+    return
+  end
+  if cooldownStrikes[id] == nil then cooldownStrikes[id] = 0 end
+  cooldownStrikes[id] = 1+cooldownStrikes[id]
+  if cooldownStrikes[id] >= 7 then
+    message:reply("<:ablacklisted:678223910789054464> "..message.author.)
+    blacklist.blacklist(message.author.id,"[AUTO] Spamming commands.")
+  end
+  return
+end
+
 client:on("ready", function()
   client:setGame("?help")
   for _,guilds in pairs(client.guilds) do
@@ -296,6 +313,7 @@ client:on("ready", function()
 end)
 
 local commandsRan, messagesSeen = 0,0
+local commandCooldown = {}
 
 client:on("messageCreate",function(message)
   if message.author.bot then return end
@@ -330,6 +348,8 @@ client:on("messageCreate",function(message)
   end
   if found == nil or getPermission(message) < 1 and config[message.guild.id].modonly then
     if getPermission(message) < 1 then autoMod(message) end
+  elseif commandCooldown[message.author.id..found.info.Name] ~= nil and commandCooldown[message.author.id..found.info.Name] - os.time() > 0 then
+    print('cooldown')
   else
     commandsRan = commandsRan + 1
     print("[COMMAND RAN]: "..message.author.username.." ("..message.author.id..") ran command "..found.info.Name.." in #"..message.channel.name.." in "..message.guild.name.." ("..message.guild.id..")\nArgs: "..table.concat(args," "))
@@ -340,6 +360,7 @@ client:on("messageCreate",function(message)
       local cmdSuccess, cmdMsg = pcall(function()
         execute = found.execute(message,args,client)
       end)
+      commandCooldown[message.author.id..found.info.Name] = os.time() + (found.info.Cooldown == nil and 3 or found.info.Cooldown)
       if not cmdSuccess then message:reply(":rotating_light: **An error has occured!** Please report this to our support team.```[ERR: "..tostring(cmdMsg):upper().."]```") return end
       if execute == nil or type(execute) ~= "table" then
         message:reply("<:atickno:678186665616998400> An **unknown error** occured.")
