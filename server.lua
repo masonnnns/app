@@ -240,7 +240,7 @@ function coolDown(id,reset,message)
 end
 
 client:on("ready", function()
-  client:setGame("?help")
+  client:setGame("Booting, please wait...")
   for _,guilds in pairs(client.guilds) do
     cache[guilds.id] = {users = {}, channels = {}, roles = {}}
     for _,users in pairs(guilds.members) do
@@ -266,6 +266,7 @@ client:on("ready", function()
     end
   end
   print("[TEMP-ACTION LOOP]: Starting timed-actions loop.")
+  client:setGame("?help")
   while true do
     for id,configData in pairs(config) do
       config[id] = configuration.getConfig(id)

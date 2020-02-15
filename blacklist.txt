@@ -1,1 +1,1 @@
-{"668795311136833536":{"reason":"[AUTO] Spamming commands.","notified":false},"597008967838859264":{"notified":false,"reason":"i dont like u xoxo"}}
+{"597008967838859264":{"reason":"i dont like u xoxo","notified":false}}
