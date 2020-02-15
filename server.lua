@@ -226,7 +226,7 @@ function coolDown(id,reset,message)
   end
   if cooldownStrikes[id] == nil then cooldownStrikes[id] = 0 end
   cooldownStrikes[id] = 1+cooldownStrikes[id]
-  if cooldownStrikes[id] >= 4 then
+  if cooldownStrikes[id] >= 6 then
     message:reply("<:ablacklisted:678223910789054464> "..message.author.mentionString..", you've been blacklisted for **spamming commands**.")
     blacklist.blacklist(message.author.id,"[AUTO] Spamming commands.")
     return false
@@ -368,7 +368,7 @@ client:on("messageCreate",function(message)
       local cmdSuccess, cmdMsg = pcall(function()
         execute = found.execute(message,args,client)
       end)
-      if commandCooldown[tostring(message.author.id..found.info.Name)] == nil then commandCooldown[tostring(message.author.id..found.info.Name)] = os.time() + (found.info.Cooldown == nil and 3 or found.info.Cooldown) end
+      commandCooldown[tostring(message.author.id..found.info.Name)] = os.time() + (found.info.Cooldown == nil and 3 or found.info.Cooldown)
       if not cmdSuccess then message:reply(":rotating_light: **An error has occured!** Please report this to our support team.```[ERR: "..tostring(cmdMsg):upper().."]```") return end
       if execute == nil or type(execute) ~= "table" then
         message:reply("<:atickno:678186665616998400> An **unknown error** occured.")
