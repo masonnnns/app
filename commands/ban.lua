@@ -53,7 +53,7 @@ command.execute = function(message,args,client)
       return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
     elseif utils.getPermission(message,client,user.id) >= utils.getPermission(message,client) then
       return {success = false, msg = "You cannot "..command.info.Name:lower().." people with **higher than or equal permissions as you.**"}
-    elseif message.guild:getMember(client.user.id):hasPermission("banMembers") ~= true then
+    elseif message.guild:getMember(client.user.id):hasPermission("banMembers") == false then
 			return {success = false, msg = "I need the **Ban Members** permission to do this."}
     else -- done with the pre-errors
       local duration = getDuration({args[1], args[2], (args[3] == nil and "FBBBB6DE2AA74C3C9570D2D8DB1DE31EADB66113C96034A7ADB21243754D7683" or args[3])})
