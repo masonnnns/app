@@ -737,26 +737,56 @@ client:on('roleUpdate', function(role)
   cache[role.guild.id].roles[role.id] = {name = role.name, hoisted = role.hoisted, mentionable = role.mentionable, color = role.color, position = role.position}
 end)
 
-client:on('userBan', function(member)
-  config[member.guild.id] = configuration.getConfig(member.guild.id)
-  if config[member.guild.id].auditlog == "nil" and member.guild:getChannel(config[member.guild.id].auditlog) == nil then return end
+client:on('userBan', function(member,guild)
+  timer.sleep(500)
+  config[guild.id] = configuration.getConfig(guild.id)
+  if config[guild.id].auditlog == "nil" and guild:getChannel(config[guild.id].auditlog) == nil then return end
   local auditLog
-  if member.guild:getMember(client.user.id):hasPermission("viewAuditLog") then for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end end
+  if guild:getMember(client.user.id):hasPermission("viewAuditLog") then for a,items in pairs(guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == guild.id then auditLog = items break end end end
   if auditLog == nil or auditLog:getMember() == nil or auditLog.actionType ~= 22 then
-    member.guild:getChannel(config[member.guild.id].auditlog):send{embed = {
+    guild:getChannel(config[guild.id].auditlog):send{embed = {
       title = "Member Banned",
       fields = {
         {name = "Member", value = member.mentionString.." (`"..member.id.."`)"}
       },
+      color = 15105570,
     }}
   else
-    member.guild:getChannel(config[member.guild.id].auditlog):send{embed = {
+    guild:getChannel(config[guild.id].auditlog):send{embed = {
       title = "Member Banned",
       fields = {
         {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
         {name = "Reason", value = auditLog.reason, inline = false},
-        {name = "Responsible Member", value = auditLog:getMember().mentionString.." "}
+        {name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = true},
       },
+      color = 15105570,
+    }}
+  end
+end)
+
+client:on('userUnban', function(member,guild)
+  timer.sleep(500)
+  config[guild.id] = configuration.getConfig(guild.id)
+  if config[guild.id].auditlog == "nil" and guild:getChannel(config[guild.id].auditlog) == nil then return end
+  local auditLog
+  if guild:getMember(client.user.id):hasPermission("viewAuditLog") then for a,items in pairs(guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == guild.id then auditLog = items break end end end
+  if auditLog == nil or auditLog:getMember() == nil or auditLog.actionType ~= 23 then
+    guild:getChannel(config[guild.id].auditlog):send{embed = {
+      title = "Member Unbanned",
+      fields = {
+        {name = "Member", value = member.mentionString.." (`"..member.id.."`)"}
+      },
+      color = 15105570,
+    }}
+  else
+    guild:getChannel(config[guild.id].auditlog):send{embed = {
+      title = "Member Unbanned",
+      fields = {
+        {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
+        {name = "Reason", value = auditLog.reason, inline = false},
+        {name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = true},
+      },
+      color = 15105570,
     }}
   end
 end)
