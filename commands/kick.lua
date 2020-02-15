@@ -53,7 +53,7 @@ command.execute = function(message,args,client)
         color = 15105570,
         }}
     end 
-    return {success = true, msg = "**"..user.username.."** has been kicked."}
+    return {success = true, msg = "**"..user.username.."** has been kicked. `[Case #"..#data.modData.cases.."]`"}
   end
 end
 

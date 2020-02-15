@@ -2,7 +2,7 @@ command = {}
 
 command.info = {
   Name = "Restart",
-  Alias = {},
+  Alias = {"r"},
   Usage = "restart",
   Category = "Private",
   Description = "restart the bot.",

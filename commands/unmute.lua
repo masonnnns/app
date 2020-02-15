@@ -55,7 +55,7 @@ command.execute = function(message,args,client)
           },
           color = 2067276,
         }}
-        return {success = true, msg = "**"..user.username.."** has been unmuted."}
+        return {success = true, msg = "**"..user.username.."** has been unmuted. `[Case #"..#data.modData.cases.."]`"}
       end
     end
   end
