@@ -53,7 +53,7 @@ command.execute = function(message,args,client)
     local dataa = {embed = {
 				--author = {name = user.tag, icon_url = user:getAvatarURL()},
         title = "AA-R0N Commands",
-        description = "To use a command, say **"..data.prefix.."<command name>**\nTo view more information about a command say **"..data.prefix.."help <command name>**",
+        description = "To use a command, say **"..data.prefix.."<command name>**\nTo view more information about a command say **"..data.prefix.."help <command name>**\n**[Support Server](https://discordapp.com/invite/PjKaAXx) - [Bot Invite](https://discordapp.com/oauth2/authorize?client_id=414030463792054282&scope=bot&permissions=502787319)**",
         fields = {},
         color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
 			}}

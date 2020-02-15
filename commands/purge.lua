@@ -19,7 +19,7 @@ command.execute = function(message,args,client)
     return {success = false, msg = "The number of messages must be between **1 and 100**."}
   else
     args[2] = tonumber(args[2])
-    args[2] = args[2] + 1
+    args[2] = (args[2] == 100 and 100 or args[2] + 1)
     local num = 0
     local msgs = message.channel:getMessages(tonumber(args[2]))
     if msgs == nil or type(msgs) ~= "table" then return {success = false, msg = "I couldn't delete **any messages**."} end
