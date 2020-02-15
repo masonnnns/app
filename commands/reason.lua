@@ -25,10 +25,11 @@ command.execute = function(message,args,client)
     local case = data.modData.cases[tonumber(args[2])]
     case.reason = table.concat(args," ",3)
     if case.id ~= nil and case.id ~= 0 and data.modlog ~= nil and message.guild:getChannel(data.modlog) ~= nil and message.guild:getChannel(data.modlog):getMessage(case.id) ~= nil then
-      local embed = message.guild:getChannel(data.modlog):getMessage(case.id).embeds
-      embed.fields[3].value = reason
-      message.guild:getChannel(data.modlog):getMessage(case.id):setContent(embed)
-    end    
+      local embeds = message.guild:getChannel(data.modlog):getMessage(case.id).embed
+      embeds.fields[3].value = table.concat(args," ",3)
+      message.guild:getChannel(data.modlog):getMessage(case.id):setEmbed(embeds)
+    end
+    return {success = true, msg = "Changed the reason on **Case "..args[2].."**."}    
   end
 end
 
