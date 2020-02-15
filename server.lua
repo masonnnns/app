@@ -342,17 +342,17 @@ client:on("messageCreate",function(message)
       end)
       if not cmdSuccess then message:reply(":rotating_light: **An error has occured!** Please report this to our support team.```[ERR: "..tostring(cmdMsg):upper().."]```") return end
       if execute == nil or type(execute) ~= "table" then
-        message:reply(":no_entry: An **unknown error** occured.")
+        message:reply("<:atickno:678186665616998400> An **unknown error** occured.")
       elseif execute.success == false then
-        message:reply(":no_entry: "..execute.msg)
+        message:reply("<:atickno:678186665616998400> "..execute.msg)
       elseif tostring(execute.success):lower() == "stfu" then
         -- stfu literally
       else
-        message:reply((execute.emote == nil and ":ok_hand:" or execute.emote).." "..execute.msg)
+        message:reply((execute.emote == nil and "<:atickyes:678186418937397249>" or execute.emote).." "..execute.msg)
       end
     else
       if getPermission(message) < 1 then autoMod(message) end
-      local m = message:reply(":no_entry: You **don't have permissions** to use this command!")
+      local m = message:reply("<:aforbidden:678187354242023434> You **don't have permissions** to use this command!")
       timer.sleep(5000)
       m:delete()
     end
