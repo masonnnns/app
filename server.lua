@@ -348,7 +348,7 @@ client:on("messageCreate",function(message)
       elseif tostring(execute.success):lower() == "stfu" then
         -- stfu literally
       else
-        message:reply((execute.emote == nil and "<:atickyes:678186418937397249>" or execute.emote).." "..execute.msg)
+        message:reply((execute.emote == nil and "<:atickyes:678186418937397249>" or execute.emote).."  "..execute.msg)
       end
     else
       if getPermission(message) < 1 then autoMod(message) end
