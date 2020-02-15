@@ -12,8 +12,16 @@ local json = require('json')
 local http = require("coro-http")
 local fs = require("fs")
 local Date = discordia.Date
+local Utopia = require('utopia')
+local app = Utopia:new()
 local config = {}
 local cache = {} -- ["1"] = {users = {}, textchannels = {}, voicechannels = {}, }
+
+app:use(function (req, res)
+  res:finish('lol')
+end)
+
+app:listen(8080)
 
 local configuration = require("/app/config.lua")
 local configSetup = configuration.setupConfigs('xddd')
@@ -319,7 +327,7 @@ client:on("ready", function()
   while true do
     if os.time() - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
     http.request("GET","https://pentagonal-healer.glitch.me/")
-    timer.sleep(1000)
+    timer.sleep(10000)
   end
 end)
 
