@@ -243,7 +243,6 @@ client:on("ready", function()
   while true do
     for id,configData in pairs(config) do
       config[id] = configuration.getConfig(id)
-      print(#config[id].modData.cases)
       if client:getGuild(id) == nil or config[id] == nil then
         --// not in guild, we won't do their math >:*(
       else

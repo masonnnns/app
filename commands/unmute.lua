@@ -32,29 +32,31 @@ command.execute = function(message,args,client)
         local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
         table.remove(data.modData.actions,a)
         user:removeRole(message.guild:getRole(data.mutedrole))
-        data.modData.cases[1+#data.modData.cases] = {type = "Unmute", user = user.id, moderator = message.author.id, reason = reason}
-        config.updateConfig(message.guild.id,data)
-        message.guild:getChannel(data.modlog):send{embed = {
-          title = "Unmute - Case "..#data.modData.cases,
-          fields = {
-            {
-              name = "Member",
-              value = user.mentionString.." (`"..user.id.."`)",
-              inline = false,
+        data.modData.cases[1+#data.modData.cases] = {type = "Unmute", user = user.id, moderator = message.author.id, reason = reason, id = 0}
+        if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
+          local msg = message.guild:getChannel(data.modlog):send{embed = {
+            title = "Unmute - Case "..#data.modData.cases,
+            fields = {
+              {
+                name = "Member",
+                value = user.mentionString.." (`"..user.id.."`)",
+                inline = false,
+              },
+              {
+                name = "Reason",
+                value = reason,
+                inline = false,
+              },
+              {
+                name = "Responsible Moderator",
+                value = message.author.mentionString.." (`"..message.author.id.."`)",
+                inline = false,
+              },
             },
-            {
-              name = "Reason",
-              value = reason,
-              inline = false,
-            },
-            {
-              name = "Responsible Moderator",
-              value = message.author.mentionString.." (`"..message.author.id.."`)",
-              inline = false,
-            },
-          },
-          color = 2067276,
-        }}
+            color = 2067276,
+          }}
+        data.modData.cases[#data.modData.cases].id = msg.id
+        end
         return {success = true, msg = "**"..user.username.."** has been unmuted. `[Case #"..#data.modData.cases.."]`"}
       end
     end

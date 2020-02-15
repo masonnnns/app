@@ -55,9 +55,10 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  if args[2] == nil then args[2] = message.guild.id end
+  if args[2] == nil or args[2]:lower() == "here" then args[2] = message.guild.id end
   if client:getGuild(args[2]) == nil then return {success = false, msg = "I am **not in that guild**."} end
   local guild = client:getGuild(args[2])
+  if args[3]:lower() == "reset" then config.resetConfig(args[2]) return {success = true, msg = "**"..client:getGuild(args[2]).name.."'s** config has been reset."} end
   local data = config.getConfig(args[2])
   message:reply{embed = {
     title = guild.name.." Config",
