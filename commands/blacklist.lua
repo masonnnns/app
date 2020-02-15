@@ -1,11 +1,12 @@
 command = {}
 
 local blacklists = require("/app/blacklist.lua")
+local cache = require("/app/server.lua")
 
 command.info = {
   Name = "Blacklist",
   Alias = {},
-  Usage = "blacklist <id> <reason>",
+  Usage = "blacklist <id / view> <id>",
   Category = "Private",
   Description = "Blacklist the specified user.",
   PermLvl = 5,
@@ -13,25 +14,18 @@ command.info = {
 
 command.execute = function(message,args,client)
   if args[2] == nil then
-    return {success = false, msg = "You must provide a **user ID to blacklist** in argument 2."}
-  elseif tonumber(args[2]) == nil then
-    return {success = false, msg = "You must provide a **user ID to blacklist** in argument 2."}
-  else
-    if args[3] ~= nil and args[3]:lower() == "get" then
-      local isBlacklisted = blacklists.getBlacklist(args[2])
-      if isBlacklisted == true then
-        return {success = true, msg = "That ID **is not** blacklisted."}
-      else
-        return {success = true, msg = "That ID **is** blacklisted.\n**Reason:** "..isBlacklisted.reason}
-      end
-      return {success = "stfu"}
-    elseif blacklists.getBlacklist(args[2]) == true then
-      blacklists.blacklist(args[2],(args[3] == nil and "No Reason Provided" or table.concat(args," ",3)))
-      return {success = true, msg = "Blacklisted **"..client:getUser(args[2]).name.."**."}
-    else
-       blacklists.unblacklist(args[2],(args[3] == nil and "No Reason Provided" or table.concat(args," ",3)))
-      return {success = true, msg = "Unblacklisted **"..client:getUser(args[2]).name.."**."}
-    end
+   return {success = false, msg = "Invalid arguments."}
+  elseif args[2]:lower() == "view" then
+    local blacklist = blacklists.getBlacklist("*")
+    local txt = ""
+    for a,b in pairs(blacklist) do txt = txt.."\n**"..client:getUser(a).tag.." -** "..b.reason end
+    message:reply{embed = {
+      title = "Blacklisted Users ["..#blacklist.."]",
+      description = txt,
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
+    }}
+    return {success = "stfu"}
   end
 end
 
