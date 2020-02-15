@@ -30,7 +30,7 @@ command.execute = function(message,args,client)
         return {success = false, msg = "**"..user.name.."** isn't currently muted."}
       else
         local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
-        table.remove(data.modData.actions,a)
+        for a,items in pairs(data.modData.actions) do if items.user == user.id and string.lower(items.type) == "mute" then table.remove(data.modData.actions,a) end end
         user:removeRole(message.guild:getRole(data.mutedrole))
         data.modData.cases[1+#data.modData.cases] = {type = "Unmute", user = user.id, moderator = message.author.id, reason = reason, id = 0}
         if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
@@ -53,7 +53,7 @@ command.execute = function(message,args,client)
                 inline = false,
               },
             },
-            color = 2067276,
+            color = 3066993,
           }}
         data.modData.cases[#data.modData.cases].id = msg.id
         end

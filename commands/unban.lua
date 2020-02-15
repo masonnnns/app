@@ -27,7 +27,7 @@ command.execute = function(message,args,client)
       return {success = false, msg = "**"..user.name.."** isn't banned!"}
     else
       local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
-      for a,items in pairs(data.modData.actions) do if items.id == user.id then table.remove(data.modData.actions,a) end end
+      for a,items in pairs(data.modData.actions) do if items.user == user.id and string.lower(items.type) == "ban" then table.remove(data.modData.actions,a) end end
       message.guild:unbanUser(user.id,reason)
       data.modData.cases[1+#data.modData.cases] = {type = "Unban", user = user.id, moderator = message.author.id, reason = reason, id = 0}
       if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
@@ -50,7 +50,7 @@ command.execute = function(message,args,client)
               inline = false,
             },
           },
-           color = 2067276,
+           color = 3066993,
         }}
         data.modData.cases[#data.modData.cases].id = msg.id
         return {success = true, msg = "**"..user.username.."** has been unbanned. `[Case #"..#data.modData.cases.."]`"}

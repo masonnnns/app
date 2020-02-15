@@ -33,13 +33,13 @@ command.execute = function(message,args,client)
     local case = {type = "Warn", user = user.id, moderator = message.author.id, reason = reason, id = 0}
     if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) then
       local msg = message.guild:getChannel(data.modlog):send{embed = {
-        title = "__Warning__ - Case "..(#data.modData.cases + 1),
+        title = "Warning - Case "..(#data.modData.cases + 1),
         fields = {
           {name = "Member", value = user.mentionString.." (`"..user.id.."`)", inline = false},
           {name = "Reason", value = reason, inline = false},
           {name = "Moderator", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = false},
         },
-        color = 15105570
+        color = 15844367
       }}
       case.id = msg.id
     end
