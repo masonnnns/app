@@ -28,10 +28,9 @@ command.execute = function(message,args,client)
     --user:getPrivateChannel():send("⛔ **You've been kicked from "..message.guild.name.."!**\n\n**Reason:** "..reason)
     message.guild:kickUser(user.id,reason)
     local data = config.getConfig(message.guild.id)
-    data.modData.cases[1+#data.modData.cases] = {type = "Kick", user = user.id, moderator = message.author.id, reason = reason}
-    config.updateConfig(message.guild.id,data)
+    data.modData.cases[1+#data.modData.cases] = {type = "Kick", user = user.id, moderator = message.author.id, reason = reason, id = 0}
     if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
-      message.guild:getChannel(data.modlog):send{embed = {
+      local msg = message.guild:getChannel(data.modlog):send{embed = {
         title = "Kick - Case "..#data.modData.cases,
         fields = {
           {
@@ -52,6 +51,7 @@ command.execute = function(message,args,client)
         },
         color = 15105570,
         }}
+        data.modData.cases[#ata.modData.cases].id = msg.id
     end 
     return {success = true, msg = "**"..user.username.."** has been kicked. `[Case #"..#data.modData.cases.."]`"}
   end

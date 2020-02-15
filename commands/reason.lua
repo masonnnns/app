@@ -23,13 +23,17 @@ command.execute = function(message,args,client)
       return {success = false, msg = "**Case "..args[2].."** doesn't exist."}
   else
     local case = data.modData.cases[tonumber(args[2])]
+    if case.moderator == client.user.id then return {success = false, msg = "You cannot edit the reason on an **automatic case**."} end
+    if string.lower(case.reason) == string.lower(table.concat(args," ",3)) then return {success = true, msg = "Changed the reason for **Case "..args[2].."**."} end
     case.reason = table.concat(args," ",3)
     if case.id ~= nil and case.id ~= 0 and data.modlog ~= nil and message.guild:getChannel(data.modlog) ~= nil and message.guild:getChannel(data.modlog):getMessage(case.id) ~= nil then
       local embeds = message.guild:getChannel(data.modlog):getMessage(case.id).embed
-      embeds.fields[3].value = table.concat(args," ",3)
+      local found
+      for a,items in pairs(embeds.fields) do if items.name == "Reason" then found = a break end end
+      embeds.fields[found].value = table.concat(args," ",3)
       message.guild:getChannel(data.modlog):getMessage(case.id):setEmbed(embeds)
     end
-    return {success = true, msg = "Changed the reason on **Case "..args[2].."**."}    
+    return {success = true, msg = "Changed the reason for **Case "..args[2].."**."}    
   end
 end
 
