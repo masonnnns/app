@@ -71,7 +71,7 @@ command.execute = function(message,args,client)
         data.modData.cases[1+#data.modData.cases] = {type = "mute", reason = reason, moderator = message.author.id, user = user.id, duration = "Permanent", id = 0}
         if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
           local msg = message.guild:getChannel(data.modlog):send{embed = { title = "Mute - Case "..#data.modData.cases, fields = { { name = "Member", value = user.mentionString.." (`"..user.id.."`)", inline = true, }, { name = "Duration", value = "Permanent", inline = true, }, { name = "Reason", value = reason, inline = false, }, { name = "Responsible Moderator", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = false, }, }, color = 10038562, }}
-          data.modData.cases[data.modData.cases].id = msg.id
+          data.modData.cases[#data.modData.cases].id = msg.id
         end
         return {success = true, msg = "**"..user.username.."** has been muted. `[Case #"..#data.modData.cases.."]`"}
       elseif durationTable[table.concat(duration.char,"")] == nil then
@@ -82,7 +82,7 @@ command.execute = function(message,args,client)
         config.updateConfig(message.guild.id,data)
         if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
           local msg = message.guild:getChannel(data.modlog):send{embed = { title = "Mute - Case "..#data.modData.cases, fields = { { name = "Member", value = user.mentionString.." (`"..user.id.."`)", inline = true, }, { name = "Duration", value = "Permanent", inline = true, }, { name = "Reason", value = reason, inline = false, }, { name = "Responsible Moderator", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = false, }, }, color = 10038562, }}
-          data.modData.cases[data.modData.cases].id = msg.id
+          data.modData.cases[#data.modData.cases].id = msg.id
         end
         return {success = true, msg = "**"..user.username.."** has been muted. `[Case #"..#data.modData.cases.."]`"}
       else
@@ -96,7 +96,7 @@ command.execute = function(message,args,client)
           config.updateConfig(message.guild.id,data)
           if data.modlog ~= "nil" and message.guild:getChannel(data.modlog) ~= nil then
             local msg = message.guild:getChannel(data.modlog):send{embed = { title = "Mute - Case "..#data.modData.cases, fields = { { name = "Member", value = user.mentionString.." (`"..user.id.."`)", inline = true, }, { name = "Duration", value = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s"), inline = true, }, { name = "Reason", value = reason, inline = false, }, { name = "Responsible Moderator", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = false, }, }, color = 10038562, }}
-            data.modData.cases[data.modData.cases].id = 
+            data.modData.cases[#data.modData.cases].id = msg.id
           end
           return {success = true, msg = "**"..user.username.."** has been muted. `[Case #"..#data.modData.cases.."]`"}
         end

@@ -72,4 +72,9 @@ module.updateConfig = function(id,newTable)
 	file:close()
 end
 
+module.resetConfig = function(id)
+  addConfig(id)
+  return true
+end
+
 return module
