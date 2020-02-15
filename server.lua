@@ -217,13 +217,13 @@ local cooldownStrikes = {}
 local commandCooldown = {}
 local blacklist = require("/app/blacklist.lua")
 
-local function coolDown(id,reset,message)
-  --if commandCooldown[id] == nil then return true end
+function coolDown(id,reset,message)
+  if commandCooldown[id] == nil then return true end
+  if commandCooldown[id] - os.time() <= 0 then commandCooldown[id] = nil cooldownStrikes[id] = nil return true end 
   if reset then
     table.remove(cooldownStrikes,id)
     return true
   end
-  print('strike')
   if cooldownStrikes[id] == nil then cooldownStrikes[id] = 0 end
   cooldownStrikes[id] = 1+cooldownStrikes[id]
   if cooldownStrikes[id] >= 7 then
@@ -232,6 +232,8 @@ local function coolDown(id,reset,message)
     return false
   elseif cooldownStrikes[id] == 3 then
     message:reply("⚠️ "..message.author.mentionString..", if you continue to spam commands you will be blacklisted.")
+    return false
+  elseif cooldownStrikes[id] >= 3 then
     return false
   end
   return true
@@ -320,7 +322,6 @@ client:on("ready", function()
 end)
 
 local commandsRan, messagesSeen = 0,0
-local commandCooldown = {}
 
 client:on("messageCreate",function(message)
   if message.author.bot then return end
@@ -367,9 +368,7 @@ client:on("messageCreate",function(message)
       local cmdSuccess, cmdMsg = pcall(function()
         execute = found.execute(message,args,client)
       end)
-      print('ok')
-      commandCooldown[tostring(message.author.id..found.info.Name)] = 0
-      commandCooldown[tostring(message.author.id..found.info.Name)] = os.time() + (found.info.Cooldown == nil and 3 or found.info.Cooldown)
+      if commandCooldown[tostring(message.author.id..found.info.Name)] == nil then commandCooldown[tostring(message.author.id..found.info.Name)] = os.time() + (found.info.Cooldown == nil and 3 or found.info.Cooldown) end
       if not cmdSuccess then message:reply(":rotating_light: **An error has occured!** Please report this to our support team.```[ERR: "..tostring(cmdMsg):upper().."]```") return end
       if execute == nil or type(execute) ~= "table" then
         message:reply("<:atickno:678186665616998400> An **unknown error** occured.")
