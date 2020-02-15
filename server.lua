@@ -226,7 +226,7 @@ function coolDown(id,reset,message)
   end
   if cooldownStrikes[id] == nil then cooldownStrikes[id] = 0 end
   cooldownStrikes[id] = 1+cooldownStrikes[id]
-  if cooldownStrikes[id] >= 7 then
+  if cooldownStrikes[id] >= 4 then
     message:reply("<:ablacklisted:678223910789054464> "..message.author.mentionString..", you've been blacklisted for **spamming commands**.")
     blacklist.blacklist(message.author.id,"[AUTO] Spamming commands.")
     return false
