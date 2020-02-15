@@ -298,6 +298,7 @@ end)
 local commandsRan, messagesSeen = 0,0
 
 client:on("messageCreate",function(message)
+  if message.author.bot then return end
   if message.guild == nil then return end
   local blacklists = require("/app/blacklist.lua")
   if blacklists.getBlacklist(message.author.id) ~= true then return end
@@ -507,6 +508,7 @@ client:on("memberUpdate", function(member)
   config[member.guild.id] = configuration.getConfig(member.guild.id)
   if cache[member.guild.id] == nil then return end
   if cache[member.guild.id].users[member.id] == nil then return end
+  if member.guild:getAuditLogs() == nil then return end
   local auditLog
   for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end
   if auditLog == nil then return end
@@ -596,7 +598,7 @@ client:on("messageDelete", function(message)
   if config[message.guild.id].purgeignore[message.channel.id] ~= nil and config[message.guild.id].purgeignore[message.channel.id] >= 1 then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] - 1 print('purge ignored?') configuration.updateConfig(message.guild.id,config[message.guild.id]) return end
   if config[message.guild.id].auditlog == "nil" and message.guild:getChannel(config[message.guild.id].auditlog) == nil then return end
   local auditLog
-  for a,items in pairs(message.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id and items.actionType == 72 then auditLog = items break end end
+  if message.guild:getAuditLogs() ~= nil then for a,items in pairs(message.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id and items.actionType == 72 then auditLog = items break end end end
   if auditLog ~= nil and auditLog:getMember().id ~= nil and auditLog:getMember().id == client.user.id then return end 
   if auditLog == nil or auditLog:getMember().id == message.author.id then
     message.guild:getChannel(config[message.guild.id].auditlog):send{embed ={ title = "Message Deleted", fields = { { name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true, }, { name = "Message Location", value = message.channel.mentionString, inline = true, }, { name = "Message Content", value = message.content, inline = false, }, }, color = 3447003, }}
@@ -614,7 +616,7 @@ client:on("channelCreate", function(channel)
   if channel.type == 2 then cache[channel.guild.id].channels[channels.id] = {name = channels.name, userlimit = channels.userLimit, bitrate = channels.bitrate, permissions = channels.permissionOverwrites, category = (channels.category == nil and "nil" or channels.category.id)} end
   if config[channel.guild.id].auditlog == "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) == nil then return end
   local auditLog
-  for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id and items.actionType == 10 then auditLog = items break end end
+  if message.guild:getAuditLogs() ~= nil then for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id and items.actionType == 10 then auditLog = items break end end end
   if channel.type == 0 then
     if auditLog == nil then
       channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Channel Created", fields = { { name = "Channel", value = channel.mentionString, inline = true, }, { name = "Channel Location", value = (channel.category == nil and "Not Categorized" or channel.category.name), inline = true, }, }, color = 2067276, }}
@@ -641,7 +643,7 @@ client:on("channelDelete", function(channel)
   config[channel.guild.id] = configuration.getConfig(channel.guild.id)
   if config[channel.guild.id].auditlog == "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) == nil then return end
   local auditLog
-  for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id and items.actionType == 12 then auditLog = items break end end
+  if message.guild:getAuditLogs() ~= nil then for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id and items.actionType == 12 then auditLog = items break end end end
   if channel.type == 0 or channel.type == 2 then
     if auditLog == nil then
       channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = (channel.type == 2 and "Voice " or "").."Channel Deleted", fields = { { name = "Channel", value = channel.name.." (`"..channel.id.."`)", inline = true, }, { name = "Previous Location", value = (channel.category == nil and "Wasn't Categorized" or channel.category.name), inline = true, }, }, color = 10038562, }}
@@ -671,7 +673,7 @@ client:on('roleCreate', function(channel)
   if config[channel.guild.id] == nil then return end
   cache[channel.guild.id].roles[channel.id] = {name = channel.name, hoisted = channel.hoisted, mentionable = channel.mentionable, color = channel.color, position = role.position}
   local auditLog
-  for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end
+  if message.guild:getAuditLogs() ~= nil then for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end end
   if auditLog == nil or auditLog:getMember() == nil or auditLog.actionType ~= 30 then
     if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
       channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Role Created", fields = { { name = "Role", value = channel.mentionString, inline = true,}, }, color = 2067276, }}
@@ -689,7 +691,7 @@ client:on('roleDelete', function(channel)
   if client:getGuild(channel.guild.id) == nil then return end
   if config[channel.guild.id] == nil then return end
   local auditLog
-  for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end
+  if message.guild:getAuditLogs() ~= nil then for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end end
   if auditLog == nil or auditLog:getMember() == nil or auditLog.actionType ~= 32 then
     if config[channel.guild.id] and config[channel.guild.id].auditlog ~= "nil" and channel.guild:getChannel(config[channel.guild.id].auditlog) then
       channel.guild:getChannel(config[channel.guild.id].auditlog):send{embed ={ title = "Role Deleted", fields = { { name = "Role", value = channel.name, inline = true,}, }, color = 10038562, }}
