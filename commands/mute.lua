@@ -60,7 +60,7 @@ command.execute = function(message,args,client)
       return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
     elseif utils.getPermission(message,client,user.id) >= utils.getPermission(message,client) then
       return {success = false, msg = "You cannot "..command.info.Name:lower().." people with **higher than or equal permissions as you.**"}
-    elseif user:hasRole(message.guild:getRole(data.mutedrole)) then
+    elseif cache.getCache("user",message.guild.id,user.id).roles[data.mutedrole] ~= nil then
       return {success = false, msg = "You cannot mute people who're already muted."}
     else -- done with the pre-errors
       local duration = getDuration({args[1], args[2], (args[3] == nil and "FBBBB6DE2AA74C3C9570D2D8DB1DE31EADB66113C96034A7ADB21243754D7683" or args[3])})
