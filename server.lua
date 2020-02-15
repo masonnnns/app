@@ -22,7 +22,8 @@ for a,b in pairs(client.guilds) do config[b.id] = configuration.getConfig(b.id) 
 
 
 local function getPermission(message,id)
-  if message.guild == nil then return end
+  if message.guild == nil then return 0 end
+  if message.guild.owner == nil then return 0 end
 	if id == nil then id = message.author.id end
 	if message.guild:getMember(id) == nil then
 		return 0
@@ -734,6 +735,30 @@ end)
 
 client:on('roleUpdate', function(role)
   cache[role.guild.id].roles[role.id] = {name = role.name, hoisted = role.hoisted, mentionable = role.mentionable, color = role.color, position = role.position}
+end)
+
+client:on('userBan', function(member)
+  config[member.guild.id] = configuration.getConfig(member.guild.id)
+  if config[member.guild.id].auditlog == "nil" and member.guild:getChannel(config[member.guild.id].auditlog) == nil then return end
+  local auditLog
+  if member.guild:getMember(client.user.id):hasPermission("viewAuditLog") then for a,items in pairs(member.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id then auditLog = items break end end end
+  if auditLog == nil or auditLog:getMember() == nil or auditLog.actionType ~= 22 then
+    member.guild:getChannel(config[member.guild.id].auditlog):send{embed = {
+      title = "Member Banned",
+      fields = {
+        {name = "Member", value = member.mentionString.." (`"..member.id.."`)"}
+      },
+    }}
+  else
+    member.guild:getChannel(config[member.guild.id].auditlog):send{embed = {
+      title = "Member Banned",
+      fields = {
+        {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
+        {name = "Reason", value = auditLog.reason, inline = false},
+        {name = "Responsible Member", value = auditLog:getMember().mentionString.." "}
+      },
+    }}
+  end
 end)
 
 client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')
