@@ -253,7 +253,7 @@ client:on("ready", function()
   for _,guilds in pairs(client.guilds) do
     cache[guilds.id] = {users = {}, channels = {}, roles = {}}
     for _,users in pairs(guilds.members) do
-       cache[guilds.id].users[users.id] = {roles = {}, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
+       cache[guilds.id].users[users.id] = {bot = users.bot, roles = {}, status = users.status, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
        for _,items in pairs(users.roles) do cache[guilds.id].users[users.id].roles[items.id] = true end
        --print("[USER CACHED]: "..users.name.." has been cached in "..guilds.name..".")
     end
@@ -538,6 +538,9 @@ client:on("memberLeave", function(member)
       member.guild:getChannel(config[member.guild.id].welcome.leavechannel):send(msg)
     end
   end
+  if cache[member.guild.id] == nil then return end
+  if cache[member.guild.id].users == nil then return end
+  table.remove(cache[member.guild.id].users,member.id)
 end)
 
 client:on("memberUpdate", function(member)
@@ -797,6 +800,13 @@ client:on('userUnban', function(member,guild)
       color = 15105570,
     }}
   end
+end)
+
+client:on("presenceUpdate", function(member)
+  if cache[member.guild.id] == nil then return end
+  if cache[member.guild.id].users == nil then return end
+  if cache[member.guild.id].users[member.id] == nil then return end
+  cache[member.guild.id].users[member.id].status = member.status
 end)
 
 client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')
