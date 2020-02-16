@@ -70,12 +70,10 @@ command.execute = function(message,args,client)
   end
   for a,items in pairs(cache.getCache("users",message.guild.id)) do
     members[1] = members[1] + 1
-    --local user = message.guild:getMember(a)
     if items.bot then
       members[2].bots = members[2].bots+1
-    else
-      members[2][items.status] = members[2][items.status]+1
     end
+    members[2][items.status] = members[2][items.status]+1
   end
   message:reply{embed = {
       title = message.guild.name,
@@ -89,6 +87,7 @@ command.execute = function(message,args,client)
         --{name = "I Joined At", value = message.guild:getMember(client.user.id).joinedAt:gsub('%..*', ''):gsub('T', ' '),inline = true},
         {name = "Members ["..members[1].."]", value = ">>> **Online:** "..members[2]["online"].."\n**Do not Disturb:** "..members[2]["dnd"].."\n**Idle:** "..members[2]["idle"].."\n**Offline:** "..members[2]["offline"].."\n**Bots:** "..members[2].bots,inline = true},
         {name = "Channels ["..#message.guild.voiceChannels + #message.guild.textChannels + #message.guild.categories.."]", value = ">>> **Categories:** "..(#message.guild.categories == 0 and "None!" or #message.guild.categories).."\n**Text Channels:** "..(#message.guild.textChannels == 0 and "None!" or #message.guild.textChannels).."\n**Voice Channels:** "..(#message.guild.voiceChannels == 0 and "None!" or #message.guild.voiceChannels), inline = true},
+        {name = "Emotes ["..#emotes[1].."]", value = ">>> "..table.concat(emotes,"",)}
       },
       thumbnail = {url = (message.guild.iconURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or message.guild.iconURL)},
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},

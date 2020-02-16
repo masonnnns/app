@@ -807,6 +807,7 @@ client:on("presenceUpdate", function(member)
   if cache[member.guild.id].users == nil then return end
   if cache[member.guild.id].users[member.id] == nil then return end
   cache[member.guild.id].users[member.id].status = member.status
+  --print(member.name,"in",member.guild.name)
 end)
 
 client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')
