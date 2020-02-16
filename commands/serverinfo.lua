@@ -89,6 +89,7 @@ command.execute = function(message,args,client)
   end
   hold = 0
   for a,b in pairs(message.guild.roles) do
+    print(b.name)
     if a == message.guild.id then else
       roles[1] = roles[1] + 1
       if #roles[2] <= 25 then
@@ -99,7 +100,7 @@ command.execute = function(message,args,client)
       end
     end
   end
-  message:reply{embed = {
+   message:reply{embed = {
       title = message.guild.name,
       fields = {
         {name = "Owner", value = message.guild.owner.mentionString, inline = true},
