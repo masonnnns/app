@@ -71,14 +71,20 @@ command.execute = function(message,args,client)
     filter = "Error."
   end
   for a,items in pairs(cache.getCache("users",message.guild.id)) do
-    members[1] = members[1] + 1
-    if items.bot then
-      members[2].bots = members[2].bots+1
-    end
-    if items.status == nil then 
-      items
-    else
-      members[2][items.status] = members[2][items.status]+1
+    if items ~= "nil" then
+      members[1] = members[1] + 1
+      if items.bot then
+        members[2].bots = members[2].bots+1
+      end
+      print(items.status,a)
+      if items.status == nil then 
+        local user = message.guild:getMember(a)
+        if user.user.status ~= nil then
+          members[2][user.user.status] = members[2][user.user.status]+1
+        end
+      else
+        members[2][items.status] = members[2][items.status]+1
+      end
     end
   end
   local hold = 0

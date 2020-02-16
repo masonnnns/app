@@ -542,7 +542,7 @@ client:on("memberLeave", function(member)
   end
   if cache[member.guild.id] == nil then return end
   if cache[member.guild.id].users == nil then return end
-  table.remove(cache[member.guild.id].users,member.id)
+  cache[member.guild.id].users[member.id] = "nil"
 end)
 
 client:on("memberUpdate", function(member)
@@ -805,9 +805,11 @@ client:on('userUnban', function(member,guild)
 end)
 
 client:on("presenceUpdate", function(member)
+  timer.sleep(500)
   if cache[member.guild.id] == nil then return end
   if cache[member.guild.id].users == nil then return end
   if cache[member.guild.id].users[member.id] == nil then return end
+  if cache[member.guild.id].users[member.id] == "nil" then return end
   cache[member.guild.id].users[member.id].status = member.status
   --print(member.name,"in",member.guild.name)
 end)
