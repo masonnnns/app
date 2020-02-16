@@ -74,7 +74,7 @@ command.execute = function(message,args,client)
         {name = "Verification Level", value = verification, inline = true},
         {name = "Explicit Content Filter", value = filter, inline = true},
         {name = "Created At", value = Date.fromSnowflake(message.guild.id):toISO(' ', ''), inline = true},
-        {name = "Channels ["..#message.guild.voiceChannels + #message.guild.textChannels.."]", value = "OK", inline = false}
+        {name = "Channels ["..#message.guild.voiceChannels + #message.guild.textChannels + #message.guild.categories.."]", value = ">>> **Categories:** "..(#message.guild.categories == 0 and "None!" or #message.guild.categories).."\n**Text Channels:** "..(#message.guild.textChannels == 0 and "None!" or #message.guild.textChannels).."\n**Voice Channels:** "..(#message.guild.voiceChannels == 0 and "None!" or #message.guild.voiceChannels), inline = false}
       },
       thumbnail = {url = (message.guild.iconURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or message.guild.iconURL)},
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
