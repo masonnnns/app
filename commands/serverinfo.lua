@@ -15,12 +15,24 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
+  local region = message.guild.region
+  if region == "us-east" then
+    region = "US East :flag_us:"
+  elseif region == "us-central" then
+    region = "US Central :flag_us:"
+  elseif region == "us-west" then
+    region = "US West :flag_us:"
+  elseif region == "us-south" then
+    region = "US South :flag_us:"u
+  end
   message:reply{embed = {
-      title = (user.id == message.author.id and "Your" or user.name.."'s").." Avatar",
-      description = "[Click here]("..user:getAvatarURL()..") to download.",
+      title = message.guild.name,
+      fields = {
+        {name = "Owner", value = message.guild.owner.mentionString, inline = true},
+        {name = "ID", value = message.guild.id, inline = true},
+        {name = "Region", value = region, inline = true},
+      },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-      image = {url = user:getAvatarURL().."?size=256"},
-      timestamp = Date(),
       color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
   }}
   return {success = "stfu", msg = ""}
