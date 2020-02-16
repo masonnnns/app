@@ -273,6 +273,7 @@ client:on("ready", function()
       cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles.color, position = roles.position}
       --print("[ROLE CACHED]: "..roles.name.." has been cached in "..guilds.name..".")
     end
+    print("[GUILD CACHED]: "..guilds.name.." has been completely cached with "..#cache[guilds.id].users.." members.")
   end
   print("[TEMP-ACTION LOOP]: Starting timed-actions loop.")
   client:setGame("?help")
