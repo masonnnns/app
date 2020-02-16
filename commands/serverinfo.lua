@@ -75,7 +75,11 @@ command.execute = function(message,args,client)
     if items.bot then
       members[2].bots = members[2].bots+1
     end
-    members[2][items.status] = members[2][items.status]+1
+    if items.status == nil then 
+      items
+    else
+      members[2][items.status] = members[2][items.status]+1
+    end
   end
   local hold = 0
   for a,b in pairs(message.guild.emojis) do

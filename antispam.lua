@@ -11,7 +11,6 @@ local module = {}
 
 module = function(message)
   local now = os.time()
-  print("now",now)
   authors[1+#authors] = {time = now, author = message.author.id, id = message.id}
   messageLog[1+#messageLog] = {time = now, author = message.author.id, message = message.content, id = message.id}
   
@@ -47,10 +46,9 @@ module = function(message)
   local matched = {}
   for a,items in pairs(authors) do
     if items.time > now - interval and now ~= false then
-      print("strike!",#matched + 1)
       matched[1+#matched] = items.id
       if #matched >= warnBuffer then
-        for b,c in pairs(authors) do if c.author == message.author.id then table.remove(authors,b) print(c,"removed") end end
+        for b,c in pairs(authors) do if c.author == message.author.id then table.remove(authors,b) end end
         for d,items in pairs(messageLog) do if items.author == message.author.id then table.remove(messageLog,d) end end
         return {safe = false, reason = "Sent "..#matched.." messages in three seconds.", messages = matched}
       end
@@ -63,8 +61,7 @@ module = function(message)
   for a,items in pairs(authors) do
     if items.time > now - 6000 then
       if raid >= 4 then
-        print('raid =')
-        return {safe = false, reason = "Sent "..raid.." messages in six seconds."}
+        return {safe = true, reason = "Sent "..raid.." messages in six seconds."}
       end
     else
       table.remove(authors,a)
