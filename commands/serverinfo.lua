@@ -17,6 +17,7 @@ command.info = {
 command.execute = function(message,args,client)
   local region = message.guild.region
   local verification = message.guild.verificationLevel
+  local filter = message.guild.explicitContentSetting
   if region == "us-east" then
     region = "US East :flag_us:"
   elseif region == "us-central" then
@@ -52,6 +53,17 @@ command.execute = function(message,args,client)
     verification = "(╯°□°）╯︵ ┻━┻ (High)"
   elseif verification == 4 then
     verification = "┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻ (Very High)"
+  else
+    verification = "Error."
+  end
+  if filter == 0 then
+    filter = "None"
+  elseif filter == 1 then
+    filter = "Scan content from members with no roles."
+  elseif filter == 2 then
+    filter = "Scan content from all members."
+  else
+    filter = "Error."
   end
   message:reply{embed = {
       title = message.guild.name,
@@ -60,6 +72,9 @@ command.execute = function(message,args,client)
         {name = "ID", value = message.guild.id, inline = true},
         {name = "Region", value = region, inline = true},
         {name = "Verification Level", value = verification, inline = true},
+        {name = "Explicit Content Filter", value = filter, inline = true},
+        {name = "Created At", value = Date.fromSnowflake(message.guild.id):toISO(' ', ''), inline = true},
+        {name = "Channels ["..#message.guild.voiceChannels + #message.guild.textChannels.."]", value = "OK", inline = false}
       },
       thumbnail = {url = (message.guild.iconURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or message.guild.iconURL)},
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
