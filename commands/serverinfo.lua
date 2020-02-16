@@ -98,11 +98,11 @@ command.execute = function(message,args,client)
     end
   end
   hold = 0
-  for a,b in pairs(message.guild.roles) do
+  for a,b in pairs(cache.getCache("roles",message.guild.id)) do
     if a == message.guild.id then else
       roles[1] = roles[1] + 1
       if #roles[2] <= 25 then
-        roles[2][1+#roles[2]] = b.mentionString
+        roles[2][1+#roles[2]] = "<@&"..a..">"
       else
         hold = hold + 1
         roles[3] = "...and "..hold.." more."
