@@ -89,7 +89,6 @@ command.execute = function(message,args,client)
   end
   hold = 0
   for a,b in pairs(message.guild.roles) do
-    print(b.name)
     if a == message.guild.id then else
       roles[1] = roles[1] + 1
       if #roles[2] <= 25 then
@@ -112,8 +111,8 @@ command.execute = function(message,args,client)
         --{name = "I Joined At", value = message.guild:getMember(client.user.id).joinedAt:gsub('%..*', ''):gsub('T', ' '),inline = true},
         {name = "Members ["..members[1].."]", value = ">>> **Online:** "..members[2]["online"].."\n**Do not Disturb:** "..members[2]["dnd"].."\n**Idle:** "..members[2]["idle"].."\n**Offline:** "..members[2]["offline"].."\n**Bots:** "..members[2].bots,inline = true},
         {name = "Channels ["..#message.guild.voiceChannels + #message.guild.textChannels + #message.guild.categories.."]", value = ">>> **Categories:** "..(#message.guild.categories == 0 and "None!" or #message.guild.categories).."\n**Text Channels:** "..(#message.guild.textChannels == 0 and "None!" or #message.guild.textChannels).."\n**Voice Channels:** "..(#message.guild.voiceChannels == 0 and "None!" or #message.guild.voiceChannels), inline = true},
-        {name = "Emotes ["..emotes[1].."]", value = ">>> "..table.concat(emotes[2]," ").."\n"..emotes[3]},
-        {name = "Roles ["..roles[1].."]", value = ">>> "..table.concat(roles[2]," ").."\n"..roles[3]},
+        {name = "Emotes ["..emotes[1].."]", value = ">>> "..(emotes[1] == 0 and "No emotes, go make some! <a:dboatsSharkDance:575397354635657227>" or table.concat(emotes[2]," ").."\n"..emotes[3])},
+        {name = "Roles ["..roles[1].."]", value = ">>> "..(roles[1] == 0 and "No roles, go make some!" or table.concat(roles[2]," ").."\n"..roles[3])},
       },
       thumbnail = {url = (message.guild.iconURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or message.guild.iconURL)},
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
