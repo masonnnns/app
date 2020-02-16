@@ -251,6 +251,7 @@ end
 client:on("ready", function()
   client:setGame("Booting, please wait...")
   for _,guilds in pairs(client.guilds) do
+    print("[STARTING CACHE]: "..guilds.name.." is being cached.")
     cache[guilds.id] = {users = {}, channels = {}, roles = {}}
     for _,users in pairs(guilds.members) do
        cache[guilds.id].users[users.id] = {bot = users.bot, roles = {}, status = users.status, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
@@ -273,7 +274,7 @@ client:on("ready", function()
       cache[guilds.id].roles[roles.id] = {name = roles.name, hoisted = roles.hoisted, mentionable = roles.mentionable, color = roles.color, position = roles.position}
       --print("[ROLE CACHED]: "..roles.name.." has been cached in "..guilds.name..".")
     end
-    print("[GUILD CACHED]: "..guilds.name.." has been completely cached with "..#cache[guilds.id].users.." members.")
+    print("[GUILD CACHED]: "..guilds.name.." has been completely cached.")
   end
   print("[TEMP-ACTION LOOP]: Starting timed-actions loop.")
   client:setGame("?help")
