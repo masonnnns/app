@@ -18,6 +18,8 @@ command.execute = function(message,args,client)
   local region = message.guild.region
   local verification = message.guild.verificationLevel
   local filter = message.guild.explicitContentSetting
+  local emotes = {0,{},""}
+  local roles = {0,{},""}
   local members = {0,{online = 0, dnd = 0, idle = 0, offline = 0, bots = 0}}
   if region == "us-east" then
     region = "US East :flag_us:"
@@ -75,6 +77,28 @@ command.execute = function(message,args,client)
     end
     members[2][items.status] = members[2][items.status]+1
   end
+  local hold = 0
+  for a,b in pairs(message.guild.emojis) do
+    emotes[1] = emotes[1] + 1
+    if #emotes[2] <= 25 then
+      emotes[2][1+#emotes[2]] = b.mentionString
+    else
+      hold = hold + 1
+      emotes[3] = "...and "..hold.." more."
+    end
+  end
+  hold = 0
+  for a,b in pairs(message.guild.roles) do
+    if a == message.guild.id then else
+      roles[1] = roles[1] + 1
+      if #roles[2] <= 25 then
+        roles[2][b.position] = b.mentionString
+      else
+        hold = hold + 1
+        roles[3] = "...and "..hold.." more."
+      end
+    end
+  end
   message:reply{embed = {
       title = message.guild.name,
       fields = {
@@ -87,7 +111,8 @@ command.execute = function(message,args,client)
         --{name = "I Joined At", value = message.guild:getMember(client.user.id).joinedAt:gsub('%..*', ''):gsub('T', ' '),inline = true},
         {name = "Members ["..members[1].."]", value = ">>> **Online:** "..members[2]["online"].."\n**Do not Disturb:** "..members[2]["dnd"].."\n**Idle:** "..members[2]["idle"].."\n**Offline:** "..members[2]["offline"].."\n**Bots:** "..members[2].bots,inline = true},
         {name = "Channels ["..#message.guild.voiceChannels + #message.guild.textChannels + #message.guild.categories.."]", value = ">>> **Categories:** "..(#message.guild.categories == 0 and "None!" or #message.guild.categories).."\n**Text Channels:** "..(#message.guild.textChannels == 0 and "None!" or #message.guild.textChannels).."\n**Voice Channels:** "..(#message.guild.voiceChannels == 0 and "None!" or #message.guild.voiceChannels), inline = true},
-        {name = "Emotes ["..#emotes[1].."]", value = ">>> "..table.concat(emotes,"",)}
+        {name = "Emotes ["..emotes[1].."]", value = ">>> "..table.concat(emotes[2]," ").."\n"..emotes[3]},
+        {name = "Roles ["..roles[1].."]", value = ">>> "..table.concat(roles[2]," ").."\n"..roles[3]},
       },
       thumbnail = {url = (message.guild.iconURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or message.guild.iconURL)},
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
