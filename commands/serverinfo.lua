@@ -18,6 +18,7 @@ command.execute = function(message,args,client)
   local region = message.guild.region
   local verification = message.guild.verificationLevel
   local filter = message.guild.explicitContentSetting
+  local members = {0,{online = 0, dnd = 0, idle = 0, offline = 0}}
   if region == "us-east" then
     region = "US East :flag_us:"
   elseif region == "us-central" then
@@ -65,6 +66,9 @@ command.execute = function(message,args,client)
   else
     filter = "Error."
   end
+  for _,items in pairs(cache.getCache()) do
+    
+  end
   message:reply{embed = {
       title = message.guild.name,
       fields = {
@@ -74,7 +78,9 @@ command.execute = function(message,args,client)
         {name = "Verification Level", value = verification, inline = true},
         {name = "Explicit Content Filter", value = filter, inline = true},
         {name = "Created At", value = Date.fromSnowflake(message.guild.id):toISO(' ', ''), inline = true},
-        {name = "Channels ["..#message.guild.voiceChannels + #message.guild.textChannels + #message.guild.categories.."]", value = ">>> **Categories:** "..(#message.guild.categories == 0 and "None!" or #message.guild.categories).."\n**Text Channels:** "..(#message.guild.textChannels == 0 and "None!" or #message.guild.textChannels).."\n**Voice Channels:** "..(#message.guild.voiceChannels == 0 and "None!" or #message.guild.voiceChannels), inline = false}
+        {name = "I Joined At", value = message.guild:getMember(client.user.id).joinedAt:gsub('%..*', ''):gsub('T', ' '),inline = true}
+        {name = "Channels ["..#message.guild.voiceChannels + #message.guild.textChannels + #message.guild.categories.."]", value = ">>> **Categories:** "..(#message.guild.categories == 0 and "None!" or #message.guild.categories).."\n**Text Channels:** "..(#message.guild.textChannels == 0 and "None!" or #message.guild.textChannels).."\n**Voice Channels:** "..(#message.guild.voiceChannels == 0 and "None!" or #message.guild.voiceChannels), inline = true}
+        {name = "Members ["..members[1].."]", value = ">>> **"}
       },
       thumbnail = {url = (message.guild.iconURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or message.guild.iconURL)},
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},

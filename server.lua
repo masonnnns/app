@@ -806,6 +806,8 @@ local module = {}
 module.getCache = function(type,guild,id)
   if type == "ostime" then
     return uptimeOS
+  elseif type == "users" then
+    return cache[guild].users
   elseif type == "getstats" then
     return {commands = commandsRan, messages = messagesSeen}
   elseif type == "role" then
