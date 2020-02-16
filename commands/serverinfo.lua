@@ -42,7 +42,17 @@ command.execute = function(message,args,client)
   elseif region == "sydney" then
     region = "Sydney :flag_hm:"
   end
-  if verifica
+  if verification == 0 then
+    verification = "( ͡° ͜ʖ ͡°) (None)"
+  elseif verification == 1 then
+    verification = "(#^.^#) (Low)"
+  elseif verification == 2 then
+    verification = 'ఠ ͟ಠ (Medium)'
+  elseif verification == 3 then
+    verification = "(╯°□°）╯︵ ┻━┻ (High)"
+  elseif verification == 4 then
+    verification = "┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻ (Very High)"
+  end
   message:reply{embed = {
       title = message.guild.name,
       fields = {
