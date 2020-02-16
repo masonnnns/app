@@ -11,7 +11,7 @@ command.info = {
   Usage = "serverinfo",
   Category = "Utility",
   Description = "Get information on the server.",
-  PermLvl = 5,
+  PermLvl = 0,
 }
 
 command.execute = function(message,args,client)
