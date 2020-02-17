@@ -76,7 +76,6 @@ command.execute = function(message,args,client)
       if items.bot then
         members[2].bots = members[2].bots+1
       end
-      print(items.status,a)
       if items.status == nil then 
         local user = message.guild:getMember(a)
         if user.user.status ~= nil then
