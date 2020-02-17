@@ -44,8 +44,7 @@ command.execute = function(message,args,client)
       return {success = false, msg = "Invalid arg 2."}
     end
     if botNum == theirNum then
-      message:reply("We both selected **"..getObj(theirNum):lower().."**, it's a tie.\n:tickets: **+1 Ticket!**")
-      tickets = 1
+      message:reply("We both selected **"..getObj(theirNum):lower().."**, it's a tie.")
     elseif botNum == 1 then
       if theirNum == 2 then
         message:reply("**"..getObj(theirNum).."** beats **"..getObj(botNum):lower().."**, you win.\n:tickets: **+ 5 Tickets!**")
@@ -64,7 +63,7 @@ command.execute = function(message,args,client)
       if theirNum == 2 then
         message:reply("**"..getObj(theirNum).."** beats **"..getObj(botNum):lower().."**, you win.\n:tickets: **+ 5 Tickets!**")
         tickets = 5
-      elseif theirNum == 2 then
+      elseif theirNum == 1 then
         message:reply("**"..getObj(botNum).."** beats **"..getObj(theirNum):lower().."**, I win.")
       end
     end
