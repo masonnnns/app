@@ -20,15 +20,22 @@ command.execute = function(message,args,client)
     lockData.reason = "No Reason Provided"
   elseif utils.resolveChannel(message,args[2]) ~= false then
     lockData.channel = utils.resolveChannel(message,args[2]).id
-    locakData.reason = (args[3] == nil and "No Reason Provided" or table.concat(args, " ", 3))
+    lockData.reason = (args[3] == nil and "No Reason Provided" or table.concat(args, " ", 3))
   elseif utils.resolveCategory(message,args[2]) ~= false then
     lockData.channel = utils.resolveChannel(message,args[2]).id
-    locakData.reason = (args[3] == nil and "No Reason Provided" or table.concat(args, " ", 3))
+    lockData.reason = (args[3] == nil and "No Reason Provided" or table.concat(args, " ", 3))
   else
     lockData.channel = message.channel.id
     lockData.reason = (args[2] == nil and "No Reason Provided" or table.concat(args, " ", 3))
   end
-  if message.guild:getChannel(lockData.channel)
+  local channel = message.guild:getChannel(lockData.channel)
+  if channel.type == 0 then
+    channel:getPermissionOverwriteFor(message.guild:getRole(message.guild.id)):denyAllPermissions()
+  elseif channel.type == 4 then
+    return {success = true, msg = "category"}
+  else
+    return {success = false, msg = "I can only lock **text channels** or **categories**."}
+  end
 end
 
 -- <:aaronlock:678918427523678208>
