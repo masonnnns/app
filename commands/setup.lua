@@ -41,12 +41,12 @@ command.execute = function(message,args,client)
       title = "Tag Plugin Settings",
       fields = {
         {name = "Delete Invocation Message", value = (data.tags.delete and "Enabled." or "Disabled."), inline = true},
-        {name = "Commands in Plugin"}
+        {name = "Commands in Plugin", value = ">>> **?tag**\n**?tags**", inline = false},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (data.tags.enabled and 3066993 or 15158332)
     }
-    if data.tags.enabled == false then table.remove(pages[2].fields) pages[2].description = "This plugin is disabled. Say **"..data.prefix.."config toggle** to enable it." end
+    if data.tags.enabled == false then pages[2].fields = nil pages[2].description = "This plugin is disabled. Say **"..data.prefix.."config toggle** to enable it." end
     page.addDictionary(message,pages,message.author.id)
     return {success = "stfu"}
   elseif args[2] == "help" then
