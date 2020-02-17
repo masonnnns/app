@@ -46,6 +46,17 @@ command.execute = function(message,args,client)
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (data.tags.enabled and 3066993 or 15158332)
     }
+    pages[3] = {
+      title = "Automod Plugin Settings",
+      fields = {
+        {name = "Infraction Log", value = (data.automod.log == nil and "Disabled." or (message.guild:getChannel(data.automod.log) == nil and "Disabled." or message.guild:getChannel(data.automod.log).mentionString)), inline = false},
+        {name = "Anti-Invites", value = (data.automod.types.invites[1] and "Enabled." or "Disabled."), inline = true},
+        {name = "Anti-Mass Mentions", value = (data.automod.types.mentions[1] and "Enabled. (Limit: "..data.automod.types.mentions[2].."/msg)" or "Disabled."), inline = true},
+        {name = "Anti-Mass Mentions", value = (data.automod.types.mentions[1] and "Enabled. (Limit: "..data.automod.types.mentions[2].."/msg)" or "Disabled."), inline = true},
+      },
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      color = (data.automod.enabled and 3066993 or 15158332)
+    }
     if data.tags.enabled == false then pages[2].fields = nil pages[2].description = "This plugin is disabled. Say **"..data.prefix.."config toggle** to enable it." end
     page.addDictionary(message,pages,message.author.id)
     return {success = "stfu"}
