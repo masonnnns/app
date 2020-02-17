@@ -24,7 +24,7 @@ end
 
 module.addDictionary = function(message,pageTable,user)
   local guild = (message.guild == nil and 'dms' or message.guild.id)
-  print(guild..message.id)
+  message:reply{content = "**Page 1/"..#pageTable.."**", embed = {pageTable[1]}}
   pages[guild..message.id] = {pages = pageTable, page = 1, user = user, message = message}
 end
 

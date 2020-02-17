@@ -13,7 +13,6 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  message:addReaction('✅')
   if args[2] == nil then args[2] = message.author.mentionString end
   local user = utils.resolveUser(message,table.concat(args," ",2))
   if user == false then user = message.author end
