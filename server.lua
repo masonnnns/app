@@ -369,7 +369,6 @@ client:on("messageCreate",function(message)
   if found == nil or getPermission(message) < 1 and config[message.guild.id].modonly then
     if getPermission(message) < 1 then autoMod(message) end
   elseif coolDown(tostring(message.author.id..found.info.Name),false,message) == false then
-    print('cooldown')
   else
     commandsRan = commandsRan + 1
     print("[COMMAND RAN]: "..message.author.username.." ("..message.author.id..") ran command "..found.info.Name.." in #"..message.channel.name.." in "..message.guild.name.." ("..message.guild.id..")\nArgs: "..table.concat(args," "))
@@ -644,7 +643,7 @@ end)
 
 client:on("messageDeleteUncached", function(ID, channel)
   if channel.guild == nil then return end
-  if config[channel.guild.id].purgeignore[channel.id] ~= nil and config[channel.guild.id].purgeignore[channel.id] >= 1 then config[channel.guild.id].purgeignore[channel.id] = config[channel.guild.id].purgeignore[channel.id] - 1 print('purge ignored?') configuration.updateConfig(channel.guild.id,config[channel.guild.id]) return end
+  if config[channel.guild.id].purgeignore[channel.id] ~= nil and config[channel.guild.id].purgeignore[channel.id] >= 1 then config[channel.guild.id].purgeignore[channel.id] = config[channel.guild.id].purgeignore[channel.id] - 1 configuration.updateConfig(channel.guild.id,config[channel.guild.id]) return end
 end)
 
 client:on("messageDelete", function(message)
@@ -652,7 +651,7 @@ client:on("messageDelete", function(message)
   if message.guild == nil then return end
   if message.author.bot then return end
   config[message.guild.id] = configuration.getConfig(message.guild.id)
-  if config[message.guild.id].purgeignore[message.channel.id] ~= nil and config[message.guild.id].purgeignore[message.channel.id] >= 1 then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] - 1 print('purge ignored?') configuration.updateConfig(message.guild.id,config[message.guild.id]) return end
+  if config[message.guild.id].purgeignore[message.channel.id] ~= nil and config[message.guild.id].purgeignore[message.channel.id] >= 1 then config[message.guild.id].purgeignore[message.channel.id] = config[message.guild.id].purgeignore[message.channel.id] - 1 configuration.updateConfig(message.guild.id,config[message.guild.id]) return end
   if config[message.guild.id].auditlog == "nil" and message.guild:getChannel(config[message.guild.id].auditlog) == nil then return end
   local auditLog
   if cache[message.guild.id].auditlog  then for a,items in pairs(message.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == member.guild.id and items.actionType == 72 then auditLog = items break end end end

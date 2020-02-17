@@ -32,7 +32,6 @@ command.execute = function(message,args,client)
     else
       for _,items in pairs(foundCases) do
         items.type = string.sub(items.type,1,1):upper()..string.sub(items.type,2)
-        print(string.sub(items.type,1,4))
         if items.moderator == client.user.id and string.sub(items.type,1,4) ~= "Auto" then items.type = "Auto "..items.type end
         page[1+#page] = {
           title = "Case "..items.case.." - "..items.type,
@@ -48,7 +47,7 @@ command.execute = function(message,args,client)
         end
         table.insert(page[#page].fields,#page[#page].fields+1, {name = "Moderator", value = client:getUser(items.moderator).tag.." (`"..items.moderator.."`)", inline = true})
       end
-      pages.addDictionary(message,page,message.author.id, "**"..user.tag.."'s modlogs:**")
+      pages.addDictionary(message,page,message.author.id, "<:aaronwrench:678970116985061417> **"..user.tag.."'s modlog"..(#page == 1 and "" or "s")..":**")
       return {success = "stfu"}
     end
   end

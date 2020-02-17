@@ -127,7 +127,7 @@ command.execute = function(message,args,client)
         color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
 			}}
       local useGuild
-      for a,b in pairs(client.guilds) do if b:getMember(user.id) ~= nil then print('xd',b.id) useGuild = b:getMember(user.id)break end end
+      for a,b in pairs(client.guilds) do if b:getMember(user.id) ~= nil then useGuild = b:getMember(user.id)break end end
       if useGuild == nil then
         message:reply(data)
       else
