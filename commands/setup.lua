@@ -50,9 +50,9 @@ command.execute = function(message,args,client)
       title = "Automod Plugin Settings",
       fields = {
         {name = "Infraction Log", value = (data.automod.log == nil and "Disabled." or (message.guild:getChannel(data.automod.log) == nil and "Disabled." or message.guild:getChannel(data.automod.log).mentionString)), inline = false},
-        {name = "Anti-Invites", value = (data.automod.types.invites[1] and "Enabled." or "Disabled."), inline = true},
-        {name = "Anti-Mass Mentions", value = (data.automod.types.mentions[1] and "Enabled. (Limit: "..data.automod.types.mentions[2].."/msg)" or "Disabled."), inline = true},
-        {name = "Anti-Mass Mentions", value = (data.automod.types.mentions[1] and "Enabled. (Limit: "..data.automod.types.mentions[2].."/msg)" or "Disabled."), inline = true},
+        {name = "Invites Filter", value = (data.automod.types.invites[1] and "Enabled." or "Disabled."), inline = true},
+        {name = "Mass-Mention Filter", value = (data.automod.types.mentions[1] and "Enabled. (Limit: "..data.automod.types.mentions[2].."/msg)" or "Disabled."), inline = true},
+        {name = "Spoilers Filter", value = (data.automod.types.spoilers[1] and "Enabled. (Limit: "..data.automod.types.spoilers[2].."/msg)" or "Disabled."), inline = true},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (data.automod.enabled and 3066993 or 15158332)
