@@ -17,6 +17,7 @@ command.info = {
 local usersPage = {} -- [ID..GUILDID] = "PAGE NAME"
 
 command.execute = function(message,args,client)
+  if message.author.id ~= client.owner.id then return {success = "stfu"} end
   local data = config.getConfig(message.guild.id)
   if args[2] ~= nil then args[2] = args[2]:lower() end
   if args[2] == nil then
@@ -37,13 +38,15 @@ command.execute = function(message,args,client)
       color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
     }
     pages[2] = {
-      title = "Tag Plugin Settings"..(data.tags.enabled and "" or "[Disabled]"),
+      title = "Tag Plugin Settings",
       fields = {
-        {name = "Delete Invocation Message", value = (data.tags.delete and "Enabled." or "Disabled.")}
+        {name = "Delete Invocation Message", value = (data.tags.delete and "Enabled." or "Disabled."), inline = true},
+        {name = "Commands in Plugin"}
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (data.tags.enabled and 3066993 or 15158332)
     }
+    if data.tags.enabled == false then table.remove(pages[2].fields) pages[2].description = "This plugin is disabled. Say **"..data.prefix.."config toggle** to enable it." end
     page.addDictionary(message,pages,message.author.id)
     return {success = "stfu"}
   elseif args[2] == "help" then
