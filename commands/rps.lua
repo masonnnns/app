@@ -31,7 +31,7 @@ command.execute = function(message,args,client)
   elseif args[2]:lower() ~= "rock" and args[2]:lower() ~= "paper" and args[2]:lower() ~= "scissors" and args[2]:lower() ~= "r" and args[2]:lower() ~= "p" and args[2]:lower() ~= "s" then
     return {success = false, msg = "You must provide **rock, paper or scissors** in argument 2."}
   else
-    local botNum, theirNum = math.random(1,3), 0
+    local botNum, theirNum = 0, 0
     local tickets = 0
     args[2] = args[2]:lower()
     if args[2] == "rock" or args[2] == "r" then
@@ -47,24 +47,24 @@ command.execute = function(message,args,client)
       message:reply("We both selected **"..getObj(theirNum):lower().."**, it's a tie.")
     elseif botNum == 1 then
       if theirNum == 2 then
-        message:reply("**"..getObj(theirNum).."** beats **"..getObj(botNum):lower().."**, you win.\n:tickets: **+ 5 Tickets!**")
+        message:reply("**Paper** beats **rock**, you win.\n:tickets: **+5 Tickets**")
         tickets = 5
       elseif theirNum == 3 then
-        message:reply("**"..getObj(botNum).."** beats **"..getObj(theirNum):lower().."**, I win.")
+        message:reply("**Rock** beats **scissors**, I win.")
       end
     elseif botNum == 2 then
       if theirNum == 3 then
-        message:reply("**"..getObj(theirNum).."** beats **"..getObj(botNum):lower().."**, you win.\n:tickets: **+ 5 Tickets!**")
-        tickets = 5
-      elseif theirNum == 2 then
-        message:reply("**"..getObj(botNum).."** beats **"..getObj(theirNum):lower().."**, I win.")
-      end
-    elseif botNum == 3 then
-      if theirNum == 2 then
-        message:reply("**"..getObj(theirNum).."** beats **"..getObj(botNum):lower().."**, you win.\n:tickets: **+ 5 Tickets!**")
+        message:reply("**Scissors** beats **paper**, you win.\n:tickets: **+5 Tickets**")
         tickets = 5
       elseif theirNum == 1 then
-        message:reply("**"..getObj(botNum).."** beats **"..getObj(theirNum):lower().."**, I win.")
+        message:reply("**Paper** beats **rock**, I win.")
+      end
+    elseif botNum == 3 then
+      if theirNum == 1 then
+        message:reply("**Rock** beats **scissors**, you win.\n:tickets: **+5 Tickets**")
+        tickets = 5
+      elseif theirNum == 2 then
+        message:reply("**Paper** beats **rock**, I win.")
       end
     end
     if tickets > 0 then
