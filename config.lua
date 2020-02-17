@@ -9,12 +9,12 @@ local function addConfig(id)
     tags = {enabled = false, tags = {}, delete = false},
     welcome = {enabled = false, joinmsg = "nil", joinchannel = "nil", leavechannel = "nil", leavemsg = "nil", joinchannel = "nil", autorole = "nil"},
     tickets = {enabled = false, category = "nil", channels = {}, ticket = 0, max = 1},
-    economy = {enabled = false, users = {}}
+    economy = {enabled = false, users = {}, chatreward = 5},
     terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
     modlog = "nil",
 		modrole = "nil",
     auditlog = "nil",
-		modData = {cases = {}, actions = {}}, -- {type = "mute", reason = "", duration = os.time() / "perm", mod = userID, user = userID}
+		modData = {cases = {}, actions = {}, locked = {}}, -- {type = "mute", reason = "", duration = os.time() / "perm", mod = userID, user = userID}
 		deletecmd = false,
 		modonly = false,
 		mutedrole = "nil",
