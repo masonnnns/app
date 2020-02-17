@@ -7,9 +7,9 @@ command.info = {
   Name = "Lock",
   Alias = {},
   Usage = "lock <optional channel/category> <optional reason>",
-  Category = "Administration",
+  Category = "Private",
   Description = "Lock a channel or set of channels.",
-  PermLvl = 2,
+  PermLvl = 5,
 }
 
 command.execute = function(message,args,client)
@@ -30,7 +30,7 @@ command.execute = function(message,args,client)
   end
   local channel = message.guild:getChannel(lockData.channel)
   if channel.type == 0 then
-    channel:getPermissionOverwriteFor(message.guild:getRole(message.guild.id)):denyAllPermissions()
+    channel:getPermissionOverwriteFor(message.guild:getRole(message.guild.id)):denyPermissions("0x00000800")
   elseif channel.type == 4 then
     return {success = true, msg = "category"}
   else
