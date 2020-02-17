@@ -3,6 +3,7 @@ command = {}
 local config = require("/app/config.lua")
 local utils = require("/app/resolve-user.lua")
 local pages = require("/app/pageination.lua")
+local cache = require("/app/server.lua")
 
 command.info = {
   Name = "Modlogs",
@@ -25,14 +26,19 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I couldn't find the user you mentioned."}
   else
     local foundCases = {}
-    for a,items in pairs(data.modData.cases) do if items.user == user.id then foundCases[1+#foundCases] = {items, case = a} end end
+    for a,items in pairs(data.modData.cases) do if items.user == user.id then items.case = a foundCases[1+#foundCases] = items end end
     if #foundCases == 0 then
       return {success = false, msg = "**"..user.username.."** has no modlogs."}
     else
       page[1] = {title = user.username.."'s Modlogs ["..#foundCases.."]", description = "Use the emotes to filter through the cases.", footer = {icon_url = message.author:getAvatarURL(), text = "Page 1 | Responding to "..message.author.name}}
       for _,items in pairs(foundCases) do
-        pages[1+#pages] = {
-          title = "Case ",
+        items.type = string.sub(items.type,1,1):upper()..string.sub(items.type,2)
+        if items.moderator == client.user.id then items.type = "Auto "..items.type end
+        page[1+#page] = {
+          title = "Case "..items.case.." - "..items.type,
+          fields = {},
+          footer = {icon_url = message.author:getAvatarURL(), text = "Page "..1+#page.." | Responding to "..message.author.name},
+          color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
         }
       end
       pages.addDictionary(message,page,message.author.id)
