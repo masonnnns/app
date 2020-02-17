@@ -5,21 +5,19 @@ local utils = require("/app/resolve-user.lua")
 local pages = require("/app/pageination.lua")
 
 command.info = {
-  Name = "test",
-  Alias = {},
-  Usage = "test",
-  Category = "Private",
-  Description = "test",
-  PermLvl = 5,
+  Name = "Modlogs",
+  Alias = {"mlogs"},
+  Usage = "modlog <user>",
+  Category = "Moderation",
+  Description = "View all the modlogs of a user.",
+  PermLvl = 1,
 }
 
 -- message,pageTable,user
 
 command.execute = function(message,args,client)
-  local page = {
-    {title = "Case 100 - Ban", description = "you're gay!"},
-    {title = "Case 200 - kick", description = "you're still gay!"}
-  }
+  local data = config.getConfig(message.guild.id)
+  local page = {}
   pages.addDictionary(message,page,message.author.id)
   return {success = true, msg = "xd"}
 end
