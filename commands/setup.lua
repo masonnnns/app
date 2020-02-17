@@ -31,10 +31,18 @@ command.execute = function(message,args,client)
         {name = "Audit Log", value = (data.auditlog == "nil" and "Disabled." or (message.guild:getChannel(data.auditlog) == nil and "Disabled." or message.guild:getChannel(data.auditlog).mentionString)), inline = true},
         {name = "Muted Role", value = (data.mutedrole == "nil" and "Disabled." or (message.guild:getRole(data.mutedrole) == nil and "Disabled" or message.guild:getRole(data.mutedrole).mentionString)), inline = true},
         {name = "Moderation Log", value = (data.modlog == "nil" and "Disabled." or (message.guild:getChannel(data.modlog) == nil and "Disabled." or message.guild:getChannel(data.modlog).mentionString)), inline = true},
-        {name = "Moderator Role", value = (data.modrole == "nil" and "Disabled." or (message.guild:getRole(data.mutedrole) == nil and "Disabled" or message.guild:getRole(data.mutedrole).mentionString)), inline = true},
+        {name = "Moderator Role", value = (data.modrole == "nil" and "Disabled." or (message.guild:getRole(data.modrole) == nil and "Disabled" or message.guild:getRole(data.modrole).mentionString)), inline = true},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
+    }
+    pages[2] = {
+      title = "Tag Plugin Settings"..(data.tags.enabled and "" or "[Disabled]"),
+      fields = {
+        {name = "Delete Invocation Message", value = (data.tags.delete and "Enabled." or "Disabled.")}
+      },
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      color = (data.tags.enabled and 3066993 or 15158332)
     }
     page.addDictionary(message,pages,message.author.id)
     return {success = "stfu"}
