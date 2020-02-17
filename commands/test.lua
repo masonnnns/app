@@ -2,7 +2,7 @@ command = {}
 
 local config = require("/app/config.lua")
 local utils = require("/app/resolve-user.lua")
-local pages = reuqire("/app/pageination.lua")
+local pages = require("/app/pageination.lua")
 
 command.info = {
   Name = "test",
@@ -16,7 +16,12 @@ command.info = {
 -- message,pageTable,user
 
 command.execute = function(message,args,client)
-  pages.addDictionary(message,{embed = })
+  local page = {
+    {title = "xd"},
+    {title = "lol"}
+  }
+  print(#page)
+  pages.addDictionary(message,page,message.author.id)
   return {success = true, msg = "xd"}
 end
 

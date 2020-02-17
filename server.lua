@@ -828,6 +828,11 @@ client:on("presenceUpdate", function(member)
   --print(member.name,"in",member.guild.name)
 end)
 
+client:on("reactionAdd", function(reaction, userId) 
+  local page = require("/app/pageination.lua")
+  page.processReaction(reaction,userId)
+end)
+
 client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')
 
 local module = {}

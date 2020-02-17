@@ -16,16 +16,20 @@ module.processReaction = function(reaction,user)
       elseif reaction.emojiName == "➡️" then
         if setup.page + 1 > #setup.pages then return end
         setup.page = setup.page + 1
-        setup.message:setContent{content = "**Page "..setup.page.."/"..#setup.pages.."**",embed = (setup.pages[setup.page])}
+        print('hi')
+        setup.message:setContent("xd")
       end
     end
   end
 end
 
 module.addDictionary = function(message,pageTable,user)
+  print(#pageTable)
   local guild = (message.guild == nil and 'dms' or message.guild.id)
-  message:reply{content = "**Page 1/"..#pageTable.."**", embed = {pageTable[1]}}
-  pages[guild..message.id] = {pages = pageTable, page = 1, user = user, message = message}
+  local msg = message:reply{content = "**Page 1/"..#pageTable.."**", embed = pageTable[1]}
+  msg:addReaction("⬅️")
+  msg:addReaction("➡️")
+  pages[guild..msg.id] = {pages = pageTable, page = 1, user = user, message = msg}
 end
 
 return module
