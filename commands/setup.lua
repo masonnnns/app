@@ -24,15 +24,29 @@ command.execute = function(message,args,client)
     pages[1] = {
       title = "General Settings",
       description = "Confused? Say **"..data.prefix.."config help** for information on how to use this system.",
+      fields = {
+        {name = "Command Prefix", value = data.prefix, inline = true},
+        {name = "Delete Invocation Message", value = (data.deletecmd and "Enabled." or "Disabled."), inline = true},
+        {name = "Mod Only Commands", value = (data.modonly and "Enabled." or "Disabled."), inline = true},
+        {name = "Audit Log", value = (data.auditlog == "nil" and "Disabled." or (message.guild:getChannel(data.auditlog) == nil and "Disabled." or message.guild:getChannel(data.auditlog).mentionString)), inline = true},
+        {name = "Muted Role", value = (data.mutedrole == "nil" and "Disabled." or (message.guild:getRole(data.mutedrole) == nil and "Disabled" or message.guild:getRole(data.mutedrole).mentionString)), inline = true},
+        {name = "Moderation Log", value = (data.modlog == "nil" and "Disabled." or (message.guild:getChannel(data.modlog) == nil and "Disabled." or message.guild:getChannel(data.modlog).mentionString)), inline = true},
+        {name = "Moderator Role", value = (data.modrole == "nil" and "Disabled." or (message.guild:getRole(data.mutedrole) == nil and "Disabled" or message.guild:getRole(data.mutedrole).mentionString)), inline = true},
+      },
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
     }
     page.addDictionary(message,pages,message.author.id)
+    return {success = "stfu"}
   elseif args[2] == "help" then
     message:reply{embed = {
       title = "AA-R0N Configuration",
-      description = "To begin editing the configuration of AA-R0N, say **"..data.prefix.."**config**. (more of a tutorial here)",
+      description = "To begin editing the configuration of AA-R0N, say **"..data.prefix.."config**. (more of a tutorial here)",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
     }}
     return {success = "stfu"}
   end
 end
+
+return command
