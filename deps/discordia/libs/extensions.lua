@@ -1,15 +1,12 @@
 --[[ NOTE:
 These standard library extensions are NOT used in Discordia. They are here as a
 convenience for those who wish to use them.
-
 There are multiple ways to implement some of these commonly used functions.
 Please pay attention to the implementations used here and make sure that they
 match your expectations.
-
 You may freely add to, remove, or edit any of the code here without any effect
 on the rest of the library. If you do make changes, do be careful when sharing
 your expectations with other users.
-
 You can inject these extensions into the standard Lua global tables by
 calling either the main module (ex: discordia.extensions()) or each sub-module
 (ex: discordia.extensions.string())
