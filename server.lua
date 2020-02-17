@@ -384,7 +384,15 @@ client:on("messageCreate",function(message)
       if not cmdSuccess then 
           message:reply(":rotating_light: **An error occured!** Please report this to our support team.") 
           client:getGuild("551017079797579795"):getChannel("678756836349968415"):send{embed = {
-            title = ""
+            title = "Command Error",
+            description = "```lua\n"..string.upper(cmdMsg).."\n```",
+            fields = {
+              {name = "Guild", value = message.guild.name.." (`"..message.guild.id.."`)", inline = true},
+              {name = "Channel", value = message.channel.name.." (`"..message.channel.id.."`)", inline = true},
+              {name = "User", value = message.author.username.." (`"..message.author.tag.."`)", inline = true},
+            },
+            footer = {text = "Non-fatal error."},
+            color = 15158332,
           }}
           return 
       end

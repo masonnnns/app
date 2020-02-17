@@ -1,1 +1,1 @@
-[]
+{"191717702677561344":{"reason":"banned from support server","notified":false}}
