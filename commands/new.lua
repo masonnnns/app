@@ -15,7 +15,7 @@ command.info = {
 
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
-  if data.tickets.enabled == false then return {success = "stfu"} end
+  if data.tickets.enabled == false then return {success = false, msg = "This command is **disabled**."} end
   if data.tickets.category == "nil" or message.guild:getChannel(data.tickets.category) == nil then
     return {success = false, msg = "**Config Error:** There is no "..(data.tickets.category == "nil" and "" or "valid ").."tickets category setup."}
   else

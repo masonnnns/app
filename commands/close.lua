@@ -15,7 +15,7 @@ command.info = {
 
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
-  if data.tickets.enabled == false then return {success = "stfu"} end
+  if data.tickets.enabled == false then return {success = false, msg = "This command is **disabled**."} end
   local found = false
   for a,items in pairs(data.tickets.channels) do if items.id == message.channel.id then found = a break end end
   if not found then return {success = "stfu", msg = "This is not a **ticket channel.**"} else

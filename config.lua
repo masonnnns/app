@@ -9,6 +9,7 @@ local function addConfig(id)
     tags = {enabled = false, tags = {}, delete = false},
     welcome = {enabled = false, joinmsg = "nil", joinchannel = "nil", leavechannel = "nil", leavemsg = "nil", joinchannel = "nil", autorole = "nil"},
     tickets = {enabled = false, category = "nil", channels = {}, ticket = 0, max = 1},
+    games = {enabled = false, users = {}},
     terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
     modlog = "nil",
 		modrole = "nil",
