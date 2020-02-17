@@ -53,12 +53,15 @@ command.execute = function(message,args,client)
         {name = "Invites Filter", value = (data.automod.types.invites[1] and "Enabled." or "Disabled."), inline = true},
         {name = "Mass-Mention Filter", value = (data.automod.types.mentions[1] and "Enabled. (Limit: "..data.automod.types.mentions[2].."/msg)" or "Disabled."), inline = true},
         {name = "Spoilers Filter", value = (data.automod.types.spoilers[1] and "Enabled. (Limit: "..data.automod.types.spoilers[2].."/msg)" or "Disabled."), inline = true},
-        {name = "Newline Filter", value = (data.automod.types.newline[1] and "Enabled. ")}
+        {name = "Newline Filter", value = (data.automod.types.newline[1] and "Enabled. (Limit: "..data.automod.types.newline[2].."/msg)" or "Disabled."), inline = true},
+        {name = "Words Filter", value = (data.automod.types.filter[1] and "Enabled." or "Disabled."), inline = true},
+        {name = "Spam Filter", value = (data.automod.types.spam[1] and "Enabled." or "Disabled."), inline = true},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (data.automod.enabled and 3066993 or 15158332)
     }
     if data.tags.enabled == false then pages[2].fields = nil pages[2].description = "This plugin is disabled. Say **"..data.prefix.."config toggle** to enable it." end
+    if data.automod.enabled == false then pages[3].fields = nil pages[3].description = "This plugin is disabled. Say **"..data.prefix.."config toggle** to enable it." end
     page.addDictionary(message,pages,message.author.id)
     return {success = "stfu"}
   elseif args[2] == "help" then
