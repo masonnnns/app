@@ -15,7 +15,7 @@ command.info = {
 --//        data.tags.tags[1+#data.tags.tags] = {term = args[4], response = msg}
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
-  if data.tags.enabled == false then return end
+  if data.tags.enabled == false then return {success = "false", msg = "This command is **disabled**."} end
   if args[2] == nil then return {success = false, msg = "You must provide a **tag name** in argument 2."} end
   local found
   for _,items in pairs(data.tags.tags) do if string.lower(args[2]) == string.lower(items.term) then found = items.response end end
