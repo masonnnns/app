@@ -23,6 +23,7 @@ module.processReaction = function(reaction,user)
 end
 
 module.addDictionary = function(message,pageTable,user,txt)
+  if txt == nil then txt = "" end
   if #pageTable == 1 then
     message:reply{content = txt, embed = pageTable[1]}
   else
