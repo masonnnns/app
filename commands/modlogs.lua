@@ -30,7 +30,6 @@ command.execute = function(message,args,client)
     if #foundCases == 0 then
       return {success = false, msg = "**"..user.username.."** has no modlogs."}
     else
-      page[1] = {title = user.username.."'s Modlogs ["..#foundCases.."]", description = "Use the emotes to filter through the cases.", footer = {icon_url = message.author:getAvatarURL(), text = "Page 1 | Responding to "..message.author.name}, color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color)}
       for _,items in pairs(foundCases) do
         items.type = string.sub(items.type,1,1):upper()..string.sub(items.type,2)
         print(string.sub(items.type,1,4))
@@ -40,13 +39,16 @@ command.execute = function(message,args,client)
           fields = {
             {name = "Reason", value = items.reason, inline = false}
           },
-          footer = {icon_url = message.author:getAvatarURL(), text = "Page "..1+#page.." | Responding to "..message.author.name},
+          footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
           color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
         }
-        page[#page].fields[1] = {}
-        table.insert(page[#page].fields,#page[#page].fields+1, {name = "Notes", value = "AA-R0N Owner & Developer", inline = false})
+        --page[#page].fields[1] = {}
+        if items.duration then  
+          table.insert(page[#page].fields,#page[#page].fields+1, {name = "Duration", value = items.duration, inline = true})
+        end
+        table.insert(page[#page].fields,#page[#page].fields+1, {name = "Moderator", value = client:getUser(items.moderator).tag.." (`"..items.moderator.."`)", inline = true})
       end
-      pages.addDictionary(message,page,message.author.id)
+      pages.addDictionary(message,page,message.author.id, "**"..user.tag.."'s modlogs:**")
       return {success = "stfu"}
     end
   end
