@@ -112,7 +112,7 @@ command.execute = function(message,args,client)
    message:reply{embed = {
       title = message.guild.name,
       fields = {
-        {name = "Owner", value = message.guild.owner.mentionString, inline = true},
+        {name = "Owner", value = client:getUser(message.guild.ownerId).mentionString, inline = true},
         {name = "ID", value = message.guild.id, inline = true},
         {name = "Region", value = region, inline = true},
         {name = "Verification Level", value = verification, inline = true},
