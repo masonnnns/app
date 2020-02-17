@@ -14,6 +14,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
+  if message.guild.id == "551017079797579795" then return end
   local data = config.getConfig(message.guild.id)
   if args[2] then args[2] = args[2]:lower() end
   if args[2] == nil then
