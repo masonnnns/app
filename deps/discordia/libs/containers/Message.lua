@@ -223,6 +223,7 @@ object; wait for the `reactionAdd` event instead.
 function Message:addReaction(emoji)
 	emoji = Resolver.emoji(emoji)
 	local data, err = self.client._api:createReaction(self._parent._id, self._id, emoji)
+  print(data)
 	if data then
 		return true
 	else
