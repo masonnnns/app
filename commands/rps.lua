@@ -8,12 +8,18 @@ command.info = {
   Alias = {"RockPaperScissors"},
   Usage = "rps <rock/paper/scissors>",
   Category = "Fun",
+  Cooldown = 1,
   Description = "Play a game of rock paper scissors with AA-R0N.",
   PermLvl = 0,
 }
 
 local function getObj(num)
   if num == 1 then
+    return "Rock"
+  elseif num == 2 then
+    return "Paper"
+  elseif num == 3 then 
+    return "Scissors"
   end
 end
 
@@ -26,6 +32,7 @@ command.execute = function(message,args,client)
     return {success = false, msg = "You must provide **rock, paper or scissors** in argument 2."}
   else
     local botNum, theirNum = math.random(1,3), 0
+    local tickets = 0
     args[2] = args[2]:lower()
     if args[2] == "rock" or args[2] == "r" then
       theirNum = 1
@@ -37,8 +44,34 @@ command.execute = function(message,args,client)
       return {success = false, msg = "Invalid arg 2."}
     end
     if botNum == theirNum then
-      return {success = false, msg = "", emoji = ""}
+      message:reply("We both selected **"..getObj(theirNum):lower().."**, it's a tie.\n:tickets: **+1 Ticket!**")
+      tickets = 1
+    elseif botNum == 1 then
+      if theirNum == 2 then
+        message:reply("**"..getObj(theirNum).."** beats **"..getObj(botNum):lower().."**, you win.\n:tickets: **+ 5 Tickets!**")
+        tickets = 5
+      elseif theirNum == 3 then
+        message:reply("**"..getObj(botNum).."** beats **"..getObj(theirNum):lower().."**, I win.")
+      end
+    elseif botNum == 2 then
+      if theirNum == 3 then
+        message:reply("**"..getObj(theirNum).."** beats **"..getObj(botNum):lower().."**, you win.\n:tickets: **+ 5 Tickets!**")
+        tickets = 5
+      elseif theirNum == 2 then
+        message:reply("**"..getObj(botNum).."** beats **"..getObj(theirNum):lower().."**, I win.")
+      end
+    elseif botNum == 3 then
+      if theirNum == 2 then
+        message:reply("**"..getObj(theirNum).."** beats **"..getObj(botNum):lower().."**, you win.\n:tickets: **+ 5 Tickets!**")
+        tickets = 5
+      elseif theirNum == 2 then
+        message:reply("**"..getObj(botNum).."** beats **"..getObj(theirNum):lower().."**, I win.")
+      end
     end
+    if tickets > 0 then
+      -- add tickets
+    end
+    return {success = "stfu"}
   end
 end
 
