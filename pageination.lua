@@ -15,7 +15,9 @@ module.processReaction = function(reaction,user)
         setup.message:setEmbed(setup.pages[setup.page])
         setup.message:removeReaction("⬅️",setup.user)
       elseif reaction.emojiName == "➡️" then
+        print('yeehaw')
         if setup.page + 1 > #setup.pages then return end
+        print()
         setup.page = setup.page + 1
         setup.message:setEmbed(setup.pages[setup.page])
         setup.message:removeReaction("➡️",setup.user)

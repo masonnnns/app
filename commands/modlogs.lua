@@ -29,13 +29,14 @@ command.execute = function(message,args,client)
     if #foundCases == 0 then
       return {success = false, msg = "**"..user.username.."** has no modlogs."}
     else
-      page[1] = {title = user.username.."'s Modlogs ["..#foundCases.."]'", description = "Use the emotes to filter through the cases.", footer = {icon_url = message.author:getAvatarURL(), text = "Page 1 | Responding to "..message.author.name}}
+      page[1] = {title = user.username.."'s Modlogs ["..#foundCases.."]", description = "Use the emotes to filter through the cases.", footer = {icon_url = message.author:getAvatarURL(), text = "Page 1 | Responding to "..message.author.name}}
       for _,items in pairs(foundCases) do
         pages[1+#pages] = {
-          title = "Case "..foundCases.case,
+          title = "Case ",
         }
       end
       pages.addDictionary(message,page,message.author.id)
+      return {success = "stfu"}
     end
   end
   return {success = true, msg = "xd"}
