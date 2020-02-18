@@ -15,7 +15,7 @@ command.info = {
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   local lockData = {channel = "", reason = ""}
-  if message.guild:getMember(client.user.id):hasPermission("manageChannels") == false then return {success = false, msg = "I need the **Manage Channels** permission to do this."} end
+  --if message.guild:getMember(client.user.id):hasPermission("manageChannels") == false then return {success = false, msg = "I need the **Manage Channels** permission to do this."} end
   if args[2] == nil then
     lockData.channel = message.channel.id
     lockData.reason = "No Reason Provided"

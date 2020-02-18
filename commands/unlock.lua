@@ -16,7 +16,7 @@ command.info = {
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   local lockData = {channel = "", reason = ""}
-  if message.guild:getMember(client.user.id):hasPermission("manageChannels") == false then return {success = false, msg = "I need the **Manage Channels** permission to do this."} end
+  --if message.guild:getMember(client.user.id):hasPermission("manageChannels") == false then return {success = false, msg = "I need the **Manage Channels** permission to do this."} end
   if args[2] == nil then
     lockData.channel = message.channel.id
   elseif utils.resolveChannel(message,args[2]) ~= false then
@@ -35,10 +35,12 @@ command.execute = function(message,args,client)
     end
     local success = channel:getPermissionOverwriteFor(message.guild:getRole(message.guild.id)):allowPermissions("sendMessages")
     if not success then return {success = false, msg = "I need the **Manage Channels** permission to do this."} end
+    message:reply("<:atickyes:678186418937397249>  "..channel.mentionString.." has been unlocked.")
     local msg
     if channel.id ~= message.channel.id then
       if tonumber(data.modData.locked[channel.id]) ~= nil and channel:getMessage(data.modData.locked[channel.id]) then
-        msg = channel:getMessage(data.modData.locked[channel.id]):setContent("<:aaronunlock:679431104138313766> This channel has been unlocked!")
+        msg = channel:getMessage(data.modData.locked[channel.id])
+        channel:getMessage(data.modData.locked[channel.id]):setContent("<:aaronunlock:679431104138313766> This channel has been unlocked!")
       else
         msg = channel:send("<:aaronunlock:679431104138313766> This channel has been unlocked!")
       end
@@ -46,7 +48,7 @@ command.execute = function(message,args,client)
       msg:delete()
     end
     data.modData.locked[channel.id] = nil
-    return {success = true, msg = "**"..channel.mentionString.."** has been unlocked."}
+    return {success = "stfu", msg = "**"..channel.mentionString.."** has been unlocked."}
   else
     return {success = false, msg = "I can only unlock **text channels**."}
   end
