@@ -63,13 +63,26 @@ command.execute = function(message,args,client)
     pages[4] = {
       title = "Welcome Plugin Settings",
       fields = {
-        {name = "Join Message Channel", value = (data.welcome.joinchannel == nil and "Disabled." or (message.guild:getChannel(data.welcome.joinchannel) == nil and "Disabled." or message.guild:getChannel(data.automod.log).mentionString)), inline = false},
+        {name = "Join Message Channel", value = (data.welcome.joinchannel == nil and "Disabled." or (message.guild:getChannel(data.welcome.joinchannel) == nil and "Disabled." or message.guild:getChannel(data.welcome.joinchannel).mentionString)), inline = true},
+        {name = "Auto Role", value = (data.welcome.autorole == "nil" and "Disabled." or (message.guild:getRole(data.welcome.autorole) == nil and "Disabled" or message.guild:getRole(data.welcome.autorole).mentionString)), inline = true},
+        {name = "Leave Message Channel", value = (data.welcome.leavechannel == nil and "Disabled." or (message.guild:getChannel(data.welcome.leavechannel) == nil and "Disabled." or message.guild:getChannel(data.welcome.leavechannel).mentionString)), inline = true},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (data.automod.enabled and 3066993 or 15158332)
     }
     if data.tags.enabled == false then pages[2].fields = nil pages[2].description = "This plugin is disabled. Say **"..data.prefix.."config toggle** to enable it." end
     if data.automod.enabled == false then pages[3].fields = nil pages[3].description = "This plugin is disabled. Say **"..data.prefix.."config toggle** to enable it." end
+    if data.welcome.enabled then
+      if pages[4].fields[1].value ~= "Disabled." then
+        pages[4].fields[1+#pages[4].fields] = {name = "Join Message", value = data.welcome.joinmsg, inline = false}
+      end
+      if pages[4].fields[3].value ~= "Disabled." then
+        pages[4].fields[1+#pages[4].fields] = {name = "Leave Message", value = data.welcome.leavemsg, inline = false}
+      end
+    else
+      pages[4].fields = nil
+      pages[4].description = "This plugin is disabled. Say **"..data.prefix.."**config toggle** to enable it."
+    end
     page.addDictionary(message,pages,message.author.id)
     return {success = "stfu"}
   elseif args[2] == "help" then

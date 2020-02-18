@@ -3,7 +3,7 @@ local pages = {}
 -- [guildid..message.id] = {pages = {}, user = author.id, page = 1, message = message}
 
 module.processReaction = function(reaction,user)
-  local setup = pages[reaction.message.guild.id..reaction.user.id]
+  local setup = pages[reaction.message.guild.id..user]
   if setup ~= nil then
     if user == setup.user then
       if reaction.emojiName == "⬅️" then
@@ -32,7 +32,7 @@ module.addDictionary = function(message,pageTable,user,txt)
     local msg = message:reply{content = txt, embed = pageTable[1]}
     msg:addReaction("⬅️")
     msg:addReaction("➡️")
-    pages[guild..user.id] = {pages = pageTable, page = 1, user = user, message = msg}
+    pages[guild..user] = {pages = pageTable, page = 1, user = user, message = msg}
   end
 end
 
