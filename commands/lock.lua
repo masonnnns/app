@@ -12,9 +12,12 @@ command.info = {
   PermLvl = 5,
 }
 
+local lastPerm = {}
+
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   local lockData = {channel = "", reason = ""}
+  if message.guild:getMember(client.user.id):hasPermission("manageChannels") == false then return {success = false, msg = "I need the **Manage Channels** permission to do this."} end
   if args[2] == nil then
     lockData.channel = message.channel.id
     lockData.reason = "No Reason Provided"
@@ -30,7 +33,12 @@ command.execute = function(message,args,client)
   end
   local channel = message.guild:getChannel(lockData.channel)
   if channel.type == 0 then
-    channel:getPermissionOverwriteFor(message.guild:getRole(message.guild.id)):denyPermissions("0x00000800")
+    if channel:getPermissionOverwriteFor(message.guild:getRole(message.guild.id)):getDeniedPermissions():has("sendMessages") or channel:getPermissionOverwriteFor(message.guild:getRole(message.guild.id)):getDeniedPermissions():has("readMessages") then return {success = false, msg = "**"..channel.mentionString.."** is already locked."} end
+    channel:getPermissionOverwriteFor(message.guild:getRole(message.guild.id)):denyPermissions("sendMessages")
+    if channel.id ~= message.channel.id then
+      channel:send("<:aaronlock:678918427523678208> This channel has been locked by server staff.\n**Reason:** "..lockData.reason)
+    end
+    return {success = true, msg = "**"..channel.mentionString.."** has been locked."}
   elseif channel.type == 4 then
     return {success = true, msg = "category"}
   else
