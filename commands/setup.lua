@@ -68,7 +68,7 @@ command.execute = function(message,args,client)
         {name = "Leave Message Channel", value = (data.welcome.leavechannel == nil and "Disabled." or (message.guild:getChannel(data.welcome.leavechannel) == nil and "Disabled." or message.guild:getChannel(data.welcome.leavechannel).mentionString)), inline = true},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-      color = (data.automod.enabled and 3066993 or 15158332)
+      color = (data.welcome.enabled and 3066993 or 15158332)
     }
     if data.tags.enabled == false then pages[2].fields = nil pages[2].description = "This plugin is disabled. Say **"..data.prefix.."config toggle** to enable it." end
     if data.automod.enabled == false then pages[3].fields = nil pages[3].description = "This plugin is disabled. Say **"..data.prefix.."config toggle** to enable it." end
@@ -81,7 +81,7 @@ command.execute = function(message,args,client)
       end
     else
       pages[4].fields = nil
-      pages[4].description = "This plugin is disabled. Say **"..data.prefix.."**config toggle** to enable it."
+      pages[4].description = "This plugin is disabled. Say **"..data.prefix.."config toggle** to enable it."
     end
     page.addDictionary(message,pages,message.author.id)
     return {success = "stfu"}
@@ -93,6 +93,10 @@ command.execute = function(message,args,client)
       color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
     }}
     return {success = "stfu"}
+  elseif args[2] == "1" then
+    if args[3] == nil then
+      
+    end
   end
 end
 
