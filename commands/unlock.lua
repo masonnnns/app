@@ -2,6 +2,7 @@ command = {}
 
 local config = require("/app/config.lua")
 local utils = require("/app/resolve-user.lua")
+local timer = require("timer")
 
 command.info = {
   Name = "Unlock",
@@ -29,13 +30,22 @@ command.execute = function(message,args,client)
       return {success = false, msg = channel.mentionString.." is a private channel."}
     elseif channel:getPermissionOverwriteFor(message.guild:getRole(message.guild.id)):getAllowedPermissions():has("sendMessages") then
       return {success = false, msg = channel.mentionString.." isn't locked."}
+    elseif data.modData.locked[channel.id] == nil then
+      return {success = false, msg = "I didn't lock "..channel.mentionString.."!"}
     end
     local success = channel:getPermissionOverwriteFor(message.guild:getRole(message.guild.id)):allowPermissions("sendMessages")
     if not success then return {success = false, msg = "I need the **Manage Channels** permission to do this."} end
+    local msg
     if channel.id ~= message.channel.id then
-      channel:send("<:aaronlock:678918427523678208> This channel has been locked by server staff.\n**Reason:** "..lockData.reason)
+      if tonumber(data.modData.locked[channel.id]) ~= nil and channel:getMessage(data.modData.locked[channel.id]) then
+        msg = channel:getMessage(data.modData.locked[channel.id]):setContent("<:aaronunlock:679431104138313766> This channel has been unlocked!")
+      else
+        msg = channel:send("<:aaronunlock:679431104138313766> This channel has been unlocked!")
+      end
+      timer.sleep(5000)
+      msg:delete()
     end
-    data.modData.locked[channel.id] = message.author.id
+    data.modData.locked[channel.id] = nil
     return {success = true, msg = "**"..channel.mentionString.."** has been unlocked."}
   else
     return {success = false, msg = "I can only unlock **text channels**."}
