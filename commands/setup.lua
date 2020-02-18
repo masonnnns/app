@@ -63,13 +63,7 @@ command.execute = function(message,args,client)
     pages[4] = {
       title = "Welcome Plugin Settings",
       fields = {
-        {name = "Infraction Log", value = (data.automod.log == nil and "Disabled." or (message.guild:getChannel(data.automod.log) == nil and "Disabled." or message.guild:getChannel(data.automod.log).mentionString)), inline = false},
-        {name = "Invites Filter", value = (data.automod.types.invites[1] and "Enabled." or "Disabled."), inline = true},
-        {name = "Mass-Mention Filter", value = (data.automod.types.mentions[1] and "Enabled. (Limit: "..data.automod.types.mentions[2].."/msg)" or "Disabled."), inline = true},
-        {name = "Spoilers Filter", value = (data.automod.types.spoilers[1] and "Enabled. (Limit: "..data.automod.types.spoilers[2].."/msg)" or "Disabled."), inline = true},
-        {name = "Newline Filter", value = (data.automod.types.newline[1] and "Enabled. (Limit: "..data.automod.types.newline[2].."/msg)" or "Disabled."), inline = true},
-        {name = "Words Filter", value = (data.automod.types.filter[1] and "Enabled." or "Disabled."), inline = true},
-        {name = "Spam Filter", value = (data.automod.types.spam[1] and "Enabled." or "Disabled."), inline = true},
+        {name = "Join Message Channel", value = (data.welcome.joinchannel == nil and "Disabled." or (message.guild:getChannel(data.welcome.joinchannel) == nil and "Disabled." or message.guild:getChannel(data.automod.log).mentionString)), inline = false},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (data.automod.enabled and 3066993 or 15158332)
