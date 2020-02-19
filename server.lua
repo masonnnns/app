@@ -329,7 +329,7 @@ client:on("ready", function()
   while true do
     if os.time() - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
     http.request("GET","https://pentagonal-healer.glitch.me/")
-    timer.sleep(10000)
+    timer.sleep(30000)
   end
 end)
 
@@ -832,7 +832,7 @@ client:on("reactionAdd", function(reaction, userId)
   page.processReaction(reaction,userId)
 end)
 
-client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.D1SnRg.p9ghEI5njoksY0UkFGHCAnV1glQ')
+client:run('Bot NDE0MDMwNDYzNzkyMDU0Mjgy.Xkx9qw.fIzYF1TiDEZVqzdn6Cv4DvKkN0E')
 
 local module = {}
 
