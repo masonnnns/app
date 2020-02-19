@@ -254,7 +254,7 @@ client:on("ready", function()
     print("[STARTING CACHE]: "..guilds.name.." is being cached.")
     cache[guilds.id] = {users = {}, channels = {}, roles = {}, auditlog = guilds:getMember(client.user.id):hasPermission("viewAuditLog")}
     for _,users in pairs(guilds.members) do
-       cache[guilds.id].users[users.id] = {bot = users.bot, roles = {}, status = users.status, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
+       cache[guilds.id].users[users.id] = {name = users.username, tag = users.discriminator, bot = users.bot, roles = {}, status = users.status, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
        for _,items in pairs(users.roles) do cache[guilds.id].users[users.id].roles[items.id] = true end
        --print("[USER CACHED]: "..users.name.." has been cached in "..guilds.name..".")
     end
@@ -420,7 +420,7 @@ client:on("guildCreate",function(guild)
   local guilds = guild
   cache[guilds.id] = {users = {}, channels = {}, roles = {}}
   for _,users in pairs(guilds.members) do
-     cache[guilds.id].users[users.id] = {roles = {}, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
+     cache[guilds.id].users[users.id] = {name = users.username, tag = users.discriminator, bot = users.bot, roles = {}, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
      for _,items in pairs(users.roles) do cache[guilds.id].users[users.id].roles[items.id] = true end
   end
   for _,channels in pairs(guilds.textChannels) do
@@ -496,7 +496,7 @@ end)
 client:on("memberJoin", function(member)
   if member.guild == nil then return end
   config[member.guild.id] = configuration.getConfig(member.guild.id)
-  cache[member.guild.id].users[member.id] = {status = member.status, roles = {}, nickname = (member.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or member.nickname)}
+  cache[member.guild.id].users[member.id] = {name = member.username, tag = member.discriminator, bot = member.bot, status = member.status, roles = {}, nickname = (member.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or member.nickname)}
   for _,items in pairs(member.roles) do cache[member.guild.id].users[member.id].roles[items.id] = true end
   if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
     member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Member Joined", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Created At", value = Date.fromSnowflake(member.id):toISO(' ', ''), inline = true, }, }, color = 3066993, }}
