@@ -9,6 +9,7 @@ module.processReaction = function(reaction,user)
       if reaction.emojiName == "⬅️" then
         if setup.page == 1 then setup.message:removeReaction("⬅️",setup.user) return end
         setup.page = setup.page - 1
+        if string.sub(setup.pages[setup.page].footer.text,1,1) ~= "P" then setup.pages[setup.page].footer.text = "Page "..setup.page.."/"..#setup.pages.." | "..setup.pages[setup.page].footer.text end
         setup.message:setEmbed(setup.pages[setup.page])
         setup.message:removeReaction("⬅️",setup.user)
       elseif reaction.emojiName == "➡️" then
@@ -17,6 +18,18 @@ module.processReaction = function(reaction,user)
         if string.sub(setup.pages[setup.page].footer.text,1,1) ~= "P" then setup.pages[setup.page].footer.text = "Page "..setup.page.."/"..#setup.pages.." | "..setup.pages[setup.page].footer.text end
         setup.message:setEmbed(setup.pages[setup.page])
         setup.message:removeReaction("➡️",setup.user)
+      elseif reaction.emojiName == "⏮️" then
+        if setup.page == 1 then setup.message:removeReaction("⏮️",setup.user) return end
+        setup.page = 1
+        if string.sub(setup.pages[setup.page].footer.text,1,1) ~= "P" then setup.pages[setup.page].footer.text = "Page "..setup.page.."/"..#setup.pages.." | "..setup.pages[setup.page].footer.text end
+        setup.message:setEmbed(setup.pages[setup.page])
+        setup.message:removeReaction("⏮️",setup.user)
+       elseif reaction.emojiName == "⏭️" then
+        if setup.page == #setup.pages then setup.message:removeReaction("⏭️",setup.user) return end
+        setup.page = #setup.pages
+        if string.sub(setup.pages[setup.page].footer.text,1,1) ~= "P" then setup.pages[setup.page].footer.text = "Page "..setup.page.."/"..#setup.pages.." | "..setup.pages[setup.page].footer.text end
+        setup.message:setEmbed(setup.pages[setup.page])
+        setup.message:removeReaction("⏭️",setup.user)
       end
     end
   end
@@ -30,8 +43,10 @@ module.addDictionary = function(message,pageTable,user,txt)
     local guild = (message.guild == nil and 'dms' or message.guild.id)
     pageTable[1].footer.text = "Page 1/"..#pageTable.." | "..pageTable[1].footer.text
     local msg = message:reply{content = txt, embed = pageTable[1]}
+    if #pageTable >= 5 then msg:addReaction("⏮️") end
     msg:addReaction("⬅️")
     msg:addReaction("➡️")
+    if #pageTable >= 5 then msg:addReaction("⏭️") end
     pages[guild..user] = {pages = pageTable, page = 1, user = user, message = msg}
   end
 end
