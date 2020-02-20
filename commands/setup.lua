@@ -93,10 +93,18 @@ command.execute = function(message,args,client)
       color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
     }}
     return {success = "stfu"}
-  elseif args[2] == "1" then
-    if args[3] == nil then
-      
-    end
+  
+    -- [GENERAL SETTINGS]
+
+  elseif args[2] == "prefix" then
+    if args[3] == nil or string.len(table.concat(args," ",3)) < 1 then
+      return {success = false, msg = "The new prefix must be greater than **1 character**."}
+    elseif string.len(table.concat(args," ",3)) > 10 then
+      return {success = false, msg = "The new prefix must be less than **10 characters**."}
+    else
+      data.prefix = table.concat(args," ",3)
+      return {success = true, msg = "Changed the prefix to `"..data.prefix.."`."}
+    end 
   end
 end
 
