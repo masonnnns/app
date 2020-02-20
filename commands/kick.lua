@@ -2,6 +2,7 @@ command = {}
 
 local config = require("/app/config.lua")
 local resolveUser = require("/app/resolve-user.lua")
+local cache = require("/app/server.lua")
 
 command.info = {
   Name = "Kick",
@@ -14,6 +15,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
+  if cache.getCache("getperm",message.guild.id,"kickMembers") == false and cache.getCache("getperm",message.guild.id,"administrator") == false then return {success = false, msg = "I need the **Kick Members** permission to do this."} end
   if args[2] == nil then return {success = false, msg = "You must provide a **member to "..command.info.Name:lower().."** in argument 2."} end
   local user = resolveUser.resolveUser(message,args[2])
   if user == false then
@@ -22,8 +24,6 @@ command.execute = function(message,args,client)
     return {success = false, msg = "You cannot "..command.info.Name:lower().." people with **higher than or equal permissions as you.**"}
   elseif user.id == client.user.id then
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
-  elseif message.guild:getMember(client.user.id):hasPermission("kickMembers") == false then
-			return {success = false, msg = "I need the **Kick Members** permission to do this."}
   else
     local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
     --user:getPrivateChannel():send("⛔ **You've been kicked from "..message.guild.name.."!**\n\n**Reason:** "..reason)

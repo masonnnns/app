@@ -498,7 +498,7 @@ end)
 client:on("memberJoin", function(member)
   if member.guild == nil then return end
   config[member.guild.id] = configuration.getConfig(member.guild.id)
-  cache[member.guild.id].perms = member.guildgetMember("414030463792054282"):getPermissions():toTable()
+  cache[member.guild.id].perms = member.guild:getMember("414030463792054282"):getPermissions():toTable()
   cache[member.guild.id].users[member.id] = {name = member.username, tag = member.discriminator, bot = member.bot, status = member.status, roles = {}, nickname = (member.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or member.nickname)}
   for _,items in pairs(member.roles) do cache[member.guild.id].users[member.id].roles[items.id] = true end
   if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then

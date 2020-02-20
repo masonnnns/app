@@ -14,6 +14,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
+  if cache.getCache("getperm",message.guild.id,"banMembers") == false and cache.getCache("getperm",message.guild.id,"administrator") == false then return {success = false, msg = "I need the **Ban Members** permission to do this."} end
   local data = config.getConfig(message.guild.id)
   if args[2] == nil then
     return {success = false, msg = "You must provide **a member to unban** in argument 2."}

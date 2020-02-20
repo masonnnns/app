@@ -2,6 +2,7 @@ command = {}
 
 local config = require("/app/config.lua")
 local utils = require("/app/resolve-user.lua")
+local cache = require("/app/server.lua")
 
 command.info = {
   Name = "Lock",
@@ -13,6 +14,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
+  if cache.getCache("getperm",message.guild.id,"manageChannels") == false and cache.getCache("getperm",message.guild.id,"administrator") == false then return {success = false, msg = "I need the **Manage Channels** permission to do this."} end
   local data = config.getConfig(message.guild.id)
   local lockData = {channel = "", reason = ""}
   --if message.guild:getMember(client.user.id):hasPermission("manageChannels") == false then return {success = false, msg = "I need the **Manage Channels** permission to do this."} end

@@ -42,6 +42,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
+  if cache.getCache("getperm",message.guild.id,"manageRoles") == false and cache.getCache("getperm",message.guild.id,"administrator") == false then return {success = false, msg = "I need the **Manage Roles** permission to do this."} end
   local data = config.getConfig(message.guild.id)
   local mutedRole, botRole = cache.getCache("role",message.guild.id,data.mutedrole), cache.getCache("roleh",message.guild.id,client.user.id)
   if data.mutedrole == "nil" then

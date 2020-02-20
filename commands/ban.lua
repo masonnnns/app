@@ -42,7 +42,9 @@ command.info = {
 
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
-  if args[2] == nil then
+  if cache.getCache("getperm",message.guild.id,"banMembers") == false and cache.getCache("getperm",message.guild.id,"administrator") == false then
+			return {success = false, msg = "I need the **Ban Members** permission to do this."}
+  elseif args[2] == nil then
     return {success = false, msg = "You must provide a **member to ban** in argument 2."}
   else
     local user = utils.resolveUser(message,args[2])
