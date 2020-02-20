@@ -390,7 +390,7 @@ client:on("messageCreate",function(message)
             fields = {
               {name = "Guild", value = message.guild.name.." (`"..message.guild.id.."`)", inline = true},
               {name = "Channel", value = message.channel.name.." (`"..message.channel.id.."`)", inline = true},
-              {name = "User", value = message.author.username.." (`"..message.author.tag.."`)", inline = true},
+              {name = "User", value = message.author.tag.." (`"..message.author.id.."`)", inline = true},
             },
             footer = {text = "Non-fatal error."},
             color = 15158332,
@@ -858,7 +858,7 @@ module.getCache = function(type,guild,id)
     pcall(function() for items,_ in pairs(cache[guild].users[id].roles) do if module.getCache("role",guild,items).position > pos then role = items pos = module.getCache("role",guild,items).position end end end)
     return (role == "" and client:getGuild(guild):getRole(guild) or module.getCache("role",guild,role))
   elseif type == "getperm" then
-    if id == nil then return cache[guild].perms else return cache[guild].perms[id] end
+    if id == "" then return cache[guild].perms else return cache[guild].perms[id] end
   end
 end
 
