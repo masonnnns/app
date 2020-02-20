@@ -10,7 +10,7 @@ command.info = {
   Usage = "members <optional role / highest role>",
   Category = "Administration",
   Description = "View a list of all the members in the server with the specified query.",
-  PermLvl = 0,
+  PermLvl = 5,
 }
 
 command.execute = function(message,args,client)
