@@ -252,7 +252,7 @@ client:on("ready", function()
   client:setGame("Booting, please wait...")
   for _,guilds in pairs(client.guilds) do
     print("[STARTING CACHE]: "..guilds.name.." is being cached.")
-    cache[guilds.id] = {users = {}, channels = {}, roles = {}, auditlog = guilds:getMember(client.user.id):hasPermission("viewAuditLog")}
+    cache[guilds.id] = {users = {}, channels = {}, roles = {}, auditlog = guilds:getMember(client.user.id):hasPermission("viewAuditLog"), perms = guilds:getMember("414030463792054282"):getPermissions():toTable()}
     for _,users in pairs(guilds.members) do
        cache[guilds.id].users[users.id] = {name = users.username, tag = users.discriminator, bot = users.bot, roles = {}, status = users.status, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
        for _,items in pairs(users.roles) do cache[guilds.id].users[users.id].roles[items.id] = true end
@@ -420,7 +420,7 @@ end)
 client:on("guildCreate",function(guild)
   config[guild.id] = configuration.getConfig(guild.id)
   local guilds = guild
-  cache[guilds.id] = {users = {}, channels = {}, roles = {}}
+  cache[guilds.id] = {users = {}, channels = {}, roles = {}, auditlog = guilds:getMember(client.user.id):hasPermission("viewAuditLog"), perms = guilds:getMember("414030463792054282"):getPermissions():toTable()}
   for _,users in pairs(guilds.members) do
      cache[guilds.id].users[users.id] = {name = users.username, tag = users.discriminator, bot = users.bot, roles = {}, nickname = (users.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or users.nickname)}
      for _,items in pairs(users.roles) do cache[guilds.id].users[users.id].roles[items.id] = true end
@@ -498,6 +498,7 @@ end)
 client:on("memberJoin", function(member)
   if member.guild == nil then return end
   config[member.guild.id] = configuration.getConfig(member.guild.id)
+  cache[member.guild.id].perms = member.guildgetMember("414030463792054282"):getPermissions():toTable()
   cache[member.guild.id].users[member.id] = {name = member.username, tag = member.discriminator, bot = member.bot, status = member.status, roles = {}, nickname = (member.nickname == nil and "5FFA914BBF6B3D6149B228E8ED0AA2F1789C62227D4CEF4D9FE61D5E0F10597D" or member.nickname)}
   for _,items in pairs(member.roles) do cache[member.guild.id].users[member.id].roles[items.id] = true end
   if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
@@ -762,6 +763,7 @@ client:on('roleDelete', function(channel)
 end)
 
 client:on('roleUpdate', function(role)
+  cache[role.guild.id].perms = role.guildgetMember("414030463792054282"):getPermissions():toTable()
   cache[role.guild.id].roles[role.id] = {name = role.name, hoisted = role.hoisted, mentionable = role.mentionable, color = role.color, position = role.position}
 end)
 
@@ -811,7 +813,7 @@ client:on('userUnban', function(member,guild)
       title = "Member Unbanned",
       fields = {
         {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
-        {name = "Reason", value = auditLog.reason, inline = false},
+        {name = "Reason", value = (auditLog.reason == nil and "No Reason Provided." or auditLog.reason), inline = false},
         {name = "Responsible Member", value = auditLog:getMember().mentionString.." (`"..auditLog:getMember().id.."`)", inline = true},
       },
       color = 15105570,
@@ -855,6 +857,8 @@ module.getCache = function(type,guild,id)
     local role,pos = "",-1
     pcall(function() for items,_ in pairs(cache[guild].users[id].roles) do if module.getCache("role",guild,items).position > pos then role = items pos = module.getCache("role",guild,items).position end end end)
     return (role == "" and client:getGuild(guild):getRole(guild) or module.getCache("role",guild,role))
+  elseif type == "getperm" then
+    if id == nil then return cache[guild].perms else return cache[guild].perms[id] end
   end
 end
 

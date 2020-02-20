@@ -29,7 +29,7 @@ end
 
 local config = require("/app/config.lua")
 local utils = require("/app/resolve-user.lua")
-
+local cache = require("/app/server.lua")
 
 command.info = {
   Name = "Ban",
@@ -55,8 +55,6 @@ command.execute = function(message,args,client)
       return {success = false, msg = "You cannot "..command.info.Name:lower().." people with **higher than or equal permissions as you.**"}
     elseif message.guild:getBan(user.id) ~= nil then
       return {success = false, msg = "**"..user.username.."** is already banned."}
-    elseif message.guild:getMember(client.user.id):hasPermission("banMembers") == false then
-			return {success = false, msg = "I need the **Ban Members** permission to do this."}
     else -- done with the pre-errors
       local duration = getDuration({args[1], args[2], (args[3] == nil and "FBBBB6DE2AA74C3C9570D2D8DB1DE31EADB66113C96034A7ADB21243754D7683" or args[3])})
       if args[3] == nil then
