@@ -763,7 +763,7 @@ client:on('roleDelete', function(channel)
 end)
 
 client:on('roleUpdate', function(role)
-  cache[role.guild.id].perms = role.guildgetMember("414030463792054282"):getPermissions():toTable()
+  cache[role.guild.id].perms = role.guild:getMember("414030463792054282"):getPermissions():toTable()
   cache[role.guild.id].roles[role.id] = {name = role.name, hoisted = role.hoisted, mentionable = role.mentionable, color = role.color, position = role.position}
 end)
 
