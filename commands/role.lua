@@ -20,6 +20,7 @@ command.execute = function(message,args,client)
   else
     local user = utils.resolveUser(message,args[2])
     local role = utils.resolveRole(message,table.concat(args," ",3))
+    if role == false then return {success = false, msg = "I couldn't find the role you mentioned."} end
     local roleInfo, theirRoleInfo, myRoleInfo, userInfo = cache.getCache("role",message.guild.id,role.id), cache.getCache("roleh",message.guild.id,message.author.id), cache.getCache("roleh",message.guild.id,client.user.id), cache.getCache("user",message.guild.id,user.id)
     if user == false then
       return {success = false, msg = "I couldn't find the member you mentioned."}
