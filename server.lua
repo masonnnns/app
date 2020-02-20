@@ -370,6 +370,7 @@ client:on("messageCreate",function(message)
     if getPermission(message) < 1 then autoMod(message) end
   elseif coolDown(tostring(message.author.id..found.info.Name),false,message) == false then
   else
+    if message.guild:getMember(message.author.id):hasPermission(message.channel,"sendMessages") == false then return end
     commandsRan = commandsRan + 1
     print("[COMMAND RAN]: "..message.author.username.." ("..message.author.id..") ran command "..found.info.Name.." in #"..message.channel.name.." in "..message.guild.name.." ("..message.guild.id..")\nArgs: "..table.concat(args," "))
     if config[message.guild.id].modonly and getPermission(message) < 1 then return end
