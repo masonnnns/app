@@ -89,8 +89,6 @@ command.execute = function(message,args,client)
       local role = utils.resolveRole(message,table.concat(args," ",3))
       if role == false then
         return {success = false, msg = "I couldn't find the role you mentioned."}
-      elseif role.position > message.guild:getMember(client.user.id).highestRole.position then
-        return {success = false, msg = "I cannot manage the **"..role.name.."** role."}
       else
         data.modrole = role.id
         config.updateConfig(message.guild.id,data)
