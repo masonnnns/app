@@ -97,12 +97,12 @@ command.execute = function(message,args,client)
     -- [GENERAL SETTINGS]
 
   elseif args[2] == "prefix" then
-    if args[3] == nil or string.len(table.concat(args," ",3)) < 1 then
+    if args[3] == nil or string.len(args[3]) < 1 then
       return {success = false, msg = "The new prefix must be greater than **1 character**."}
-    elseif string.len(table.concat(args," ",3)) > 10 then
+    elseif string.len(args[3]) > 10 then
       return {success = false, msg = "The new prefix must be less than **10 characters**."}
     else
-      data.prefix = table.concat(args," ",3)
+      data.prefix = args[3]
       return {success = true, msg = "Changed the prefix to `"..data.prefix.."`."}
     end 
   end
