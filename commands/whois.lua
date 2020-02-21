@@ -7,9 +7,9 @@ local discordia = require("discordia")
 local Date = discordia.Date
 
 command.info = {
-  Name = "Whois",
-  Alias = {"w","userinfo"},
-  Usage = "whois <optional user>",
+  Name = "Userinfo",
+  Alias = {"w","whois"},
+  Usage = "userinfo <optional user>",
   Category = "Utility",
   Description = "Views information on a specified user.",
   PermLvl = 0,
