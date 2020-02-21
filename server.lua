@@ -730,7 +730,7 @@ end)
 
 client:on('roleCreate', function(channel)
   if config[channel.guild.id] == nil then return end
-  cache[channel.guild.id].roles[channel.id] = {name = channel.name, hoisted = channel.hoisted, mentionable = channel.mentionable, color = channel.color, position = role.position}
+  cache[channel.guild.id].roles[channel.id] = {name = channel.name, hoisted = channel.hoisted, mentionable = channel.mentionable, color = channel.color, position = channel.position}
   local auditLog
   if cache[channel.guild.id].auditlog then for a,items in pairs(channel.guild:getAuditLogs()) do if math.floor(items.createdAt) == os.time() or math.floor(items.createdAt) == os.time() - 1 or math.floor(items.createdAt) == os.time() + 1 or math.floor(items.createdAt) == os.time() + 2 and items.guild.id == channel.guild.id then auditLog = items break end end end
   if auditLog == nil or auditLog:getMember() == nil or auditLog.actionType ~= 30 then
