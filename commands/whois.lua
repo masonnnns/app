@@ -38,8 +38,8 @@ command.execute = function(message,args,client)
       local roles = {}
       pcall(function() for items,_ in pairs(cache.getCache("user",message.guild.id,user.id).roles) do roles[1+#roles] = message.guild:getRole(items).mentionString end end)
       local data = {embed = {
-				author = {name = user.tag, icon_url = user:getAvatarURL()},
-        --title = "**Whois Lookup Results**",
+				--author = {name = user.tag, icon_url = user:getAvatarURL()},
+        title = user.tag,
         fields = {
           {
             name = "Mention",
@@ -100,8 +100,7 @@ command.execute = function(message,args,client)
       return {success = "stfu", msg = ""}
     else
       local data = {embed = {
-				author = {name = user.tag, icon_url = user:getAvatarURL()},
-        --title = "**Whois Lookup Results**",
+        title = user.tag,
         description = "**This user isn't in the guild.**",
         fields = {
           {
