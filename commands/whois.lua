@@ -36,6 +36,12 @@ command.execute = function(message,args,client)
         perm = "Member"
       end
       local roles = {}
+      local perms = {}
+      for a,items in pairs(user:getPermissions():toTable()) do
+        if items == true then
+          perms[1+#perms] = string.sub(a,1,1):upper()..string.sub(a,2)
+        end
+      end
       pcall(function() for items,_ in pairs(cache.getCache("user",message.guild.id,user.id).roles) do roles[1+#roles] = message.guild:getRole(items).mentionString end end)
       local data = {embed = {
 				--author = {name = user.tag, icon_url = user:getAvatarURL()},
@@ -72,11 +78,6 @@ command.execute = function(message,args,client)
             inline = true
           },
           {
-            name = "Role"..(#roles == 1 and "" or "s").." ["..#roles.."]",
-            value = (#roles == 0 and "No Roles!" or table.concat(roles, " ")),
-            inline = false
-          },
-          {
             name = "Created At",
             value = Date.fromSnowflake(user.id):toISO(' ', ''),
             inline = true,
@@ -85,6 +86,16 @@ command.execute = function(message,args,client)
             name = "Joined At",
             value = (message.guild:getMember(user.id).joinedAt and message.guild:getMember(user.id).joinedAt:gsub('%..*', ''):gsub('T', ' ') or "ERROR"),
             inline = true,
+          },
+          {
+            name = "Role"..(#roles == 1 and "" or "s").." ["..#roles.."]",
+            value = (#roles == 0 and "No Roles!" or table.concat(roles, " ")),
+            inline = false
+          },
+          {
+            name = "Permissions",
+            value = (#perms == 0 and "No Permissions!" or table.concat(perms,", ")),
+            inline = false,
           },
         },
 				thumbnail = {
