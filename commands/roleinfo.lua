@@ -16,14 +16,21 @@ command.info = {
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   if args[2] == nil then return {success = false, msg = "You must provide a **role** in argument 2."} end
-  local role = utils.resolveRole(message,table.concat(args," ",3))
+  local role = utils.resolveRole(message,table.concat(args," ",2))
   if role == false then return {success = false, msg = "I couldn't find the role you mentioned."} end
   message:reply{embed = {
     title = role.name,
     fields = {
       {name = "Mention", value = role.mentionString, inline = true},
       {name = "ID", value = role.id, inline = true},
-      {name = ""}
+      {name = "Color", value = role:getColor():toHex(), inline = true},
+      {name = "Members", value = (#role.members == 0 and "None!" or #role.members), inline = true},
+      {name = "Position", value = role.position.."/"..#message.guild.roles, inline = true},
+      {name = "Created At", value = Date.fromSnowflake(role.id):toISO(' ', ''), inline = true,}
+      {name = "Hoisted", value = (role.hoisted and "Yes." or "No."), inline = true},
+      {name = "Managed", value = (role.managed and "Yes." or "No."), inline = true},
+      {name = "Mentionable", value = (role.mentionable and "Yes." or "No."), inline = true},
+      {name = "Permissions", value = }
     },
     footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
     color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
