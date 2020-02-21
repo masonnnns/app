@@ -248,7 +248,7 @@ function coolDown(id,reset,message)
   return true
 end
 
-client:on("ready", function()
+dclient:on("ready", function()
   client:setGame("Booting, please wait...")
   for _,guilds in pairs(client.guilds) do
     print("[STARTING CACHE]: "..guilds.name.." is being cached.")
