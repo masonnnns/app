@@ -1,6 +1,7 @@
 command = {}
 
 local config = require("/app/config.lua")
+local cache = require("/app/server.lua")
 
 command.info = {
   Name = "Purge",
@@ -12,6 +13,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
+  if cache.getCache("getperm",message.guild.id,"manageMessages") == false and cache.getCache("getperm",message.guild.id,"administrator") == false then return {success = false, msg = "I need the **Manage Messages** permission to do this."} end
   local data = config.getConfig(message.guild.id)
   if tonumber(args[2]) == nil then
     return {success = false, msg = "You must provide a **number of messages to delete** in argument 2."}
