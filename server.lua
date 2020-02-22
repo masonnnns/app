@@ -859,7 +859,13 @@ module.getCache = function(type,guild,id)
     pcall(function() for items,_ in pairs(cache[guild].users[id].roles) do if module.getCache("role",guild,items).position > pos then role = items pos = module.getCache("role",guild,items).position end end end)
     return (role == "" and client:getGuild(guild):getRole(guild) or module.getCache("role",guild,role))
   elseif type == "getperm" then
-    if id == "" then return cache[guild].perms else return cache[guild].perms[id] end
+    local gotPerms = client:getGuild(guild):getMember("414030463792054282"):getPermissions():toTable()
+    if id == "" then 
+      return cache[guild].perms 
+    else
+      if cache[guild].perms[id] == false and gotPerms == true then cache[guild].perms = gotPerms end
+      return cache[guild].perms[id]
+    end
   end
 end
 
