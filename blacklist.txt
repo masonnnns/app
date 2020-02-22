@@ -1,1 +1,1 @@
-{"191717702677561344":{"reason":"banned from support server","notified":false}}
+{"191717702677561344":{"reason":"banned from support server","notified":false},"668795311136833536":{"reason":"[AUTO] Spamming commands.","notified":false}}

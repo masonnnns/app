@@ -31,6 +31,7 @@ command.execute = function(message,args,client)
       config.updateConfig(message.guild.id,data)
       local purge = message.channel:bulkDelete(msgs)
       if purge then
+      message:reply("<:atickyes:678186418937397249>  Purged **"..(num).."** message"..(num == 1 and "" or "s")..".")
         if data.auditlog ~= "nil" and message.guild:getChannel(data.auditlog) then
           local messages = {}
           for _,items in pairs(msgs) do messages[1+#messages] = "["..items.author.tag.." ("..items.author.id..")]: "..items.content end
@@ -54,11 +55,11 @@ command.execute = function(message,args,client)
               },
             },
             color = 3447003,
-          }}
-         require("timer").sleep(500)
-         message.guild:getChannel(data.auditlog):send{file = {"purgedMessages.txt", table.concat(messages, "\n")}}
+          },
+          file = {message.guild.id.."-"..message.channel.id.."-"..message.channel.name..".txt", table.concat(messages, "\n")},
+          }
         end
-        return {success = true, msg = "Purged **"..(num).."** message"..(num == 1 and "" or "s").."."}
+        return {success = "stfu", msg = "Purged **"..(num).."** message"..(num == 1 and "" or "s").."."}
       else
         return {success = false, msg = "Failed to purge."}
       end
