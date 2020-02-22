@@ -383,7 +383,8 @@ client:on("messageCreate",function(message)
       end)
       commandCooldown[tostring(message.author.id..found.info.Name)] = os.time() + (found.info.Cooldown == nil and 3 or found.info.Cooldown)
       if not cmdSuccess then 
-          message:reply(":rotating_light: **An error occured!** Please report this to our support team.") 
+          message:reply(":rotating_light: **An error occured!** Please report this to our support team.")
+          print(cmdMsg)
           client:getGuild("551017079797579795"):getChannel("678756836349968415"):send{embed = {
             title = "Command Error",
             description = "```lua\n"..string.upper(cmdMsg).."\n```",
@@ -539,7 +540,7 @@ client:on("memberLeave", function(member)
   config[member.guild.id] = configuration.getConfig(member.guild.id)
   if config[member.guild.id].auditlog ~= "nil" and member.guild:getChannel(config[member.guild.id].auditlog) ~= nil then
     local roles = {}
-    if cache[member.guild.id] ~= nil and cache[member.guild.id].users ~= nil and cache[member.guild.id].users[member.id] ~= nil then for items,_ in pairs(cache[member.guild.id].users[member.id].roles) do roles[1+#roles] = member.guild:getRole(items).mentionString end end
+    if cache ~= nil and cache[member.guild.id] ~= nil and cache[member.guild.id].users ~= nil and cache[member.guild.id].users[member.id] ~= nil then for items,_ in pairs(cache[member.guild.id].users[member.id].roles) do roles[1+#roles] = member.guild:getRole(items).mentionString end end
     member.guild:getChannel(config[member.guild.id].auditlog):send{embed ={ title = "Member Left", fields = { { name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true, }, { name = "Roles", value = (#roles == 0 and "No Roles!" or table.concat(roles,", ")), inline = true, }, }, color = 15158332, }}
   end
   if config[member.guild.id].welcome.enabled and config[member.guild.id].welcome.leavechannel ~= "nil" and config[member.guild.id].welcome.leavemsg ~= "nil" then

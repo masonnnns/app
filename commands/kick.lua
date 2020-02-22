@@ -52,7 +52,7 @@ command.execute = function(message,args,client)
         },
         color = 15105570,
         }}
-        data.modData.cases[#ata.modData.cases].id = msg.id
+        data.modData.cases[#data.modData.cases].id = msg.id
     end 
     return {success = true, msg = "**"..user.username.."** has been kicked. `[Case #"..#data.modData.cases.."]`"}
   end
