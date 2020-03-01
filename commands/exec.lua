@@ -21,7 +21,7 @@ local function exec(arg, msg)
 
     local lines = {}
 
-    andbox.message = msg
+    sandbox.message = msg
 
     sandbox.print = function(...)
         table.insert(lines, printLine(...))
