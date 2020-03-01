@@ -21,7 +21,7 @@ local function exec(arg, msg)
 
     local lines = {}
 
-    sandbox.message = msg
+    andbox.message = msg
 
     sandbox.print = function(...)
         table.insert(lines, printLine(...))
@@ -40,7 +40,7 @@ local function exec(arg, msg)
     lines = table.concat(lines, '\n')
 
     if #lines == 0 then
-      return {error = false, result = "```lua\nOK```"}
+      return {error = false, result = "```lua\non it sir/ma'am```"}
     end
     
     if #lines > 1990 then -- truncate long messages
