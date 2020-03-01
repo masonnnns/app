@@ -68,4 +68,6 @@ client:on("messageCreate",function(message)
   end
 end)
 
-client:run("Bot NDYzODQ1ODQxMDM2MTE1OTc4.Xlvwig.pblOapFexh1F51CIbnqEi3XHWEA")
+client:on("reactionAdd",reactio)
+
+client:run("Bot NDE0MDMwNDYzNzkyMDU0Mjgy.Xkx9qw.fIzYF1TiDEZVqzdn6Cv4DvKkN0E")
