@@ -3,7 +3,8 @@ module = {}
 local config = {}
 local function addConfig(id)
 	config[id] = {
-		general = {prefix = "?", modlog = "nil", auditlog = "nil", modroles = {}, modonly = false, mutedrole = "nil", auditignore = {}}
+		general = {prefix = "?", modlog = "nil", auditlog = "nil", modroles = {}, modonly = false, mutedrole = "nil", auditignore = {}},
+    moderation = {cases = {}, actions = {}}
 	}
 end
 
