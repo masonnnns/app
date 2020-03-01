@@ -3,7 +3,7 @@ module = {}
 local config = {}
 local function addConfig(id)
 	config[id] = {
-		general = {prefix = "?"}
+		general = {prefix = "?", modlog = "nil", auditlog = "nil", modroles = {}, modonly = false, mutedrole = "nil", auditignore = {}}
 	}
 end
 
@@ -11,10 +11,12 @@ end
 module.setupConfigs = function()
   --if 1 == 1 then return end
   print("[DB]: Starting Data Loading Process.")
+  if io.open("./data.txt","r"):read() == nil or io.open("./data.txt","r"):read() == "" then return config end
   local decode = json.decode(io.open("./data.txt","r"):read())
   for a,b in pairs(decode) do
-  	addConfig(a)
+    addConfig(a)
 	  for c,d in pairs(b) do
+      print(c)
 	  	if type(config[a][c]) == "table" then
         for e,f in pairs(d) do
           config[a][c][e] = f
@@ -24,7 +26,6 @@ module.setupConfigs = function()
       end
 	  end
 	  --config[a] = b
-    config[a].purgeignore = {}
 	  print("[DB]: Guild "..a.."'s data was successfully loaded.")
   end
   print("[DB]: All guilds have been successfully loaded.")
