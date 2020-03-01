@@ -32,25 +32,27 @@ client:on("messageCreate",function(message)
     for file, _type in require("fs").scandirSync("./commands") do
       if _type ~= "directory" then
         local command = require("./commands/"..file)
-        if string.lower(args[1]) == string.lower(file) then
-          found = command break
+        if string.lower(args[1]) == string.lower(command.info.Name) then
+          found = file break
         elseif #command.info.Alias >= 1 then
           for _,items in pairs(command.info.Alias) do
             if string.lower(items) == string.lower(args[1]) then
-              found = command break
+              found = file break
             end
           end
         end
       end
     end
-    if found == nil or require("/app/utils.lua").Permlvl(message,client) == 0 and data.modonly == true or require("/app/utils.lua").Permlvl(message,client) < command.info.PermLvl then
-      if found ~= nil and data.modonly == false then 
+    local command
+    if found ~= nil then command = require("/app/commands/"..found) end
+    if found == nil or require("/app/utils.lua").Permlvl(message,client) == 0 and data.general.modonly == true or require("/app/utils.lua").Permlvl(message,client) < command.info.PermLvl then
+      if found ~= nil and data.general.modonly == false then 
           local m = message:reply("<:aforbidden:678187354242023434> You **don't have permissions** to use this command!")
           require("timer").sleep(5000)
           m:delete()
       end
     else
-      local execute = found.execute(message,args,client)
+      local execute = command.execute(message,args,client)
       if execute == nil or type(execute) ~= "table" then
         message:reply("<:atickno:678186665616998400> An **unknown error** occured.")
       elseif execute.success == false then

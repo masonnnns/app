@@ -1,10 +1,10 @@
 module = {}
 
-module.Permlvl = function(msg,client,id)
-  if id == nil then id = msg.author.id end
+module.Permlvl = function(message,client,id)
+  if id == nil then id = message.author.id end
   local data = require("/app/config.lua").getConfig(message.guild.id)
   local found
-  for items,_ in pairs(msg.guild.members) do if items == id then found = true break end
+  for items,_ in pairs(message.guild.members) do if items == id then found = true break end end
   if found == nil then return 0 end
   if id == message.guild.ownerId then
 		return 3
