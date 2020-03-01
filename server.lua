@@ -23,8 +23,8 @@ local function sepMsg(msg)
 end
 
 client:on("messageCreate",function(message)
-  if message.author.id ~= client.owner.id then return end 
-  if message.author.bot or message.guild.id == nil then return false end
+  --if message.author.id ~= client.owner.id then return end 
+  --if message.author.bot or message.guild.id == nil then return false end
   local data = config.getConfig(message.guild.id)
   if string.sub(message.content,1,string.len(data.general.prefix)) == data.general.prefix then
     local args = sepMsg(string.sub(message.content,string.len(data.general.prefix)+1))
@@ -45,7 +45,9 @@ client:on("messageCreate",function(message)
     end
     local command
     if found ~= nil then command = require("/app/commands/"..found) end
-    if found == nil or require("/app/utils.lua").Permlvl(message,client) == 0 and data.general.modonly == true or require("/app/utils.lua").Permlvl(message,client) < command.info.PermLvl then
+    local permLvl = require("/app/utils.lua").Permlvl(message,client)
+    if found ~= nil and command.info.Category == "Private" and message.author.id == client.owner.id then permLvl = 6 end
+    if found == nil or permLvl == 0 and data.general.modonly == true or permLvl < command.info.PermLvl then
       if found ~= nil and data.general.modonly == false then 
           local m = message:reply("<:aforbidden:678187354242023434> You **don't have permissions** to use this command!")
           require("timer").sleep(5000)
