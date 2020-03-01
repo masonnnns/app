@@ -28,7 +28,24 @@ client:on("messageCreate",function(message)
   local data = config.getConfig(message.guild.id)
   if string.sub(message.content,1,string.len(data.general.prefix)) == data.general.prefix then
     local args = sepMsg(string.sub(message.content,string.len(data.general.prefix)+1))
-    message:reply(table.concat(args,", "))
+    local found
+    for cmds, _type in require("fs").scandirSync("./commands") do
+      if _type ~= "directory" then
+        local command = require("./commands/"..file)
+        if string.lower(args[1]) == string.lower(file) then
+          found = cmd break
+        elseif #command.info.Alias >= 1 then
+          for _,items in pairs(command.info.Alias) do
+            if string.lower(items) == string.lower(args[1]) then
+              found = cmd break
+            end
+          end
+        end
+      end
+    end
+    if found ~= nil then
+      
+    end
   end
 end)
 
