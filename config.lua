@@ -3,24 +3,7 @@ module = {}
 local config = {}
 local function addConfig(id)
 	config[id] = {
-		prefix = "?",
-    raidmode = false,
-    automod = {enabled = false, log = "nil", types = {invites = {false,0}, spam = {false,0}, mentions = {false,3}, spoilers = {false,2}, newline = {false,10}, filter = {false,0}}},
-    tags = {enabled = false, tags = {}, delete = false},
-    welcome = {enabled = false, joinmsg = "nil", joinchannel = "nil", leavechannel = "nil", leavemsg = "nil", joinchannel = "nil", autorole = "nil"},
-    tickets = {enabled = false, category = "nil", channels = {}, ticket = 0, max = 1},
-    economy = {enabled = false, users = {}, chatreward = 5},
-    terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"},
-    modlog = "nil",
-		modrole = "nil",
-    auditlog = "nil",
-		modData = {cases = {}, actions = {}, locked = {}}, -- {type = "mute", reason = "", duration = os.time() / "perm", mod = userID, user = userID}
-		deletecmd = false,
-		modonly = false,
-		mutedrole = "nil",
-    auditignore = {},
-    --memberCache = {},
-    purgeignore = {["551794917584666625"] = 1000}
+		general = {prefix = "?"}
 	}
 end
 
@@ -32,11 +15,13 @@ module.setupConfigs = function()
   for a,b in pairs(decode) do
   	addConfig(a)
 	  for c,d in pairs(b) do
-	  	if config[a][c] ~= nil then
-		  	config[a][c] = d
-		  else
-		  	print("[DB]: Guild "..a.." doesn't have the "..c.." value in it, so it is using defualt settings.")
-	  	end
+	  	if type(config[a][c]) == "table" then
+        for e,f in pairs(d) do
+          config[a][c][e] = f
+        end
+      else
+        config[a][c] = d
+      end
 	  end
 	  --config[a] = b
     config[a].purgeignore = {}
