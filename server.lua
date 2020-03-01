@@ -68,6 +68,8 @@ client:on("messageCreate",function(message)
   end
 end)
 
-client:on("reactionAdd",reactio)
-
+client:on("reactionAdd", function(reaction, userId) 
+  local page = require("/app/pages.lua")
+  page.processReaction(reaction,userId)
+end)
 client:run("Bot NDE0MDMwNDYzNzkyMDU0Mjgy.Xkx9qw.fIzYF1TiDEZVqzdn6Cv4DvKkN0E")
