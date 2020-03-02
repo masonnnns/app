@@ -46,7 +46,7 @@ command.execute = function(message,args,client)
         color = 15844367,
       }}
       data.moderation.cases[#data.moderation.cases].modlog = modlog.id    end
-    return {success = true, msg = "**"..user.tag.."** has been kicked. `[Case "..#data.moderation.cases.."]`"}
+    return {success = true, msg = "**"..user.tag.."** has been warned"..(result and "." or ", but I couldn't message them.").." `[Case "..#data.moderation.cases.."]`"}
   end
 end
 
