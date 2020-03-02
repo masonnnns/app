@@ -37,7 +37,8 @@ command.execute = function(message,args,client)
           footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
           color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
         }
-        page[#page].fields[1+#page[#page].fields] = {name = "Moderator", value = client:getUser(items.moderator).tag.." (`"..items.moderator.."`)", inline = true}
+        local modTag = (message.guild:getMember(items.moderator) ~= nil and message.guild:getMember(items.moderator).tag or client:getUser(items.moderator).tag)
+        page[#page].fields[1+#page[#page].fields] = {name = "Moderator", value = modTag.." (`"..items.moderator.."`)", inline = true}
         if items.duration then page[#page].fields[1+#page[#page].fields] = {name = "Duration", value = items.duration, inline = true} end
         page[#page].fields[1+#page[#page].fields] = {name = "Reason", value = items.reason, inline = false}
       end
