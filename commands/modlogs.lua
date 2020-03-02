@@ -1,9 +1,7 @@
 command = {}
 
 local config = require("/app/config.lua")
-local utils = require("/app/resolve-user.lua")
-local pages = require("/app/pageination.lua")
-local cache = require("/app/server.lua")
+local utils = require("/app/utils.lua")
 
 command.info = {
   Name = "Modlogs",
@@ -26,13 +24,27 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I couldn't find the user you mentioned."}
   else
     local foundCases = {}
-    for a,items in pairs(data.moderation.cases) do if items.user == user.id then foundCases[1+#foundCases] = items end
+    for a,items in pairs(data.moderation.cases) do if items.user == user.id then foundCases[a] = items end end
     if #foundCases == 0 then
       return {success = false, msg = "**"..user.tag.."** has no modlogs."}
     else
-      
+      for a,items in pairs(foundCases) do
+        items.type = string.sub(items.type,1,1):upper()..string.sub(items.type,2)
+        if items.moderator == client.user.id and string.sub(items.type,1,4) ~= "Auto" then items.type = "Auto "..items.type end
+        page[1+#page] = {
+          title = "Case "..a.." - "..items.type,
+          fields = {},
+          footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+          color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+        }
+        page[#page].fields[1+#page[#page].fields] = {name = "Moderator", value = client:getUser(items.moderator).tag.." (`"..items.moderator.."`)", inline = true}
+        if items.duration then page[#page].fields[1+#page[#page].fields] = {name = "Duration", value = items.duration, inline = true} end
+        page[#page].fields[1+#page[#page].fields] = {name = "Reason", value = items.reason, inline = false}
+      end
+      require("/app/pages.lua").addDictionary(message,page,message.author.id, "<:aaronwrench:678970116985061417> **"..user.tag.."'s modlog"..(#page == 1 and "" or "s")..":**")
+      return {success = "stfu"}
     end
-   end
+  end
 end
 
 return command
