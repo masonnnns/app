@@ -30,7 +30,10 @@ command.execute = function(message,args,client)
     message.guild:kickUser(user.id,reason)
     local data = config.getConfig(message.guild.id)
     data.moderation.cases[1+#data.moderation.cases] = {type = "kick", user = user.id, moderator = message.author.id, reason = reason, modlog = "nil"}
-    if data.general.modlog ~= nil and message.guild:getChannel(data.general.modlog) ~= nil then
+    if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
+      local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
+            
+      }}
     end
     return {success = true, msg = "**"..user.tag.."** has been kicked. `[Case "..#data.moderation.cases.."]`"}
   end
