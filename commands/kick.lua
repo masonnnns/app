@@ -32,11 +32,17 @@ command.execute = function(message,args,client)
     data.moderation.cases[1+#data.moderation.cases] = {type = "kick", user = user.id, moderator = message.author.id, reason = reason, modlog = "nil"}
     if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
       local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
-            
-      }}
-    end
+         itle = "Kick - Case "..#data.moderation.cases,
+        fields = {
+          {name = "User", value = user.tag.." (`"..user.id.."`)", inline = true},
+          {name = "Moderator", value = message.author.tag.." (`"..message.author.id.."`)",inline = true},
+          {name = "Reason", value = reason, inline = false},
+        },
+        color = 15105570,      }}
+
+      data.moderation.cases[#data.moderation.cases].modlog = modlog.id    end
     return {success = true, msg = "**"..user.tag.."** has been kicked. `[Case "..#data.moderation.cases.."]`"}
   end
 end
 
-return command
+return commandt
