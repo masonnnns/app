@@ -4,11 +4,11 @@ local config = require("/app/config.lua")
 local utils = require("/app/utils.lua")
 
 command.info = {
-  Name = "Kick",
+  Name = "Warn",
   Alias = {},
-  Usage = "kick <user> <reason>",
+  Usage = "warn <user> <reason>",
   Category = "Moderation",
-  Description = "Kick a user from the server.",
+  Description = "Warn a member of the server.",
   PermLvl = 1,
   Cooldown = 3,
 }
@@ -27,20 +27,24 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
   else
     local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
-    message.guild:kickUser(user.id,reason)
     local data = config.getConfig(message.guild.id)
-    data.moderation.cases[1+#data.moderation.cases] = {type = "kick", user = user.id, moderator = message.author.id, reason = reason, modlog = "nil"}
+    local result = user:getPrivateChannel():send("⚠️ **You have been warned in "..message.guild.name.."!**\nPlease do not continue to break the rules.\n\n**Reason:** "..reason)
+    if result ~= nil and result ~= false then
+      result = true
+    else
+      result = false
+    end
+    data.moderation.cases[1+#data.moderation.cases] = {type = "warn", user = user.id, moderator = message.author.id, reason = reason, modlog = "nil"}
     if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
       local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
-        title = "Kick - Case "..#data.moderation.cases,
+        title = "Warning - Case "..#data.moderation.cases,
         fields = {
           {name = "User", value = user.tag.." (`"..user.id.."`)", inline = false},
           {name = "Moderator", value = message.author.tag.." (`"..message.author.id.."`)",inline = false},
           {name = "Reason", value = reason, inline = false},
         },
-        color = 15105570,
+        color = 15844367,
       }}
-
       data.moderation.cases[#data.moderation.cases].modlog = modlog.id    end
     return {success = true, msg = "**"..user.tag.."** has been kicked. `[Case "..#data.moderation.cases.."]`"}
   end
