@@ -23,7 +23,7 @@ local function sepMsg(msg)
 end
 
 client:on("messageCreate",function(message)
-  if message.author.id ~= client.owner.id then return end 
+  if message.guild.id ~= "551017079797579795" then return end 
   if message.author.bot or message.guild.id == nil then return false end
   local data = config.getConfig(message.guild.id)
   if string.sub(message.content,1,string.len(data.general.prefix)) == data.general.prefix then
