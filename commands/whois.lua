@@ -7,7 +7,7 @@ local Date = discordia.Date
 
 command.info = {
   Name = "Userinfo",
-  Alias = {"w","whois"},
+  Alias = {"w","whois","ui"},
   Usage = "userinfo <optional user>",
   Category = "Utility",
   Description = "Views information on a specified user.",

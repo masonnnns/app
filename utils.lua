@@ -17,7 +17,7 @@ module.Permlvl = function(message,client,id)
       if message.guild:getMember(id):hasRole(items) then return 1 end
     end
   else
-    return 5
+    return 0
   end
 end
 
