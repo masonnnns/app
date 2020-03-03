@@ -40,8 +40,8 @@ command.execute = function(message,args,client)
         },
         color = 15105570,
       }}
-
-      data.moderation.cases[#data.moderation.cases].modlog = modlog.id    end
+      data.moderation.cases[#data.moderation.cases].modlog = modlog.id    
+    end
     return {success = true, msg = "**"..user.tag.."** has been kicked. `[Case "..#data.moderation.cases.."]`"}
   end
 end

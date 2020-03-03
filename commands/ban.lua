@@ -53,7 +53,19 @@ command.execute = function(message,args,client)
   elseif user.id == client.user.id then
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
   else
-    local duration
+    local duration = getDuration({args[1], args[2], (args[3] == nil and "NO_ARG_3" or args[3])})
+    local data = config.getConfig(message.guild.id)
+    if args[3] == nil or durationTable[table.concat(duration.char,"")] == nil then
+      local reason = "No Reason Provided."
+      if args[3] == nil then 
+        reason = "No Reason Provided."
+      elseif durationTable[table.concat(duration.char,"")] == nil then
+        reason = table.concat(args," ",3)
+      end
+      message.guild:banUser(user,reason,7)
+      data.moderation.cases[1+#data.moderation.cases] = {type = "ban", user = user.id, moderator = message.author.id, reason = reason, modlog = "nil"}
+      return {success = true, msg = "**"..user.tag.."** has been permanently banned. `[Case: "..#data.moderation.cases.."]`"}
+    end
   end
 end
 
