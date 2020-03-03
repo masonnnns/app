@@ -63,7 +63,7 @@ client:on("messageCreate",function(message)
       elseif tostring(execute.success):lower() == "stfu" then
         -- stfu literally
       else
-        message:reply((execute.emote == nil and "<:atickyes:678186418937397249>" or execute.emote).."  "..execute.msg)
+        message:reply((execute.emote == nil and "<:atickyes:678186418937397249> " or execute.emote).." "..execute.msg)
       end
     end
   end
@@ -73,4 +73,5 @@ client:on("reactionAdd", function(reaction, userId)
   local page = require("/app/pages.lua")
   page.processReaction(reaction,userId)
 end)
+
 client:run("Bot NDYzODQ1ODQxMDM2MTE1OTc4.Xl4M2A.Nc_KemmsB_3HFVMLVnmIuMBjJLk")
