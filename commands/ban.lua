@@ -62,8 +62,21 @@ command.execute = function(message,args,client)
       elseif durationTable[table.concat(duration.char,"")] == nil then
         reason = table.concat(args," ",3)
       end
-      message.guild:banUser(user,reason,7)
-      data.moderation.cases[1+#data.moderation.cases] = {type = "ban", user = user.id, moderator = message.author.id, reason = reason, modlog = "nil"}
+      --message.guild:banUser(user,reason,7)
+      data.moderation.cases[1+#data.moderation.cases] = {type = "ban", user = user.id, moderator = message.author.id, reason = reason, duration = "Permanent", modlog = "nil"}
+      if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
+        local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
+          title = "Ban - Case "..#data.moderation.cases,
+          fields = {
+            {name = "User", value = user.tag.." (`"..user.id.."`)", inline = false},
+            {name = "Moderator", value = message.author.tag.." (`"..message.author.id.."`)",inline = true},
+            {name = "Duration", value = "Permanent", inline = true},
+            {name = "Reason", value = reason, inline = false},
+          },
+          color = 15158332,
+        }}
+        data.moderation.cases[#data.moderation.cases].modlog = modlog.id    
+      end
       return {success = true, msg = "**"..user.tag.."** has been permanently banned. `[Case: "..#data.moderation.cases.."]`"}
     end
   end
