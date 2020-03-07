@@ -69,6 +69,26 @@ client:on("messageCreate",function(message)
   end
 end)
 
+-- [[ ON READY ]]
+
+client:on("ready", function()
+  client:setGame("?help")
+  while true do
+    for _,guilds in pairs(client.guilds) do
+      local theirData = config.getConfig(guilds.id)
+      if #theirData.moderation.actions >= 0 then
+        for _,items in pairs(theirData.moderation.actions) do
+          if items.type == "ban" then
+          end
+        end
+      end
+    end
+  require("timer").sleep(1000)
+  end
+end)
+
+-- [[ EVENTS ]]
+
 client:on("reactionAdd", function(reaction, userId) 
   local page = require("/app/pages.lua")
   page.processReaction(reaction,userId)
