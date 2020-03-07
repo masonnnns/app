@@ -74,21 +74,24 @@ end)
 client:on("ready", function()
   client:setGame("?help")
   while true do
-    for _,data in pairs(config.getConfig("*")) do
+    for id,data in pairs(config.getConfig("*")) do
       print(_,data)
       if #data.moderation.actions >= 0 then
         for _,items in pairs(data.moderation.actions) do
+          print(items.duration <= os.time(), items.duration, os.time())
           if items.duration <= os.time() then
-            local guilds = client:getGuild(_)
+            local guilds = client:getGuild(id)
+            print(guilds)
             if guilds ~= nil then
+              print(items.type)
               if items.type == "ban" then
-                if guilds:getMember("414030463792054282"):getPermissions():has("banMembers") or guilds:getMember("414030463792054282"):getPermissions():has("administrator") then guilds.unbanUser(items.user, "Ban duration expired.") end
+                if guilds:getMember("414030463792054282"):getPermissions():has("banMembers") or guilds:getMember("414030463792054282"):getPermissions():has("administrator") then guilds:unbanUser(items.id, "Ban duration expired.") end
                 data.moderation.cases[1+#data.moderation.cases] = {type = "unban", user = items.user, moderator = client.user.id, reason = "Ban duration expired. (Case "..items.case..")", modlog = "nil"}
-                if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
-                  local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
+                if data.general.modlog ~= "nil" and guilds:getChannel(data.general.modlog) ~= nil then
+                  local modlog = guilds:getChannel(data.general.modlog):send{embed = {
                     title = "Automatic Unban - Case "..#data.moderation.cases,
                     fields = {
-                      {name = "User", value = client:getUser(items.user.id).tag.." (`"..items.user.."`)", inline = false},
+                      {name = "User", value = client:getUser(items.id).tag.." (`"..items.id.."`)", inline = false},
                       {name = "Moderator", value = client.user.tag.." (`"..client.user.id.."`)",inline = false},
                       {name = "Reason", value = "Ban duration expired. (Case "..items.case..")", inline = false},
                     },
@@ -97,6 +100,7 @@ client:on("ready", function()
                   data.moderation.cases[#data.moderation.cases].modlog = modlog.id  
                 end
               end
+              table.remove(data.moderation.actions,_)
             end
           end
         end

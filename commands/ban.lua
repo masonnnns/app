@@ -85,7 +85,7 @@ command.execute = function(message,args,client)
         local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
         local durationString = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s")
         data.moderation.cases[1+#data.moderation.cases] = {type = "ban", user = user.id, moderator = message.author.id, reason = reason, duration = durationString, modlog = "nil"}
-        data.moderation.actions[1+#data.moderation.actions] = {type = "ban", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], moderator = message.author.id, case = #data.moderation.cases}
+        data.moderation.actions[1+#data.moderation.actions] = {type = "ban", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], moderator = message.author.id, case = #data.moderation.cases, id = user.id}
         message.guild:banUser(user,reason,7)
         if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
           local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
