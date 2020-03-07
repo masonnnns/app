@@ -34,6 +34,7 @@ module.setupConfigs = function()
 end
 
 module.getConfig = function(id)
+  if id == "*" then return config end
   if config[id] == nil then addConfig(id) end
   local configForSaving = {
 		guilds = {},
