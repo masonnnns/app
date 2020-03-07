@@ -75,10 +75,27 @@ client:on("ready", function()
   client:setGame("?help")
   while true do
     for _,guilds in pairs(client.guilds) do
-      local theirData = config.getConfig(guilds.id)
-      if #theirData.moderation.actions >= 0 then
-        for _,items in pairs(theirData.moderation.actions) do
-          if items.type == "ban" then
+      print(_,guilds)
+      local data = config.getConfig(guilds.id)
+      if #data.moderation.actions >= 0 then
+        for _,items in pairs(data.moderation.actions) do
+          if items.duration <= os.time() then
+            if items.type == "ban" then
+              if guilds:getMember("414030463792054282"):getPermissions():has("banMembers") or guilds:getMember("414030463792054282"):getPermissions():has("administrator") then guilds.unbanUser(items.user, "Ban duration expired.") end
+              data.moderation.cases[1+#data.moderation.cases] = {type = "unban", user = items.user, moderator = client.user.id, reason = "Ban duration expired. (Case "..items.case..")", modlog = "nil"}
+              if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
+                local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
+                  title = "Automatic Unban - Case "..#data.moderation.cases,
+                  fields = {
+                    {name = "User", value = client:getUser(items.user.id).tag.." (`"..items.user.."`)", inline = false},
+                    {name = "Moderator", value = client.user.tag.." (`"..client.user.id.."`)",inline = false},
+                    {name = "Reason", value = "Ban duration expired. (Case "..items.case..")", inline = false},
+                  },
+                  color = 15158332,
+                }}
+                data.moderation.cases[#data.moderation.cases].modlog = modlog.id  
+              end
+            end
           end
         end
       end
