@@ -75,15 +75,11 @@ client:on("ready", function()
   client:setGame("?help")
   while true do
     for id,data in pairs(config.getConfig("*")) do
-      print(_,data)
       if #data.moderation.actions >= 0 then
         for _,items in pairs(data.moderation.actions) do
-          print(items.duration <= os.time(), items.duration, os.time())
           if items.duration <= os.time() then
             local guilds = client:getGuild(id)
-            print(guilds)
             if guilds ~= nil then
-              print(items.type)
               if items.type == "ban" then
                 if guilds:getMember("414030463792054282"):getPermissions():has("banMembers") or guilds:getMember("414030463792054282"):getPermissions():has("administrator") then guilds:unbanUser(items.id, "Ban duration expired.") end
                 data.moderation.cases[1+#data.moderation.cases] = {type = "unban", user = items.user, moderator = client.user.id, reason = "Ban duration expired. (Case "..items.case..")", modlog = "nil"}

@@ -44,7 +44,6 @@ command.execute = function(message,args,client)
   if config.getConfig(message.guild.id).moderation.mutedrole == "nil" or message.guild:getRole(config.getConfig(message.guild.id).moderation.mutedrole) == nil then return {success = false, msg = "**Config Error:** There is no muted role setup."} end
   if args[2] == nil then return {success = false, msg = "You must provide a **member to "..command.info.Name:lower().."** in argument 2."} end
   local user = utils.resolveUser(message,args[2])
-  if user == false and tonumber(args[2]) ~= nil and client:getUser(args[2]) ~= nil then user = client:getUser(args[2]) end
   if user == false then 
     return {success = false, msg = "I couldn't find the user you mentioned."}
   elseif utils.Permlvl(message,client,user.id) >= utils.Permlvl(message,client) then
@@ -53,6 +52,8 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I cannot "..command.info.Name:lower().." "..user.tag.." because their **role is higher than mine**."}
   elseif user.id == client.user.id then
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
+  elseif user:hasRole(config.getConfig(message.guild.id).moderation.mutedrole) then
+    return {success = false, msg = "**"..user.tag.."** is already muted."}
   else
     local duration = getDuration({args[1], args[2], (args[3] == nil and "NO_ARG_3" or args[3])})
     local data = config.getConfig(message.guild.id)
@@ -63,45 +64,45 @@ command.execute = function(message,args,client)
       elseif durationTable[table.concat(duration.char,"")] == nil then
         reason = table.concat(args," ",3)
       end
-      message.guild:banUser(user,reason,7)
-      data.moderation.cases[1+#data.moderation.cases] = {type = "ban", user = user.id, moderator = message.author.id, reason = reason, duration = "Permanent", modlog = "nil"}
+      user:addRole(data.moderation.mutedrole)
+      data.moderation.cases[1+#data.moderation.cases] = {type = "mute", user = user.id, moderator = message.author.id, reason = reason, duration = "Permanent", modlog = "nil"}
       if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
         local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
-          title = "Ban - Case "..#data.moderation.cases,
+          title = "Mute - Case "..#data.moderation.cases,
           fields = {
             {name = "User", value = user.tag.." (`"..user.id.."`)", inline = false},
             {name = "Moderator", value = message.author.tag.." (`"..message.author.id.."`)",inline = true},
             {name = "Duration", value = "Permanent", inline = true},
             {name = "Reason", value = reason, inline = false},
           },
-          color = 15158332,
+          color = 15105570,
         }}
         data.moderation.cases[#data.moderation.cases].modlog = modlog.id    
       end
-      return {success = true, msg = "**"..user.tag.."** has been permanently banned. `[Case: "..#data.moderation.cases.."]`"}
+      return {success = true, msg = "**"..user.tag.."** has been permanently muted. `[Case: "..#data.moderation.cases.."]`"}
     else
       if tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1] <= 0 then
         return {success = false, msg = "Invalid duration."}
       else
         local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
         local durationString = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s")
-        data.moderation.cases[1+#data.moderation.cases] = {type = "ban", user = user.id, moderator = message.author.id, reason = reason, duration = durationString, modlog = "nil"}
-        data.moderation.actions[1+#data.moderation.actions] = {type = "ban", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], moderator = message.author.id, case = #data.moderation.cases, id = user.id}
-        message.guild:banUser(user,reason,7)
+        data.moderation.cases[1+#data.moderation.cases] = {type = "mute", user = user.id, moderator = message.author.id, reason = reason, duration = durationString, modlog = "nil"}
+        data.moderation.actions[1+#data.moderation.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], moderator = message.author.id, case = #data.moderation.cases, id = user.id}
+        user:addRole(data.moderation.mutedrole)
         if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
           local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
-            title = "Ban - Case "..#data.moderation.cases,
+            title = "Mute - Case "..#data.moderation.cases,
             fields = {
               {name = "User", value = user.tag.." (`"..user.id.."`)", inline = false},
               {name = "Moderator", value = message.author.tag.." (`"..message.author.id.."`)",inline = true},
               {name = "Duration", value = durationString, inline = true},
               {name = "Reason", value = reason, inline = false},
             },
-            color = 15158332,
+            color = 15105570,
           }}
           data.moderation.cases[#data.moderation.cases].modlog = modlog.id    
         end
-        return {success = true, msg = "**"..user.tag.."** has been banned for "..durationString:lower()..". `[Case "..#data.moderation.cases.."]`"}
+        return {success = true, msg = "**"..user.tag.."** has been muted for "..durationString:lower()..". `[Case "..#data.moderation.cases.."]`"}
       end
     end
   end
