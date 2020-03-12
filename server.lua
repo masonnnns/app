@@ -82,7 +82,7 @@ client:on("ready", function()
             if guilds ~= nil then
               if items.type == "ban" then
                 if guilds:getMember("414030463792054282"):getPermissions():has("banMembers") or guilds:getMember("414030463792054282"):getPermissions():has("administrator") then guilds:unbanUser(items.id, "Ban duration expired.") end
-                data.moderation.cases[1+#data.moderation.cases] = {type = "unban", user = items.user, moderator = client.user.id, reason = "Ban duration expired. (Case "..items.case..")", modlog = "nil"}
+                data.moderation.cases[1+#data.moderation.cases] = {type = "unban", user = items.id, moderator = client.user.id, reason = "Ban duration expired. (Case "..items.case..")", modlog = "nil"}
                 if data.general.modlog ~= "nil" and guilds:getChannel(data.general.modlog) ~= nil then
                   local modlog = guilds:getChannel(data.general.modlog):send{embed = {
                     title = "Automatic Unban - Case "..#data.moderation.cases,
@@ -90,6 +90,21 @@ client:on("ready", function()
                       {name = "User", value = client:getUser(items.id).tag.." (`"..items.id.."`)", inline = false},
                       {name = "Moderator", value = client.user.tag.." (`"..client.user.id.."`)",inline = false},
                       {name = "Reason", value = "Ban duration expired. (Case "..items.case..")", inline = false},
+                    },
+                    color = 15158332,
+                  }}
+                  data.moderation.cases[#data.moderation.cases].modlog = modlog.id  
+                end
+              elseif items.type == "mute" then
+                if guilds:getMember(items.id) and guilds:getMember("414030463792054282"):getPermissions():has("manageRoles") or guilds:getMember("414030463792054282"):getPermissions():has("administrator") then guilds:getMember(items.id):removeRole(data.moderation.mutedrole) end
+                data.moderation.cases[1+#data.moderation.cases] = {type = "unban", user = items.id, moderator = client.user.id, reason = "Ban duration expired. (Case "..items.case..")", modlog = "nil"}
+                if data.general.modlog ~= "nil" and guilds:getChannel(data.general.modlog) ~= nil then
+                  local modlog = guilds:getChannel(data.general.modlog):send{embed = {
+                    title = "Automatic Unmute - Case "..#data.moderation.cases,
+                    fields = {
+                      {name = "User", value = client:getUser(items.id).tag.." (`"..items.id.."`)", inline = false},
+                      {name = "Moderator", value = client.user.tag.." (`"..client.user.id.."`)",inline = false},
+                      {name = "Reason", value = "Mute duration expired. (Case "..items.case..")", inline = false},
                     },
                     color = 15158332,
                   }}

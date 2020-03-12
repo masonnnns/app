@@ -24,7 +24,7 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I couldn't find the user you mentioned."}
   else
     local foundCases = {}
-    for a,items in pairs(data.moderation.cases) do if items.user == user.id then foundCases[a] = items end end
+    for a,items in pairs(data.moderation.cases) do print(items.user,items.id) if items.user == user.id or items.id == user.id then foundCases[a] = items end end
     if #foundCases == 0 then
       return {success = false, msg = "**"..user.tag.."** has no modlogs."}
     else
