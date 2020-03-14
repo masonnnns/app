@@ -38,7 +38,7 @@ end
 module.addDictionary = function(message,pageTable,user,txt)
   if txt == nil then txt = "" end
   if #pageTable == 1 then
-    message:reply{content = txt, embed = pageTable[1]}
+    if txt ~= "" then message:reply{content = txt, embed = pageTable[1]} else message:reply{embed = pageTable[1]} end
   else
     local guild = (message.guild == nil and 'dms' or message.guild.id)
     pageTable[1].footer.text = "Page 1/"..#pageTable.." | "..pageTable[1].footer.text
