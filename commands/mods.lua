@@ -1,24 +1,45 @@
 command = {}
 
-local config = require("app/config.lua")
+local config = require("/app/config.lua")
 
 command.info = {
   Name = "Mods",
   Alias = {"moderators"},
   Usage = "mods",
   Category = "Utility",
-  Description = "Get the link to invite the bot.",
-  PermLvl = 0,
+  Description = "View a list of all the moderators in the server.",
+  PermLvl = 1,
 }
 
 command.execute = function(message,args,client)
-  message:reply{embed = {
-      title = "Invite",
-      description = "[Click here](https://discordapp.com/oauth2/authorize?client_id=414030463792054282&scope=bot&permissions=502787319) to invite me to your server.",
-      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-      color = (cache.getCache("roleh",message.guild.id,message.author.id).color == 0 and 3066993 or cache.getCache("roleh",message.guild.id,message.author.id).color),
-    }}
-  return {success = "stfu", msg = ""}
+  local data = config.getConfig(message.guild.id)
+  local users, roles = {}, {}
+  for _,items in pairs(data.general.mods) do
+    local user = message.guild:getMember(items)
+    if user ~= nil then
+      users[1+#users] = user.mentionString
+    end
+  end
+  for _,items in pairs(data.general.modroles) do
+    local role = message.guild:getRole(items)
+    if role ~= nil then
+      roles[1+#roles] = role.mentionString
+    end
+  end
+  local data = {
+    title = "Server Staff",
+    fields = {},
+    footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+    color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+  }
+  if #users >= 1 then
+    embed.fields[1+#embed.fields] = {name = "Moderators", table.concat(users," "), inline = true}
+  end
+  if #roles >= 1 then
+    embed.fields[1+#embed.fields] = {name = "Mod Roles", table.concat(roles," "), inline = false}
+  end
+  if #embed.fields == 0 then return {success = false, msg = "There are no configured staff."} end
+  message:reply({embed = data})
 end
 
 return command
