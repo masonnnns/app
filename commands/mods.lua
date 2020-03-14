@@ -26,20 +26,21 @@ command.execute = function(message,args,client)
       roles[1+#roles] = role.mentionString
     end
   end
-  local data = {
-    title = "Server Staff",
+  local data = {embed = {
+    title = "Server Moderators",
     fields = {},
     footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
     color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
-  }
+  }}
   if #users >= 1 then
-    embed.fields[1+#embed.fields] = {name = "Moderators", table.concat(users," "), inline = true}
+    data.embed.fields[1+#data.embed.fields] = {name = "Moderators", value = table.concat(users," "), inline = true}
   end
   if #roles >= 1 then
-    embed.fields[1+#embed.fields] = {name = "Mod Roles", table.concat(roles," "), inline = false}
+    data.embed.fields[1+#data.embed.fields] = {name = "Mod Roles", value = table.concat(roles," "), inline = false}
   end
-  if #embed.fields == 0 then return {success = false, msg = "There are no configured staff."} end
-  message:reply({embed = data})
+  if #data.embed.fields == 0 then return {success = false, msg = "There are no configured staff."} end
+  message:reply{embed = data.embed}
+  return {success = "stfu"}
 end
 
 return command

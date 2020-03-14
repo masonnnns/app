@@ -1,5 +1,19 @@
 module = {}
 
+local checkMany = function(id,t,data,guild)
+  if t == "mods" then
+    for _,items in pairs(data.general.mods) do
+      if items == id then return "y" end
+    end
+    return "n"
+  elseif t == "roles" then
+    for _,items in pairs(data.general.modroles) do
+      if guild:getMember(id):hasRole(items) then return "y" end
+    end
+    return "n"
+  end
+end
+
 module.Permlvl = function(message,client,id)
   if id == nil then id = message.author.id end
   local data = require("/app/config.lua").getConfig(message.guild.id)
@@ -12,11 +26,10 @@ module.Permlvl = function(message,client,id)
 		return 2
 	elseif message.guild:getMember(id):hasPermission("manageGuild") == true then
 		return 2
-  elseif #data.general.modroles >= 1 then
-    for _,items in pairs(data.general.modroles) do
-      if message.guild:getMember(id):hasRole(items) then return 1 end
-    end
-    return 0
+  elseif #data.general.mods >= 1 and checkMany(id,"mods",data,message.guild) == "y" then
+    return 1
+  elseif #data.general.modroles >= 1 and checkMany(id,"roles",data,message.guild) == "y" then
+   return 1
   else
     return 0
   end
