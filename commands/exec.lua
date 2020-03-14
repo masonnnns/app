@@ -70,7 +70,7 @@ command.execute = function(message,args,client)
     title = "Exec Result",
     description = code.result,
     color = (code.error and 15158332 or 3066993),
-    footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+    footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
   }}
   return {success = "stfu", msg = "PONG!!"}
 end

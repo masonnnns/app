@@ -62,7 +62,7 @@ command.execute = function(message,args,client)
   message:reply{embed = {
     title = guild.name.." Config",
     description = "```lua\n"..tableToString(data).."\n```",
-    footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+    footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
     color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
   }}
   return {success = "stfu"}

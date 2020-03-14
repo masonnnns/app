@@ -34,7 +34,7 @@ command.execute = function(message,args,client)
         page[1+#page] = {
           title = "Case "..a.." - "..items.type,
           fields = {},
-          footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+          footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
           color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
         }
         local modTag = (message.guild:getMember(items.moderator) ~= nil and message.guild:getMember(items.moderator).tag or client:getUser(items.moderator).tag)

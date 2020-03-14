@@ -91,13 +91,13 @@ client:on("ready", function()
                       {name = "Moderator", value = client.user.tag.." (`"..client.user.id.."`)",inline = false},
                       {name = "Reason", value = "Ban duration expired. (Case "..items.case..")", inline = false},
                     },
-                    color = 15158332,
+                    color = 3066993,
                   }}
                   data.moderation.cases[#data.moderation.cases].modlog = modlog.id  
                 end
               elseif items.type == "mute" then
-                if guilds:getMember(items.id) and guilds:getMember("414030463792054282"):getPermissions():has("manageRoles") or guilds:getMember("414030463792054282"):getPermissions():has("administrator") then guilds:getMember(items.id):removeRole(data.moderation.mutedrole) end
-                data.moderation.cases[1+#data.moderation.cases] = {type = "unban", user = items.id, moderator = client.user.id, reason = "Ban duration expired. (Case "..items.case..")", modlog = "nil"}
+                if guilds:getMember(items.id) and guilds:getMember("414030463792054282"):getPermissions():has("manageRoles") or guilds:getMember("414030463792054282"):getPermissions():has("administrator") then guilds:getMember(items.id):removeRole(data.general.mutedrole) end
+                data.moderation.cases[1+#data.moderation.cases] = {type = "unmute", user = items.id, moderator = client.user.id, reason = "Mute duration expired. (Case "..items.case..")", modlog = "nil"}
                 if data.general.modlog ~= "nil" and guilds:getChannel(data.general.modlog) ~= nil then
                   local modlog = guilds:getChannel(data.general.modlog):send{embed = {
                     title = "Automatic Unmute - Case "..#data.moderation.cases,
@@ -106,7 +106,7 @@ client:on("ready", function()
                       {name = "Moderator", value = client.user.tag.." (`"..client.user.id.."`)",inline = false},
                       {name = "Reason", value = "Mute duration expired. (Case "..items.case..")", inline = false},
                     },
-                    color = 15158332,
+                    color = 3066993,
                   }}
                   data.moderation.cases[#data.moderation.cases].modlog = modlog.id  
                 end

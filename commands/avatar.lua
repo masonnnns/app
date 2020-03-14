@@ -18,7 +18,7 @@ command.execute = function(message,args,client)
   message:reply{embed = {
       title = (user.id == message.author.id and "Your" or user.tag.."'s").." Avatar",
       description = "[Click here]("..user:getAvatarURL()..") to download.",
-      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       image = {url = user:getAvatarURL().."?size=256"},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
     }}

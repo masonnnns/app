@@ -31,7 +31,7 @@ command.execute = function(message,args,client)
         page[num] = {
           title = "Members of "..role.name.." ["..#role.members.."]",
           description = (page[num] == nil and "**"..items.tag.."** (`"..items.id.."`)" or page[num].description.."\n**"..items.tag.."** (`"..items.id.."`)"),
-          footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+          footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
           color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color), 
         }
         if string.len(page[num].description) >= 1000 then num = num + 1 end

@@ -122,7 +122,7 @@ command.execute = function(message,args,client)
         {name = "Roles ["..roles[1].."]", value = ">>> "..(roles[1] == 0 and "No roles, go make some!" or table.concat(roles[2]," ").."\n"..roles[3])},
       },
       thumbnail = {url = (message.guild.iconURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or message.guild.iconURL)},
-      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
   }}
   return {success = "stfu", msg = ""}

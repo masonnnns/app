@@ -39,7 +39,7 @@ command.execute = function(message,args,client)
       {name = "Mentionable", value = (role.mentionable and "Yes." or "No."), inline = true},
       {name = "Permissions", value = (#perms == 0 and "No Permissions!" or table.concat(perms,", ")), inline = false},
     },
-    footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+    footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
     color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
   }}
   return {success = "stfu", msg = ""}
