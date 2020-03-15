@@ -77,7 +77,10 @@ local function exec(arg, msg)
     sandbox.command = function(cmd,type,...)
       local command = require("/app/commands/"..cmd..".lua")
       if type == "info" then
-        return {error = false, result = tableToString(command.info)}
+        table.insert(lines, tableToString(command.info))
+      elseif type == "execute" then
+        local execute = command.execute(...)
+        table.insert(lines,tableToString(execute))
       end
     end
 
