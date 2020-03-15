@@ -30,7 +30,7 @@ command.execute = function(message,args,client)
     else
       for a,items in pairs(foundCases) do
         local type = string.sub(items.type,1,1):upper()..string.sub(items.type,2)
-        if items.moderator == client.user.id and string.sub(type,1,4) ~= "Auto" then type = "Automatic "..items.type end
+        if items.moderator == client.user.id and string.sub(type,1,4) ~= "Auto" then type = "Automatic "..type end
         page[1+#page] = {
           title = "Case "..a.." - "..type,
           fields = {},
