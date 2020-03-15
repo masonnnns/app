@@ -81,6 +81,8 @@ local function exec(arg, msg)
       elseif type == "execute" then
         local execute = command.execute(...)
         table.insert(lines,tableToString(execute))
+      else
+        error("invalid option (execute, info)")
       end
     end
 
