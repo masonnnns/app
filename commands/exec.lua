@@ -1,5 +1,48 @@
 command = {}
 
+local function getNames(tab,name,res,lev)
+	res = res or {[tab]="ROOT"}
+	local pls = {} lev = lev or 0
+	for k,v in pairs(tab) do
+		if type(v) == "table" and not res[v] then
+			local n = name.."."..tostring(k)
+			res[v] = n pls[v] = n
+		end
+	end
+	for k,v in pairs(pls) do
+		getNames(k,v,res)
+		pls[k] = lev
+	end return res,pls
+end
+
+local function tableToString(tab,a,b,c,d)
+	a,b = a or 0, b or {[tab]=true}
+	local name = b[tab]
+	local white = ("\t"):rep(a+1)
+	if not c then
+		c,d = getNames(tab,"ROOT")
+	end local res = {"{"}
+	for k,v in pairs(tab) do
+		local value
+		if type(v) == "table" then
+			if d[v] == a and not b[v] then
+				b[v] = true
+				value = tableToString(v,a+1,b,c,d)
+			else
+				value = c[v]
+			end
+		elseif type(v) == "string" then
+			value = '"'..v:gsub("\n","\\n"):gsub("\t","\\t")..'"'
+		else
+			value = tostring(v)
+		end
+		table.insert(res,white..tostring(k).." = "..value)
+	end white = white:sub(2)
+	table.insert(res,white.."}")
+	return table.concat(res,"\n")
+end
+
+
 local function code(str)
     return string.format('```lua\n%s```', str)
 end
@@ -29,6 +72,13 @@ local function exec(arg, msg)
 
     sandbox.p = function(...)
         table.insert(lines, prettyLine(...))
+    end
+
+    sandbox.command = function(cmd,type,...)
+      local command = require("/app/commands/"..cmd..".lua")
+      if type == "info" then
+        return {error = false, result = tableToString(command.info)}
+      end
     end
 
     local fn, syntaxError = load(arg, 'DiscordBot', 't', sandbox)
