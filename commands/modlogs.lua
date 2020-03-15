@@ -24,15 +24,15 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I couldn't find the user you mentioned."}
   else
     local foundCases = {}
-    for a,items in pairs(data.moderation.cases) do print(items.user,items.id) if items.user == user.id or items.id == user.id then foundCases[a] = items end end
+    for a,items in pairs(data.moderation.cases) do if items.user == user.id or items.id == user.id then foundCases[a] = items end end
     if #foundCases == 0 then
       return {success = false, msg = "**"..user.tag.."** has no modlogs."}
     else
       for a,items in pairs(foundCases) do
-        items.type = string.sub(items.type,1,1):upper()..string.sub(items.type,2)
-        if items.moderator == client.user.id and string.sub(items.type,1,4) ~= "Auto" then items.type = "Auto "..items.type end
+        local type = string.sub(items.type,1,1):upper()..string.sub(items.type,2)
+        if items.moderator == client.user.id and string.sub(type,1,4) ~= "Auto" then type = "Automatic "..items.type end
         page[1+#page] = {
-          title = "Case "..a.." - "..items.type,
+          title = "Case "..a.." - "..type,
           fields = {},
           footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
           color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
