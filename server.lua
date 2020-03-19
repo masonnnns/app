@@ -55,6 +55,7 @@ client:on("messageCreate",function(message)
           m:delete()
       end
     else
+      if message and data.general.delcmd then message:delete() end
       local execute = command.execute(message,args,client)
       if execute == nil or type(execute) ~= "table" then
         message:reply("<:atickno:678186665616998400> An **unknown error** occured.")
