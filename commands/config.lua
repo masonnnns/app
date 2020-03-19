@@ -22,7 +22,11 @@ command.execute = function(message,args,client)
       description = "To edit a setting in this plugin, say **"..data.general.prefix..args[1].." general**.",
       fields = {
         {name = "Command Prefix", value = data.general.prefix, inline = true},
-        {name = "Delete Invocation Message", }
+        {name = "Delete Invocation Message", value = (data.general.delcmd and "Enabled." or "Disabled."), inline = true},
+        {name = "Mod Only Commands", value = (data.general.modonly and "Enabled." or "Disabled."), inline = true},
+        {name = "Audit Log", value = (data.general.auditlog == "nil" and "Disabled." or (message.guild:getChannel(data.general.auditlog) == nil and "Disabled." or message.guild:getChannel(data.general.auditlog).mentionString)), inline = true},
+        {name = "Muted Role", value = (data.general.mutedrole == "nil" and "Disabled." or (message.guild:getRole(data.general.mutedrole) == nil and "Disabled." or message.guild:getRole(data.general.mutedrole).mentionString)), inline = true},
+        {name = "Moderation Log", value = (data.general.modlog == "nil" and "Disabled." or (message.guild:getChannel(data.general.modlog) == nil and "Disabled." or message.guild:getChannel(data.general.modlog).mentionString)), inline = true}
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
