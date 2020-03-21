@@ -15,7 +15,10 @@ command.info = {
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   if args[2] ~= nil then args[2] = args[2]:lower() end
-  if args[2] == nil then
+  if args[2] == "general" then
+    local xd = require("/app/commands/configcmds/general.lua")(message,args,client,data)
+    return xd
+  elseif args[2] == nil then
     local pages = {}
     pages[1] = {
       title = "General Settings",
@@ -28,7 +31,7 @@ command.execute = function(message,args,client)
         {name = "Muted Role", value = (data.general.mutedrole == "nil" and "Disabled." or (message.guild:getRole(data.general.mutedrole) == nil and "Disabled." or message.guild:getRole(data.general.mutedrole).mentionString)), inline = true},
         {name = "Moderation Log", value = (data.general.modlog == "nil" and "Disabled." or (message.guild:getChannel(data.general.modlog) == nil and "Disabled." or message.guild:getChannel(data.general.modlog).mentionString)), inline = true},
         {name = "Moderator Roles [0]", value = "", inline = false},
-        {name = "Audit Ignored Channels [0]", value = "s", inline = false},
+        {name = "Audit Ignored Channels [0]", value = "", inline = false},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
@@ -37,6 +40,10 @@ command.execute = function(message,args,client)
     for _,items in pairs(data.general.modroles) do local role = message.guild:getRole(items) if role then num = num + 1 if pages[1].fields[7].value == "" then pages[1].fields[7].value = role.mentionString else pages[1].fields[7].value = pages[1].fields[7].value..", "..role.mentionString end end end
     pages[1].fields[7].name = "Moderator Roles ["..num.."]"
     if num == 0 then pages[1].fields[7].value = "None set!" end
+    num = 0
+    for _,items in pairs(data.general.auditignore) do local role = message.guild:getChannel(items) if role then num = num + 1 if pages[1].fields[8].value == "" then pages[1].fields[8].value = role.mentionString else pages[1].fields[8].value = pages[1].fields[8].value..", "..role.mentionString end end end
+    pages[1].fields[8].name = "Audit Ignored Channels ["..num.."]"
+    if num == 0 then pages[1].fields[8].value = "None set!" end
     require("/app/pages.lua").addDictionary(message,pages,message.author.id)
   end
   return {success = "stfu"}
