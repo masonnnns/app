@@ -43,6 +43,18 @@ command = function(message,args,client,data)
       data.general.modroles[1+#data.general.modroles] = channel.id
     end
     return {success = true, msg = (found == false and "Added" or "Removed").." **"..channel.name.."** as a moderator role."}
+  elseif args[3] == "ignore" or args[3] == "ignored" then
+    if args[4] == nil then return {success = false, msg = "You must provide a channel to ignore."} end
+    local channel = require("/app/utils.lua").resolveChannel(message,table.concat(args," ",4))
+    if channel == false then return {success = false, msg = "I couldn't find the channel you mentioned."} end
+    local found = false
+    for _,items in pairs(data.general.auditignore) do if items == channel.id then found = _ break end end
+    if found ~= false then
+      table.remove(data.general.auditignore,found)
+    else
+      data.general.auditignore[1+#data.general.auditignore] = channel.id
+    end
+    return {success = true, msg = (found == false and "Added" or "Removed").." "..channel.mentionString.." as an ignored channel."}
   end
 end
 
