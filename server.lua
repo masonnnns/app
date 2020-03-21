@@ -130,24 +130,27 @@ client:on("reactionAdd", function(reaction, userId)
 end)
 
 client:on("messageDelete", function(message)
+  require("timer").sleep(250)
   if message.guild == nil then return end
   local data = require("/app/config.lua").getConfig(message.guild.id)
   if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
   for _,items in pairs(data.general.auditignore) do if items == message.channel.id then return end end
-  local auditlog = message.guild:getAuditLogs({user = message.author.id, type = 72})
+  local auditlog = message.guild:getAuditLogs({type = 72,limit = 1})
   if auditlog == nil then return end
   auditlog = auditlog:toArray()
   auditlog = auditlog[#auditlog]
   --for c,d in pairs(auditlog[1]) do print(c,d) if type(d) == "table" then for e,f in pairs(d) do print(e,f) end end end
-  message.guild:getChannel(data.general.auditlog):send{embed = {
+  local log = {
     title = "Message Deleted",
     color = 3447003,
     fields = {
       {name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true},
       {name = "Deleted By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = true},
       {name = "Message", value = message.content, inline = false}
-    }
-  }}
+    },
+  }
+  if auditlog:getMember().id == message.author.id then table.remove(log.fields,2) end
+  message.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
 client:run("Bot NDYzODQ1ODQxMDM2MTE1OTc4.Xl4M2A.Nc_KemmsB_3HFVMLVnmIuMBjJLk")
