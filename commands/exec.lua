@@ -120,6 +120,7 @@ command.execute = function(message,args,client)
   sandbox.client = client
   sandbox.config = require("/app/config.lua")
   sandbox.date = require("discordia").Date
+  sandbox.timer = require("timer")
   local code = exec(table.concat(args," ",2),message)
   message:reply{embed = {
     title = "Exec Result",
