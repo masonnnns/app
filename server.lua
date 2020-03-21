@@ -133,8 +133,9 @@ client:on("messageDelete", function(message)
   if message.guild == nil then return end
   local data = require("/app/config.lua").getConfig(message.guild.id)
   for _,items in pairs(data.general.auditignore) do if items == message.channel.id then return end end
-  local auditlog = message.guild:getAuditLogs({user = message.author.id, type = 72})
-  print(auditlog)
+  local auditlog = message.guild:getAuditLogs({user = message.author.id, type = 72, limit = 1})
+  auditlog = auditlog:toArray()
+  for a,b in pairs(auditlog) do print(a,b) for c,d in pairs(b) do print(c,d) end end
 end)
 
 client:run("Bot NDYzODQ1ODQxMDM2MTE1OTc4.Xl4M2A.Nc_KemmsB_3HFVMLVnmIuMBjJLk")
