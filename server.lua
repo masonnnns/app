@@ -131,6 +131,7 @@ end)
 
 client:on("messageDelete", function(message)
   require("timer").sleep(250)
+  if message.author.bot ~= false then return end
   if message.guild == nil then return end
   local data = require("/app/config.lua").getConfig(message.guild.id)
   if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
@@ -145,11 +146,34 @@ client:on("messageDelete", function(message)
     color = 3447003,
     fields = {
       {name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true},
-      {name = "Deleted By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = true},
+      {name = "Channel", value = message.channel.mentionString, inline = true},
+      {name = "Deleted By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = false},
       {name = "Message", value = message.content, inline = false}
     },
   }
-  if auditlog:getMember().id == message.author.id then table.remove(log.fields,2) end
+  if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
+  message.guild:getChannel(data.general.auditlog):send{embed = log}
+end)
+
+client:on("messageUpdate", function(message) 
+  require("timer").sleep(250)
+  if message.author.bot ~= false then return end
+  if message.guild == nil then return end
+  local data = require("/app/config.lua").getConfig(message.guild.id)
+  if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
+  for _,items in pairs(data.general.auditignore) do if items == message.channel.id then return end end
+  local oldMsg
+  for a,items in pairs(message.channel:getMessage(message.id).oldContent) do oldMsg = items end
+  local log = {
+    title = "Message Edited",
+    color = 1752220,
+    fields = {
+      {name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true},
+      {name = "Channel", value = message.channel.mentionString, inline = true},
+      {name = "Old Content", value = oldMsg, inline = false},
+      {name = "New Content", value = message.content, inline = false}
+    },
+  }
   message.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
