@@ -223,7 +223,6 @@ client:on("memberUpdate", function(member)
   if member.guild == nil then return end
   local data = require("/app/config.lua").getConfig(member.guild.id)
   if data.general.auditlog == "nil" or member.guild:getChannel(data.general.auditlog) == nil then return end
-  for _,items in pairs(data.general.auditignore) do if items == member.channel.id then return end end
   local auditlog = member.guild:getAuditLogs({limit = 1})
   if auditlog == nil then return end
   auditlog = auditlog:toArray()
@@ -253,6 +252,7 @@ client:on("memberUpdate", function(member)
       log.fields[1+#log.fields] = {name = "New Nickname", value = auditlog.changes["nick"]["new"], inline = true}
     end
   else
+    require("timer").sleep(250)
     log = {
       title = "Roles Changed",
       color = 3426654,
@@ -262,7 +262,6 @@ client:on("memberUpdate", function(member)
       },
     }
     if auditlog:getMember().id ~= member.id then log.fields[1+#log.fields] = {name = "Roled By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = true} end
-    --for _,items in pairs(auditlog.changes["$add"]["new"][1]) do print(_,items) end
     if auditlog.changes["$add"] ~= nil then
       local list = {}
       for _,items in pairs(auditlog.changes["$add"]["new"]) do
@@ -270,9 +269,16 @@ client:on("memberUpdate", function(member)
       end
       log.fields[1+#log.fields] = {name = "Added Role"..(#list == 1 and "" or "s"), value = table.concat(list,", "), inline = false}
     end
+    if auditlog.changes["$remove"] ~= nil then
+      local list = {}
+      for _,items in pairs(auditlog.changes["$remove"]["new"]) do
+        list[1+#list] = items.name
+      end
+      log.fields[1+#log.fields] = {name = "Removed Role"..(#list == 1 and "" or "s"), value = table.concat(list,", "), inline = false}
+    end
+    if auditlog.changes["$add"] ~= nil and auditlog.changes["$remove"] == nil then log.title = "Roles Added" end
+    if auditlog.changes["$add"] == nil and auditlog.changes["$remove"] ~= nil then log.title = "Roles Removed" end
   end
-  --print(auditlog.changes["nick"])
-  --for a,b in pairs(auditlog.changes) do print(a,b) end
   member.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
