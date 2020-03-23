@@ -224,13 +224,15 @@ client:on("memberUpdate", function(member)
   local data = require("/app/config.lua").getConfig(member.guild.id)
   if data.general.auditlog == "nil" or member.guild:getChannel(data.general.auditlog) == nil then return end
   for _,items in pairs(data.general.auditignore) do if items == member.channel.id then return end end
-  local auditlog = member.guild:getAuditLogs({type = 24,limit = 1})
+  local auditlog = member.guild:getAuditLogs({limit = 1})
   if auditlog == nil then return end
   auditlog = auditlog:toArray()
-  auditlog = auditlog[#auditlog]
-  --for c,d in pairs(auditlog[1]) do print(c,d) if type(d) == "table" then for e,f in pairs(d) do print(e,f) end end end
-  print(auditlog)
-  message.guild:getChannel(data.general.auditlog):send{embed = log}
+  for a,b in pairs(auditlog) do for c,d in pairs(b.changes) do print(c,d) for e,f in pairs(d) do print(e,f) end end end
+  auditlog = auditlog[1]
+  --for c,d in pairs(auditlog[1]) do print(c,d) end
+  print(auditlog.changes["nick"])
+  for a,b in pairs(auditlog.changes) do print(a,b) end
+  member.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
 client:run("Bot NDYzODQ1ODQxMDM2MTE1OTc4.Xl4M2A.Nc_KemmsB_3HFVMLVnmIuMBjJLk")
