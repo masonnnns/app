@@ -59,8 +59,20 @@ client:on("messageCreate",function(message)
       local execute
       local cmdSuccess, cmdMsg = pcall(function() execute = command.execute(message,args,client) end)
       if not (cmdSuccess) then
-         message:reply(":rotating_light: **An error occured!** Please report this to our support team.")
-          
+        message:reply(":rotating_light: **An error occured!** Please report this to our support team.")
+        client:getGuild("551017079797579795"):getChannel("678756836349968415"):send{embed = {
+          title = "Command Error - "..command.info.Name,
+          description = "```lua\n"..string.upper(cmdMsg).."\n```",
+          fields = {
+            {name = "Guild", value = message.guild.name.." (`"..message.guild.id.."`)", inline = true},
+            {name = "User", value = message.author.tag.." (`"..message.author.id.."`)", inline = true},
+            {name = "Channel", value = message.channel.name.." (`"..message.channel.id.."`)", inline = true},
+            {name = "Message", value = message.content, inline = false},
+          },
+          timestamp = require("discordia").Date():toISO('T', 'Z'),
+          footer = {txt = "Non-fatal error."},
+          color = 15158332,
+        }}
       elseif execute == nil or type(execute) ~= "table" then
         message:reply("<:atickno:678186665616998400> An **unknown error** occured.")
       elseif execute.success == false then
