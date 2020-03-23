@@ -327,4 +327,29 @@ client:on("memberLeave", function(member)
   member.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
+client:on("channelCreate", function(channel) 
+  require("timer").sleep(150)
+  if channel.guild == nil then return end
+  local data = require("/app/config.lua").getConfig(channel.guild.id)
+  if data.general.auditlog == "nil" or channel.guild:getChannel(data.general.auditlog) == nil then return end
+  local auditlog = channel.guild:getAuditLogs({limit = 1,type = 10})
+  if auditlog == nil then return end
+  auditlog = auditlog:toArray()
+  auditlog = auditlog[1]
+  if auditlog.createdAt <= os.time() - 2 then return end
+  local log = {
+    title = "Channel Created",
+    color = 3066993,
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    fields = {
+      {name = "Channel", value = channel.mentionString.." (`"..channel.id.."`)", inline = true},
+      {name = "Category", value = (channel.category == nil and "N/A" or channel.category.name), inline = true},
+      {name = "Created By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)"},
+    },
+  }
+  if channel.type == 2 then log.title = "Voice Channel Created" log.fields[1].value = channel.name.." (`"..channel.id.."`)" end
+  if channel.type == 4 then log.title = "Category Created" log.fields[1].value = channel.name.." (`"..channel.id.."`)" log.fields[2] = nil end
+  channel.guild:getChannel(data.general.auditlog):send{embed = log}
+end)
+
 client:run("Bot NDYzODQ1ODQxMDM2MTE1OTc4.Xl4M2A.Nc_KemmsB_3HFVMLVnmIuMBjJLk")
