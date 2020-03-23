@@ -152,8 +152,6 @@ client:on("messageDelete", function(message)
       {name = "Message", value = (message.content == "" and "`[[ No Message Content ]]`" or message.content), inline = false}
     },
   }
-  for a,b in pairs(message.attachments) do print(a,b) for c,d in pairs(b) do print(c,d) end end
-  print(message.attachments[1].url)
   if message.attachments ~= nil then log.image = {url = message.attachments[1].proxy_url} end
   if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
   message.guild:getChannel(data.general.auditlog):send{embed = log}
@@ -282,6 +280,48 @@ client:on("memberUpdate", function(member)
     if auditlog.changes["$add"] ~= nil and auditlog.changes["$remove"] == nil then log.title = "Roles Added" end
     if auditlog.changes["$add"] == nil and auditlog.changes["$remove"] ~= nil then log.title = "Roles Removed" end
   end
+  member.guild:getChannel(data.general.auditlog):send{embed = log}
+end)
+
+client:on("memberJoin", function(member) 
+  require("timer").sleep(150)
+  if member.bot ~= false then return end
+  if member.guild == nil then return end
+  local data = require("/app/config.lua").getConfig(member.guild.id)
+  if data.general.auditlog == "nil" or member.guild:getChannel(data.general.auditlog) == nil then return end
+  local log = {
+    title = "Member Joined",
+    color = 3066993,
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    thumbnail = {url = member.avatarURL},
+    fields = {
+      {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
+      {name = "Guild Members", value = #member.guild.members, inline = true},
+    },
+  }
+  member.guild:getChannel(data.general.auditlog):send{embed = log}
+end)
+
+client:on("memberLeave", function(member) 
+  require("timer").sleep(150)
+  if member.bot ~= false then return end
+  if member.guild == nil then return end
+  local data = require("/app/config.lua").getConfig(member.guild.id)
+  if data.general.auditlog == "nil" or member.guild:getChannel(data.general.auditlog) == nil then return end
+  local log = {
+    title = "Member Left",
+    color = 15158332,
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    thumbnail = {url = member.avatarURL},
+    fields = {
+      {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
+      {name = "Guild Members", value = #member.guild.members, inline = true},
+      {name = "Roles", value = "None!", inline = false}
+    },
+  }
+  local roles = {}
+  for _,items in pairs(member.roles) do roles[1+#roles] = items.name end
+  log.fields[4].value = table.concat(roles,", ")
   member.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
