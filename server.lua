@@ -179,4 +179,23 @@ client:on("messageUpdate", function(message)
   message.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
+client:on("voiceChannelJoin", function(member,channel) 
+  require("timer").sleep(250)
+  if message.author.bot ~= false then return end
+  if message.guild == nil then return end
+  local data = require("/app/config.lua").getConfig(message.guild.id)
+  if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
+  for _,items in pairs(data.general.auditignore) do if items == message.channel.id then return end end
+  local log = {
+    title = "Joined Voice Channel",
+    color = 3066993,
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    fields = {
+      {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
+      {name = "Channel", value = channel.mentionString, inline = true},
+    },
+  }
+  message.guild:getChannel(data.general.auditlog):send{embed = log}
+end)
+
 client:run("Bot NDYzODQ1ODQxMDM2MTE1OTc4.Xl4M2A.Nc_KemmsB_3HFVMLVnmIuMBjJLk")
