@@ -25,9 +25,9 @@ command.execute = function(message,args,client)
   local m = message:reply(":ping_pong: Ping")
   if m == nil then return {success = "stfu"} end
   local latency = require("discordia").Date.fromISO(m.timestamp):toMilliseconds() - require("discordia").Date.fromISO(message.timestamp):toMilliseconds()
-  m:setContent(":ping_pong: Ping?")
+  --[[m:setContent(":ping_pong: Ping?")
   local edited = require("discordia").Date.fromISO(m.editedTimestamp):toMilliseconds() - require("discordia").Date.fromISO(m.timestamp):toMilliseconds()
-  latency = latency + edited
+  latency = latency + edited--]]
   m:setContent(":ping_pong: Pong! `"..parse(latency).."ms`")
   return {success = "stfu", msg = "PONG!!", emote = ":ping_pong:"}
 end
