@@ -181,20 +181,55 @@ end)
 
 client:on("voiceChannelJoin", function(member,channel) 
   require("timer").sleep(250)
-  if message.author.bot ~= false then return end
-  if message.guild == nil then return end
-  local data = require("/app/config.lua").getConfig(message.guild.id)
-  if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
-  for _,items in pairs(data.general.auditignore) do if items == message.channel.id then return end end
+  if member.bot ~= false then return end
+  if channel.guild == nil then return end
+  local data = require("/app/config.lua").getConfig(channel.guild.id)
+  if data.general.auditlog == "nil" or channel.guild:getChannel(data.general.auditlog) == nil then return end
+  for _,items in pairs(data.general.auditignore) do if items == channel.id then return end end
   local log = {
     title = "Joined Voice Channel",
     color = 3066993,
     timestamp = require("discordia").Date():toISO('T', 'Z'),
     fields = {
       {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
-      {name = "Channel", value = channel.mentionString, inline = true},
+      {name = "Channel", value = channel.name, inline = true},
     },
   }
+  channel.guild:getChannel(data.general.auditlog):send{embed = log}
+end)
+
+client:on("voiceChannelLeave", function(member,channel) 
+  require("timer").sleep(150)
+  if member.bot ~= false then return end
+  if channel.guild == nil then return end
+  local data = require("/app/config.lua").getConfig(channel.guild.id)
+  if data.general.auditlog == "nil" or channel.guild:getChannel(data.general.auditlog) == nil then return end
+  for _,items in pairs(data.general.auditignore) do if items == channel.id then return end end
+  local log = {
+    title = "Left Voice Channel",
+    color = 15158332,
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    fields = {
+      {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
+      {name = "Channel", value = channel.name, inline = true},
+    },
+  }
+  channel.guild:getChannel(data.general.auditlog):send{embed = log}
+end)
+
+client:on("memberUpdate", function(member)
+  require("timer").sleep(250)
+  if member.bot ~= false then return end
+  if member.guild == nil then return end
+  local data = require("/app/config.lua").getConfig(member.guild.id)
+  if data.general.auditlog == "nil" or member.guild:getChannel(data.general.auditlog) == nil then return end
+  for _,items in pairs(data.general.auditignore) do if items == member.channel.id then return end end
+  local auditlog = member.guild:getAuditLogs({type = 24,limit = 1})
+  if auditlog == nil then return end
+  auditlog = auditlog:toArray()
+  auditlog = auditlog[#auditlog]
+  --for c,d in pairs(auditlog[1]) do print(c,d) if type(d) == "table" then for e,f in pairs(d) do print(e,f) end end end
+  print(auditlog)
   message.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
