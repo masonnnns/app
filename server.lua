@@ -153,7 +153,8 @@ client:on("messageDelete", function(message)
     },
   }
   for a,b in pairs(message.attachments) do print(a,b) for c,d in pairs(b) do print(c,d) end end
-  if message.attachments ~= nil then log.image = {url = message.attachments[1]} end
+  print(message.attachments[1].url)
+  if message.attachments ~= nil then log.image = {url = message.attachments[1].proxy_url} end
   if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
   message.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
