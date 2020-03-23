@@ -321,7 +321,9 @@ client:on("memberLeave", function(member)
   }
   local roles = {}
   for _,items in pairs(member.roles) do roles[1+#roles] = items.name end
-  log.fields[4].value = table.concat(roles,", ")
+  if #roles ~= 0 then log.fields[3].value = table.concat(roles,", ") end
+  if #roles == 1 then log.fields[3].name = "Role" end
+  if #roles == 0 then log.fields[3] = nil end
   member.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
