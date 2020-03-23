@@ -227,11 +227,38 @@ client:on("memberUpdate", function(member)
   local auditlog = member.guild:getAuditLogs({limit = 1})
   if auditlog == nil then return end
   auditlog = auditlog:toArray()
-  for a,b in pairs(auditlog) do for c,d in pairs(b.changes) do print(c,d) for e,f in pairs(d) do print(e,f) end end end
+  --for a,b in pairs(auditlog) do for c,d in pairs(b.changes) do print(c,d) for e,f in pairs(d) do print(e,f) end end end
   auditlog = auditlog[1]
-  --for c,d in pairs(auditlog[1]) do print(c,d) end
-  print(auditlog.changes["nick"])
-  for a,b in pairs(auditlog.changes) do print(a,b) end
+  if auditlog.createdAt <= os.time() - 2 then return end
+  local log = {}
+  if auditlog.changes["nick"] ~= nil then
+    if auditlog.changes["nick"]["new"] == auditlog.changes["nick"]["old"] then return end
+    log = {
+      title = "Nickname Changed",
+      color = 15105570,
+      timestamp = require("discordia").Date():toISO('T', 'Z'),
+      fields = {
+        {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false}
+      },
+    }
+    if auditlog.changes["nick"]["old"] == nil then
+      log.title = "Nickname Added"
+      log.fields[1+#log.fields] = {name = "New Nickname", value = auditlog.changes["nick"]["new"], inline = true}
+    elseif auditlog.changes["nick"]["new"] == nil then
+      log.title = "Nickname Removed"
+      log.fields[1+#log.fields] = {name = "Old Nickname", value = auditlog.changes["nick"]["old"], inline = true}
+    else
+      log.fields[1+#log.fields] = {name = "Old Nickname", value = auditlog.changes["nick"]["old"], inline = true}
+      log.fields[1+#log.fields] = {name = "New Nickname", value = auditlog.changes["nick"]["new"], inline = true}
+    end
+  else
+    log = {
+      title = "Roles Changed"
+    }
+    for _,items in pairs(auditlog.changes["$add"]) do print(_,items) end
+  end
+  --print(auditlog.changes["nick"])
+  --for a,b in pairs(auditlog.changes) do print(a,b) end
   member.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
