@@ -56,8 +56,12 @@ client:on("messageCreate",function(message)
       end
     else
       if message and data.general.delcmd then message:delete() end
-      local execute = command.execute(message,args,client)
-      if execute == nil or type(execute) ~= "table" then
+      local execute
+      local cmdSuccess, cmdMsg = pcall(function() execute = command.execute(message,args,client) end)
+      if not (cmdSuccess) then
+         message:reply(":rotating_light: **An error occured!** Please report this to our support team.")
+          
+      elseif execute == nil or type(execute) ~= "table" then
         message:reply("<:atickno:678186665616998400> An **unknown error** occured.")
       elseif execute.success == false then
         message:reply("<:atickno:678186665616998400> "..execute.msg)
