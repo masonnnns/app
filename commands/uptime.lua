@@ -20,6 +20,7 @@ command.execute = function(message,args,client)
       description = utils.getTimeString(os.time() - start)..".",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      timestamp = require("discordia").Date():toISO('T', 'Z')
     }}
   return {success = "stfu", msg = "PONG!!", emote = ":ping_pong:"}
 end

@@ -1,8 +1,5 @@
 command = {}
 
-local discordia = require("discordia")
-local Date = discordia.Date
-
 command.info = {
   Name = "Ping",
   Alias = {},
@@ -17,8 +14,8 @@ command.execute = function(message,args,client)
   if m == nil then return {success = "stfu"} end
   local latency = m.createdAt - message.createdAt
   m:setContent(":ping_pong: Ping?!")
-  print(Date:toSeconds(m.editedTimestamp))
-  --latency = tonumber(m.editedTimestamp) + latency
+  local edited = discordia.Date.fromISO(m.editedTimestamp):toSeconds() - m.createdAt
+  latency = latency + edited
   m:setContent(":ping_pong: Pong! `"..math.max(latency).."ms`")
   return {success = "stfu", msg = "PONG!!", emote = ":ping_pong:"}
 end
