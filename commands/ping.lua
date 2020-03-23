@@ -17,7 +17,7 @@ command.execute = function(message,args,client)
   if m == nil then return {success = "stfu"} end
   local latency = m.createdAt - message.createdAt
   m:setContent(":ping_pong: Ping?!")
-  print(Date:parseISO(m.editedTimestamp))
+  print(Date:toSeconds(m.editedTimestamp))
   --latency = tonumber(m.editedTimestamp) + latency
   m:setContent(":ping_pong: Pong! `"..math.max(latency).."ms`")
   return {success = "stfu", msg = "PONG!!", emote = ":ping_pong:"}
