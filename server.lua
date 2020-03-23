@@ -261,10 +261,14 @@ client:on("memberUpdate", function(member)
         {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
       },
     }
-    if auditlog:getMember().id ~= member.id then log.fields[2] = {"Roled By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = true}
+    if auditlog:getMember().id ~= member.id then log.fields[1+#log.fields] = {name = "Roled By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = true} end
     --for _,items in pairs(auditlog.changes["$add"]["new"][1]) do print(_,items) end
     if auditlog.changes["$add"] ~= nil then
-      if fields[3] == nil then fields[3] = {name = "Added Roles", value = auditlog.changes["$add"]["new"][1]["name"]..", ", inline = false} else fields[3]
+      local list = {}
+      for _,items in pairs(auditlog.changes["$add"]["new"]) do
+        list[1+#list] = items.name
+      end
+      log.fields[1+#log.fields] = {name = "Added Role"..(#list == 1 and "" or "s"), value = table.concat(list,", "), inline = false}
     end
   end
   --print(auditlog.changes["nick"])
