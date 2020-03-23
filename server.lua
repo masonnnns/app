@@ -149,9 +149,11 @@ client:on("messageDelete", function(message)
       {name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true},
       {name = "Channel", value = message.channel.mentionString, inline = true},
       {name = "Deleted By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = false},
-      {name = "Message", value = message.content, inline = false}
+      {name = "Message", value = (message.content == "" and "`[[ No Message Content ]]`" or message.content), inline = false}
     },
   }
+  for a,b in pairs(message.attachments) do print(a,b) for c,d in pairs(b) do print(c,d) end end
+  if message.attachments ~= nil then log.image = {url = message.attachments[1]} end
   if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
   message.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
