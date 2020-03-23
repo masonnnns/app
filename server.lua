@@ -241,6 +241,7 @@ client:on("memberUpdate", function(member)
         {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = false}
       },
     }
+    if auditlog:getMember().id ~= member.id then log.fields[2] = {name = "Changed By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = false} end
     if auditlog.changes["nick"]["old"] == nil then
       log.title = "Nickname Added"
       log.fields[1+#log.fields] = {name = "New Nickname", value = auditlog.changes["nick"]["new"], inline = true}
@@ -253,9 +254,18 @@ client:on("memberUpdate", function(member)
     end
   else
     log = {
-      title = "Roles Changed"
+      title = "Roles Changed",
+      color = 3426654,
+      timestamp = require("discordia").Date():toISO('T', 'Z'),
+      fields = {
+        {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
+      },
     }
-    for _,items in pairs(auditlog.changes["$add"]) do print(_,items) end
+    if auditlog:getMember().id ~= member.id then log.fields[2] = {"Roled By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = true}
+    --for _,items in pairs(auditlog.changes["$add"]["new"][1]) do print(_,items) end
+    if auditlog.changes["$add"] ~= nil then
+      if fields[3] == nil then fields[3] = {name = "Added Roles", value = auditlog.changes["$add"]["new"][1]["name"]..", ", inline = false} else fields[3]
+    end
   end
   --print(auditlog.changes["nick"])
   --for a,b in pairs(auditlog.changes) do print(a,b) end
