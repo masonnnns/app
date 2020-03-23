@@ -144,6 +144,7 @@ client:on("messageDelete", function(message)
   local log = {
     title = "Message Deleted",
     color = 3447003,
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
     fields = {
       {name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true},
       {name = "Channel", value = message.channel.mentionString, inline = true},
@@ -167,6 +168,7 @@ client:on("messageUpdate", function(message)
   local log = {
     title = "Message Edited",
     color = 1752220,
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
     fields = {
       {name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true},
       {name = "Channel", value = message.channel.mentionString, inline = true},
