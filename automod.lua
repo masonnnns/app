@@ -31,6 +31,19 @@ local function strike(message,data)
   end
 end
 
+local function sepMsg(msg)
+	local Args = {}
+	local Command = msg
+	for Match in Command:gmatch("[^%s]+") do
+	table.insert(Args, Match)
+	end;
+	local Data = {
+	["MessageData"] = Message;
+	["Args"] = Args;
+	}
+	return Args
+end
+
 plugin = function(message, data, client)
   local a, b = string.gsub(message.content,"\n","")
   local c, d = string.gsub(message.content,"||","")
@@ -54,6 +67,36 @@ plugin = function(message, data, client)
       local reply = message:reply(message.author.mentionString..", no mass-mentioning.")
       timer.sleep(3000)
       reply:delete()
+    end
+  else
+    local sep = sepMsg(message.content)
+    if data.automod.invites.enabled then
+      for _,items in pairs(sep) do
+        if string.match(items:lower(),"discord.gg") or string.match(items:lower(),"discordapp.com/invite") then
+          message:delete()
+          if strike(message,data) == true then
+            local reply = message:reply(message.author.mentionString..", no invites.")
+            timer.sleep(3000)
+            reply:delete()
+          end
+          return
+        end
+      end
+    end
+    if data.automod.words.enabled then
+      for _,items in pairs(sep) do
+        for _,terms in pairs(data.automod.words.terms) do
+          if string.match(items:lower(),terms:lower()) then
+            message:delete()
+            if strike(message,data) == true then
+              local reply = message:reply(message.author.mentionString..", watch your language.")
+              timer.sleep(3000)
+              reply:delete()
+            end
+            return
+          end
+        end
+      end
     end
   end
 end
