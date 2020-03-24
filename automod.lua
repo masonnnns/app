@@ -32,13 +32,26 @@ local function strike(message,data)
 end
 
 plugin = function(message, data, client)
-  print('AUTOMOD CHECC')
   local a, b = string.gsub(message.content,"\n","")
   local c, d = string.gsub(message.content,"||","")
   if data.automod.newline.enabled and b + 1 > data.automod.newline.limit then
     message:delete()
     if strike(message,data) == true then
       local reply = message:reply(message.author.mentionString..", too many newlines.")
+      timer.sleep(3000)
+      reply:delete()
+    end
+  elseif data.automod.spoilers.enabled and d/2 > data.automod.spoilers.limit then
+    message:delete()
+    if strike(message,data) == true then
+      local reply = message:reply(message.author.mentionString..", too many spoilers.")
+      timer.sleep(3000)
+      reply:delete()
+    end
+  elseif data.automod.mentions.enabled and #message.mentionedRoles + #message.mentionedUsers > data.automod.mentions.limit then
+    message:delete()
+    if strike(message,data) == true then
+      local reply = message:reply(message.author.mentionString..", no mass-mentioning.")
       timer.sleep(3000)
       reply:delete()
     end

@@ -5,7 +5,7 @@ local function addConfig(id)
 	config[id] = {
 		general = {prefix = "?", modlog = "nil", auditlog = "nil", modroles = {}, mods = {}, modonly = false, delcmd = false,  mutedrole = "nil", auditignore = {}},
     moderation = {cases = {}, actions = {}},
-    automod = {enabled = false, log = "nil", spam = {enabled = false}, newline = {enabled = false, limit = 10}}
+    automod = {enabled = false, log = "nil", spam = {enabled = false}, newline = {enabled = false, limit = 10}, spoilers = {enabled = false, limit = 5}, mentions = {enabled = false, limit = 10}, invites = {enabled = false}, words = {enabled = false, terms = {}}}
 	}
 end
 
