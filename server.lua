@@ -205,7 +205,7 @@ client:on("voiceChannelJoin", function(member,channel)
   for _,items in pairs(data.general.auditignore) do if items == channel.id then return end end
   local log = {
     title = "Joined Voice Channel",
-    color = 3066993,
+    color = 2067276,
     timestamp = require("discordia").Date():toISO('T', 'Z'),
     fields = {
       {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
@@ -224,7 +224,7 @@ client:on("voiceChannelLeave", function(member,channel)
   for _,items in pairs(data.general.auditignore) do if items == channel.id then return end end
   local log = {
     title = "Left Voice Channel",
-    color = 15158332,
+    color = 10038562,
     timestamp = require("discordia").Date():toISO('T', 'Z'),
     fields = {
       {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
@@ -295,6 +295,7 @@ client:on("memberUpdate", function(member)
     end
     if auditlog.changes["$add"] ~= nil and auditlog.changes["$remove"] == nil then log.title = "Roles Added" end
     if auditlog.changes["$add"] == nil and auditlog.changes["$remove"] ~= nil then log.title = "Roles Removed" end
+    if auditlog.changes["$add"] == nil and auditlog.changes["$remove"] == nil then return end
   end
   member.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
@@ -355,7 +356,7 @@ client:on("channelCreate", function(channel)
   if auditlog.createdAt <= os.time() - 2 then return end
   local log = {
     title = "Channel Created",
-    color = 3066993,
+    color = 2067276,
     timestamp = require("discordia").Date():toISO('T', 'Z'),
     fields = {
       {name = "Channel", value = channel.mentionString.." (`"..channel.id.."`)", inline = true},
@@ -381,7 +382,7 @@ client:on("channelDelete", function(channel)
   if auditlog.createdAt <= os.time() - 2 then return end
   local log = {
     title = "Channel Deleted",
-    color = 15158332,
+    color = 10038562,
     timestamp = require("discordia").Date():toISO('T', 'Z'),
     fields = {
       {name = "Channel", value = channel.name.." (`"..channel.id.."`)", inline = true},
@@ -392,6 +393,50 @@ client:on("channelDelete", function(channel)
   if channel.type == 2 then log.title = "Voice Channel Deleted" log.fields[1].value = channel.name.." (`"..channel.id.."`)" end
   if channel.type == 4 then log.title = "Category Deleted" log.fields[1].value = channel.name.." (`"..channel.id.."`)" table.remove(log.fields,2) end
   channel.guild:getChannel(data.general.auditlog):send{embed = log}
+end)
+
+client:on("roleCreate", function(role) 
+  require("timer").sleep(150)
+  if role.guild == nil then return end
+  local data = require("/app/config.lua").getConfig(role.guild.id)
+  if data.general.auditlog == "nil" or role.guild:getChannel(data.general.auditlog) == nil then return end
+  local auditlog = role.guild:getAuditLogs({limit = 1,type = 30})
+  if auditlog == nil then return end
+  auditlog = auditlog:toArray()
+  auditlog = auditlog[1]
+  if auditlog.createdAt <= os.time() - 2 then return end
+  local log = {
+    title = "Role Created",
+    color = 2067276,
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    fields = {
+      {name = "Role", value = role.mentionString.." (`"..role.id.."`)", inline = true},
+      {name = "Created By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)",inline = true},
+    },
+  }
+  role.guild:getChannel(data.general.auditlog):send{embed = log}
+end)
+
+client:on("roleDelete", function(role) 
+  require("timer").sleep(150)
+  if role.guild == nil then return end
+  local data = require("/app/config.lua").getConfig(role.guild.id)
+  if data.general.auditlog == "nil" or role.guild:getChannel(data.general.auditlog) == nil then return end
+  local auditlog = role.guild:getAuditLogs({limit = 1,type = 32})
+  if auditlog == nil then return end
+  auditlog = auditlog:toArray()
+  auditlog = auditlog[1]
+  if auditlog.createdAt <= os.time() - 2 then return end
+  local log = {
+    title = "Role Deleted",
+    color = 10038562,
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    fields = {
+      {name = "Role", value = role.name.." (`"..role.id.."`)", inline = true},
+      {name = "Deleted By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)",inline = true},
+    },
+  }
+  role.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
 -- [[ PRIVATE LOGS ]]
