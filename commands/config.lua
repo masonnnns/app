@@ -18,6 +18,9 @@ command.execute = function(message,args,client)
   if args[2] == "general" then
     local xd = require("/app/commands/configcmds/general.lua")(message,args,client,data)
     return xd
+  elseif args[2] == "moderation" then
+    local xd = require("/app/commands/configcmds/moderation.lua")(message,args,client,data)
+    return xd
   elseif args[2] == nil then
     local pages = {}
     pages[1] = {
@@ -51,7 +54,9 @@ command.execute = function(message,args,client)
     if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then pages[2].fields[3].value = message.guild:getChannel(data.general.modlog).mentionString end
     if data.general.mutedrole ~= "nil" and message.guild:getRole(data.general.mutedrole) ~= nil then pages[2].fields[2].value = message.guild:getRole(data.general.mutedrole).mentionString end
     local modRoles = {}
-    for _,items in pairs(data.general.modroles) do local role = message.guild:getRole(data.general.mutedrole) if role ~= nil then modRoles[1+#]
+    for _,items in pairs(data.general.modroles) do local role = message.guild:getRole(items) if role ~= nil then modRoles[1+#modRoles] = role.mentionString end end
+    if #modRoles >= 1 then pages[2].fields[4].value = table.concat(modRoles," ") end
+    if #modRoles == 1 then pages[2].fields[4].name = "Moderator Role [1]" else pages[2].fields[4].name = "Moderator Roles ["..#modRoles.."]" end
     require("/app/pages.lua").addDictionary(message,pages,message.author.id)
   end
   return {success = "stfu"}
