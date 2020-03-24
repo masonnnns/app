@@ -83,6 +83,8 @@ client:on("messageCreate",function(message)
         message:reply((execute.emote == nil and "<:atickyes:678186418937397249> " or execute.emote).." "..execute.msg)
       end
     end
+  else
+      if data.automod.enabled then require("/app/automod.lua")(message,data,client) end
   end
 end)
 

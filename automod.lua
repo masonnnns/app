@@ -13,8 +13,21 @@ local function strike(message,data)
   if #infractions[id] >= 3 then
     for _,items in pairs(infractions[id]) do
       if items + 600 >= os.time() then ten = ten + 1 end
-      if items + 
+      if items + 1800 >= os.time() then thirty = thirty + 1 end
+      if items + 3600 >= os.time() then hour = hour + 1 end
+      if items + 3600 < os.time() then table.remove(infractions[id],_) end
     end
+  end
+  if hour >= 13 then --// we're just going to start kicking them
+    return false
+  elseif hour == 10 then
+    return false
+  elseif thirty == 7 then
+    return false
+  elseif ten == 3 then
+    return false
+  else
+    return true
   end
 end
 
@@ -23,10 +36,11 @@ plugin = function(message, data, client)
   local c, d = string.gsub(message.content,"||","")
   if data.automod.newline.enabled and b + 1 > data.automod.newline.limit then
     message:delete()
-    local reply = message:reply(message.author.mentionString..", too many newlines.")
-    timer.sleep(3000)
-    reply:delete()
-    
+    if strike(message,data) == true then
+      local reply = message:reply(message.author.mentionString..", too many newlines.")
+      timer.sleep(3000)
+      reply:delete()
+    end
   end
 end
 
