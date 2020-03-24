@@ -28,6 +28,15 @@ command = function(message,args,client,data)
       data.general.auditignore[1+#data.general.auditignore] = channel.id
     end
     return {success = true, msg = (found == false and "Added" or "Removed").." "..channel.mentionString.." as an ignored channel."}
+  else
+    message:reply{
+      title = "General Settings",
+      description = "To edit a setting in the general plugin, say **?"..data.general.prefix..args[1]..args[2].." <setting name> <new value>**",
+      fields = {
+        {name = "Settings", value = "**Prefix -** Changes the prefix of the server.\n**Delcmd -** Toggles on or off AA-R0N deleting the command invocation message."}
+      },
+    }
+    return {success = "stfu"}
   end
 end
 

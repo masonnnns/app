@@ -11,8 +11,25 @@ command = function(message,args,client,data)
     if channel == false then return {success = false, msg = "I couldn't find the channel you mentioned."} end
     data.general.modlog = channel.id
     return {success = true, msg = "Set the **modlog channel** to "..channel.mentionString.."."}
-  elseif args[3] == "mutedrole" or args[3] == "muted"
-    
+  elseif args[3] == "mutedrole" or args[3] == "muted" then
+    if args[4] == nil then return {success = false, msg = "You must provide a muted role."} end
+    local channel = require("/app/utils.lua").resolveRole(message,table.concat(args," ",4))
+    if channel == false then return {success = false, msg = "I couldn't find the role you mentioned."} end
+    data.general.mutedrole = channel.id
+    return {success = true, msg = "Set the **muted role** to "..channel.name.."."}
+  elseif args[3] == "mod" or args[3] == "modrole" then
+    if args[4] == nil then return {success = false, msg = "You must provide a moderator role."} end
+    local channel = require("/app/utils.lua").resolveRole(message,table.concat(args," ",4))
+    if channel == false then return {success = false, msg = "I couldn't find the role you mentioned."} end
+    local found
+    for _,items in pairs(data.general.modroles) do if items == channel.id then found = _ break end end
+    if found ~= nil then
+      table.remove(data.general.modroles,_)
+      return {success = true, msg = "Removed "..channel.name.." as a **moderator role**."}
+    else
+      data.general.modroles[1+#data.general.modroles] = channel.id
+      return {success = true, msg = "Added "..channel.name.." as a **moderator role**."}
+    end
   end
 end
 
