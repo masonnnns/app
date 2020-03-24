@@ -30,6 +30,17 @@ command = function(message,args,client,data)
       data.general.modroles[1+#data.general.modroles] = channel.id
       return {success = true, msg = "Added "..channel.name.." as a **moderator role**."}
     end
+  else
+    message:reply{embed = {
+      title = "Moderation Settings",
+      description = "To edit a setting in the general plugin, say **?"..args[1].." "..args[2].." <setting name> <new value>**",
+      fields = {
+        {name = "Settings", value = "**Modonly -** Toggles wither or not commands are restricted to server moderators.\n**Modlog -** Sets the modlog channel.\n**Muted -** Sets the muted role.\n**Modrole -** Adds or removes a role from the list of moderator roles.", inline = true},
+      },
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    }}
+    return {success = "stfu"}
   end
 end
 

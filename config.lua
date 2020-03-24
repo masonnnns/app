@@ -4,7 +4,8 @@ local config = {}
 local function addConfig(id)
 	config[id] = {
 		general = {prefix = "?", modlog = "nil", auditlog = "nil", modroles = {}, mods = {}, modonly = false, delcmd = false,  mutedrole = "nil", auditignore = {}},
-    moderation = {cases = {}, actions = {}}
+    moderation = {cases = {}, actions = {}},
+    automod = {enabled = false, log = "nil", spam = }
 	}
 end
 
