@@ -394,4 +394,26 @@ client:on("channelDelete", function(channel)
   channel.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
+-- [[ PRIVATE LOGS ]]
+
+client:on("error", function(message)
+  client:getGuild("551017079797579795"):getChannel("678756836349968415"):send{embed = {
+    title = "Runtime Error",
+    description = "```lua\n"..string.upper(message).."\n```",
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    footer = {txt = "Fatal error."},
+    color = 15158332,
+  }}
+end)
+
+client:on("warning", function(message)
+  client:getGuild("551017079797579795"):getChannel("678756836349968415"):send{embed = {
+    title = "Runtime Warning",
+    description = "```lua\n"..string.upper(message).."\n```",
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    footer = {txt = "Non-fatal error."},
+    color = 15105570,
+  }}
+end)
+
 client:run("Bot NDYzODQ1ODQxMDM2MTE1OTc4.Xl4M2A.Nc_KemmsB_3HFVMLVnmIuMBjJLk")
