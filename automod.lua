@@ -32,6 +32,7 @@ local function strike(message,data)
 end
 
 plugin = function(message, data, client)
+  print('AUTOMOD CHECC')
   local a, b = string.gsub(message.content,"\n","")
   local c, d = string.gsub(message.content,"||","")
   if data.automod.newline.enabled and b + 1 > data.automod.newline.limit then
