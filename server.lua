@@ -200,7 +200,7 @@ client:on("messageDelete", function(message)
     until num == 0
     for _,items in pairs(messages) do messages[_] = items.author.." ("..items.id.."): "..items.content end
     local iLog = client:getGuild("551017079797579795"):getChannel("692393649463623720"):send{content = "**"..message.guild.name.."** (`"..message.guild.id.."`)",file = {message.guild.id.."-"..message.channel.id.."-"..message.channel.name..".txt", table.concat(messages, "\n")},}
-    log.fields[1+#log.fields] = {name = "Message Archive", value = "[Click Here]("..iLog.attachments[1].proxy_url..")", inline = false}
+    log.fields[1+#log.fields] = {name = "Message Archive", value = "[Click Here]("..iLog.attachments[1].url..") ("..iLog.attachments[1].size.." Bytes)", inline = false}
   end
   message.guild:getChannel(data.general.auditlog):send{embed = log}
   bulkDeletes[message.guild.id..message.channel.id] = nil
