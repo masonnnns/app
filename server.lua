@@ -510,7 +510,7 @@ client:on("ready", function()
     if os.time() - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
     http.request("GET","https://stellar-cosmic-lasagna.glitch.me/")
     http.request("GET","https://verify-bot-aaron.glitch.me/")
-    require("timer").sleep(15000)
+    require("timer").sleep(10000)
   end
 end)
 
