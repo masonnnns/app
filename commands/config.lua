@@ -9,7 +9,7 @@ command.info = {
   Usage = "config <plugin> (setting name) (new value)",
   Category = "Administration",
   Description = "Configure AA-R0N in your server.",
-  PermLvl = 0,
+  PermLvl = 2,
 }
 
 command.execute = function(message,args,client)

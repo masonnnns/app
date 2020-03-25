@@ -24,7 +24,6 @@ end
 
 client:on("messageCreate",function(message)
   if message.guild == nil then return end
-  if message.guild.id ~= "551017079797579795" then return end 
   if message.author.bot or message.guild.id == nil then return false end
   local data = config.getConfig(message.guild.id)
   if string.sub(message.content,1,string.len(data.general.prefix)) == data.general.prefix then
@@ -496,4 +495,23 @@ client:on("warning", function(message)
   }}
 end)
 
-client:run("Bot NDYzODQ1ODQxMDM2MTE1OTc4.Xl4M2A.Nc_KemmsB_3HFVMLVnmIuMBjJLk")
+local Utopia = require('utopia')
+local app = Utopia:new()
+
+app:use(function (req, res)
+  res:finish('lol')
+end)
+
+app:listen(8080)
+
+local http = require('coro-http')
+client:on("ready", function()
+  while true do
+    if os.time() - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
+    http.request("GET","https://stellar-cosmic-lasagna.glitch.me/")
+    http.request("GET","https://verify-bot-aaron.glitch.me/")
+    require("timer").sleep(15000)
+  end
+end)
+
+client:run("Bot NDE0MDMwNDYzNzkyMDU0Mjgy.Xl4MvA.VSNimdDDRzNnA1gwHiOjB_6i6PI")

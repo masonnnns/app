@@ -18,7 +18,7 @@ command.execute = function(message,args,client)
     message:reply{embed = {
       title = "Members of "..message.guild.name,
       description = "We have **"..utils.addCommas(#message.guild.members).."** members!",
-      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color), 
     }}
     return {success = 'stfu'}
