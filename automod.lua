@@ -49,6 +49,19 @@ plugin = function(message, data, client)
   local c, d = string.gsub(message.content,"||","")
   if data.automod.newline.enabled and b + 1 > data.automod.newline.limit then
     message:delete()
+    if data.automod.log ~= "nil" and message.guild:getChannel(data.automod.log) ~= nil then
+      message.guild:getChannel(data.automod.log):send{embed = {
+        title = "Automod Violation",
+        color = 15105570,
+        timestamp = require("discordia").Date():toISO('T', 'Z'),
+        fields = {
+          {name = "Message Author", value = message.author.tag.." (`"..message.author.id.."`)", inline = true},
+          {name = "Channel", value = message.channel.mentionString, inline = true},
+          {name = "Reason", value = "Too many newlines. ("..(b+1)..")", inline = false},
+          {name = "Message", value = message.content, inline = false},
+        }
+      }}
+    end
     if strike(message,data) == true then
       local reply = message:reply(message.author.mentionString..", too many newlines.")
       timer.sleep(3000)
@@ -56,6 +69,19 @@ plugin = function(message, data, client)
     end
   elseif data.automod.spoilers.enabled and d/2 > data.automod.spoilers.limit then
     message:delete()
+    if data.automod.log ~= "nil" and message.guild:getChannel(data.automod.log) ~= nil then
+      message.guild:getChannel(data.automod.log):send{embed = {
+        title = "Automod Violation",
+        color = 15105570,
+        timestamp = require("discordia").Date():toISO('T', 'Z'),
+        fields = {
+          {name = "Message Author", value = message.author.tag.." (`"..message.author.id.."`)", inline = true},
+          {name = "Channel", value = message.channel.mentionString, inline = true},
+          {name = "Reason", value = "Too many spoilers. ("..(d/2)..")", inline = false},
+          {name = "Message", value = message.content, inline = false},
+        }
+      }}
+    end
     if strike(message,data) == true then
       local reply = message:reply(message.author.mentionString..", too many spoilers.")
       timer.sleep(3000)
@@ -63,6 +89,19 @@ plugin = function(message, data, client)
     end
   elseif data.automod.mentions.enabled and #message.mentionedRoles + #message.mentionedUsers > data.automod.mentions.limit then
     message:delete()
+    if data.automod.log ~= "nil" and message.guild:getChannel(data.automod.log) ~= nil then
+      message.guild:getChannel(data.automod.log):send{embed = {
+        title = "Automod Violation",
+        color = 15105570,
+        timestamp = require("discordia").Date():toISO('T', 'Z'),
+        fields = {
+          {name = "Message Author", value = message.author.tag.." (`"..message.author.id.."`)", inline = true},
+          {name = "Channel", value = message.channel.mentionString, inline = true},
+          {name = "Reason", value = "Mentioned "..(#message.mentionedRoles + #message.mentionedUsers).." different roles or members.", inline = false},
+          {name = "Message", value = message.content, inline = false},
+        }
+      }}
+    end
     if strike(message,data) == true then
       local reply = message:reply(message.author.mentionString..", no mass-mentioning.")
       timer.sleep(3000)
@@ -74,6 +113,19 @@ plugin = function(message, data, client)
       for _,items in pairs(sep) do
         if string.match(items:lower(),"discord.gg") or string.match(items:lower(),"discordapp.com/invite") then
           message:delete()
+          if data.automod.log ~= "nil" and message.guild:getChannel(data.automod.log) ~= nil then
+            message.guild:getChannel(data.automod.log):send{embed = {
+              title = "Automod Violation",
+              color = 15105570,
+              timestamp = require("discordia").Date():toISO('T', 'Z'),
+              fields = {
+                {name = "Message Author", value = message.author.tag.." (`"..message.author.id.."`)", inline = true},
+                {name = "Channel", value = message.channel.mentionString, inline = true},
+                {name = "Reason", value = "Invite link.", inline = false},
+                {name = "Message", value = message.content, inline = false},
+              }
+            }}
+          end
           if strike(message,data) == true then
             local reply = message:reply(message.author.mentionString..", no invites.")
             timer.sleep(3000)
@@ -88,6 +140,19 @@ plugin = function(message, data, client)
         for _,terms in pairs(data.automod.words.terms) do
           if string.match(items:lower(),terms:lower()) then
             message:delete()
+            if data.automod.log ~= "nil" and message.guild:getChannel(data.automod.log) ~= nil then
+              message.guild:getChannel(data.automod.log):send{embed = {
+                title = "Automod Violation",
+                color = 15105570,
+                timestamp = require("discordia").Date():toISO('T', 'Z'),
+                fields = {
+                  {name = "Message Author", value = message.author.tag.." (`"..message.author.id.."`)", inline = true},
+                  {name = "Channel", value = message.channel.mentionString, inline = true},
+                  {name = "Reason", value = "Bad word usage.", inline = false},
+                  {name = "Message", value = message.content, inline = false},
+                }
+              }}
+            end
             if strike(message,data) == true then
               local reply = message:reply(message.author.mentionString..", watch your language.")
               timer.sleep(3000)
@@ -101,6 +166,19 @@ plugin = function(message, data, client)
     local antispam = require("/app/antispam.lua")(message)
     if antispam.safe == false then
       message.channel:bulkDelete(antispam.messages)
+      if data.automod.log ~= "nil" and message.guild:getChannel(data.automod.log) ~= nil then
+        message.guild:getChannel(data.automod.log):send{embed = {
+          title = "Automod Violation",
+          color = 15105570,
+          timestamp = require("discordia").Date():toISO('T', 'Z'),
+          fields = {
+            {name = "Message Author", value = message.author.tag.." (`"..message.author.id.."`)", inline = true},
+            {name = "Channel", value = message.channel.mentionString, inline = true},
+            {name = "Reason", value = antispam.reason, inline = false},
+            {name = "Message", value = message.content, inline = false},
+          }
+        }}
+      end
       if strike(message,data) == true then
         local reply = message.channel:send(message.author.mentionString..", no spamming.")
         timer.sleep(3000)
