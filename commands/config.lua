@@ -21,6 +21,9 @@ command.execute = function(message,args,client)
   elseif args[2] == "moderation" then
     local xd = require("/app/commands/configcmds/moderation.lua")(message,args,client,data)
     return xd
+  elseif args[2] == "automod" then
+    local xd = require("/app/commands/configcmds/automod.lua")(message,args,client,data)
+    return xd
   elseif args[2] == nil then
     local pages = {}
     pages[1] = {

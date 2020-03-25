@@ -10,7 +10,7 @@ command = function(message,args,client,data)
   elseif args[3] == "delcmd" then
     data.general.delcmd = not data.general.delcmd
     return {success = true, msg = "**"..(data.general.delcmd and "Enabled" or "Disabled").."** the **delete invocation message** setting."}
-  elseif args[3] == "auditlog" or args[3] == "audit" then
+  elseif args[3] == "auditlog" or args[3] == "audit" or args[3] == "log" then
     if args[4] == nil then return {success = false, msg = "You must provide an auditlog channel."} end
     local channel = require("/app/utils.lua").resolveChannel(message,table.concat(args," ",4))
     if channel == false then return {success = false, msg = "I couldn't find the channel you mentioned."} end
