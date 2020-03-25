@@ -98,6 +98,16 @@ plugin = function(message, data, client)
         end
       end
     end
+    local antispam = require("/app/antispam.lua")(message)
+    if antispam.safe == false then
+      message.channel:bulkDelete(antispam.messages)
+      if strike(message,data) == true then
+        local reply = message.channel:send(message.author.mentionString..", no spamming.")
+        timer.sleep(3000)
+        reply:delete()
+      end
+      return
+    end
   end
 end
 
