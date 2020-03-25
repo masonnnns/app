@@ -60,6 +60,15 @@ command.execute = function(message,args,client)
     pages[3] = {
       title = "Automod Settings",
       description = "To edit a setting in this plugin, say **"..data.general.prefix..args[1].." automod**.",
+      fields = {
+        {name = "Automod Log", value = "Not Configured.", inline = false},
+        {name = "Anti-Spam", value = (data.automod.spam.enabled and "Enabled." or "Disabled."), inline = true},
+        {name = "Anti-Invites", value = (data.automod.invites.enabled and "Enabled." or "Disabled."), inline = true},
+        {name = "Words Filter", value = (data.automod.words.enabled and "Enabled." or "Disabled."), inline = true},
+        {name = "Newline Filter", value = (data.automod.newline.enabled and "Enabled. ("..data.automod.newline.limit.."/msg)" or "Disabled."), inline = true},
+        {name = "Spoiler Filter", value = (data.automod.spoilers.enabled and "Enabled. ("..data.automod.spoilers.limit.."/msg)" or "Disabled."), inline = true},
+        {name = "Mass-Mentions Filter", value = (data.automod.mentions.enabled and "Enabled. ("..data.automod.mentions.limit.."/msg)" or "Disabled."), inline = true},
+      },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
     }
