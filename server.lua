@@ -158,9 +158,9 @@ client:on("messageDelete", function(message)
   for _,items in pairs(data.general.auditignore) do if items == message.channel.id then return end end
   if bulkDeletes[message.guild.id..message.channel.id] == nil then bulkDeletes[message.guild.id..message.channel.id] = {} end
   bulkDeletes[message.guild.id..message.channel.id][1+#bulkDeletes[message.guild.id..message.channel.id]] = {content = message.content, author = message.author.tag, id = message.author.id, mention = message.author.mentionString}
+  debounceBulk[message.guild.id..message.channel.id] = message.id
   require("timer").sleep(250)
-  if debounceBulk[message.guild.id..message.channel.id] == true then return end
-  debounceBulk[message.guild.id..message.channel.id] = true
+  if debounceBulk[message.guild.id..message.channel.id] ~= message.id then return end
   if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
   local auditlog = message.guild:getAuditLogs({type = 72,limit = 1})
   if auditlog == nil then return end
@@ -168,13 +168,15 @@ client:on("messageDelete", function(message)
   auditlog = auditlog[#auditlog]
   local log = {}
   if #bulkDeletes[message.guild.id..message.channel.id] > 1 then
+    print('BULK BRO')
     log = {
       title = "Bulk Message Deletion",
       color = 3447003,
       timestamp = require("discordia").Date():toISO('T', 'Z'),
       fields = {
-        {name = "Channel", value = message.channel.id, inline = true},
-        {name = "Number of Messages", #bulkDeletes[message.guild.id..message.channel.id]}
+        {name = "Channel", value = message.channel.mentionString, inline = true},
+        {name = "Number of Messages", value = #bulkDeletes[message.guild.id..message.channel.id], inline = true},
+        {name = "Deleted By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = false}
       },
     }
   else
@@ -193,6 +195,7 @@ client:on("messageDelete", function(message)
     if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
   end
   message.guild:getChannel(data.general.auditlog):send{embed = log}
+  for _,items in pairs(bulkDeletes[message.guild.id..message.channel.id]) do print(_,items.content) end
   bulkDeletes[message.guild.id..message.channel.id] = nil
   debounceBulk[message.guild.id..message.channel.id] = false
 end)
