@@ -195,7 +195,11 @@ client:on("messageDelete", function(message)
     if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
   end
   message.guild:getChannel(data.general.auditlog):send{embed = log}
-  for _,items in pairs(bulkDeletes[message.guild.id..message.channel.id]) do print(_,items.content) end
+  if log.title == "Bulk Message Deletion" then
+    local num, messages = #bulkDeletes[message.guild.id..message.channel.id], {}
+    repeat messages[1+#messages] = bulkDeletes[message.guild.id][num] num = num - 1 require("timer").sleep(10) until num = 0
+    for _,items in pairs(messages) do print(_,items.content) end
+  end
   bulkDeletes[message.guild.id..message.channel.id] = nil
   debounceBulk[message.guild.id..message.channel.id] = false
 end)
