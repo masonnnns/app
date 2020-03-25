@@ -22,9 +22,10 @@ command.execute = function(message,args,client)
     local xd = require("/app/commands/configcmds/moderation.lua")(message,args,client,data)
     return xd
   elseif args[2] == "automod" then
+    if data.automod.enabled == false and args[3]:lower() ~= "toggle" then return {success = false, msg = "This plugin is disabled, enable it to edit it's settings."} end
     local xd = require("/app/commands/configcmds/automod.lua")(message,args,client,data)
     return xd
-  elseif args[2] == nil then
+  else
     local pages = {}
     pages[1] = {
       title = "General Settings",
@@ -71,6 +72,7 @@ command.execute = function(message,args,client)
         {name = "Newline Filter", value = (data.automod.newline.enabled and "Enabled. ("..data.automod.newline.limit.."/msg)" or "Disabled."), inline = true},
         {name = "Spoiler Filter", value = (data.automod.spoilers.enabled and "Enabled. ("..data.automod.spoilers.limit.."/msg)" or "Disabled."), inline = true},
         {name = "Mass-Mentions Filter", value = (data.automod.mentions.enabled and "Enabled. ("..data.automod.mentions.limit.."/msg)" or "Disabled."), inline = true},
+        {name = "Filtered Terms ["..#data.automod.words.terms.."]", value = "||"..table.concat(data.automod.words.terms,", ").."||", inline = false}
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),

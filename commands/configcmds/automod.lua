@@ -20,7 +20,7 @@ command = function(message,args,client,data)
   elseif args[3] == "words" then
     data.automod.words.enabled = not data.automod.words.enabled
     return {success = true, msg = "**"..(data.automod.words.enabled and "Enabled" or "Disabled").."** the **words** filter."}
-  elseif args[3] == "newline" then
+  elseif args[3] == "newline" or args[3] == "newlines" then
     if args[4] == nil then
       data.automod.newline.enabled = not data.automod.newline.enabled
       return {success = true, msg = "**"..(data.automod.newline.enabled and "Enabled" or "Disabled").."** the **newline** filter."}
@@ -57,14 +57,22 @@ command = function(message,args,client,data)
       return {success = true, msg = "Set the **mention limit** to **"..args[4].."**."}
     end
   elseif args[3] == "filter" then
+    if args[4] == nil then return {success = false, msg = "You must provide a term to filter."} end
     local found
-    for _,items in pairs(data.automod.words.terms) do if items:lower() == table.concat(args[4]," "):lower() then found = true b
+    for _,items in pairs(data.automod.words.terms) do if items:lower() == table.concat(args," ",4):lower() then found = _ break end end
+    if found ~= nil then
+      table.remove(data.automod.words.terms,found)
+      return {success = true, msg = "**Removed** that term from the list of filtered terms."}
+    else
+      data.automod.words.terms[1+#data.automod.words.terms] = table.concat(args," ",4)
+      return {success = true, msg = "**Added** that term to the list of filtered terms."}
+    end
   else
     message:reply{embed = {
-      title = "Moderation Settings",
-      description = "To edit a setting in the general plugin, say **?"..args[1].." "..args[2].." <setting name> <new value>**",
+      title = "Automod Settings",
+      description = "To edit a setting in the automod plugin, say **?"..args[1].." "..args[2].." <setting name> <new value>**",
       fields = {
-        {name = "Settings", value = "**Modonly -** Toggles wither or not commands are restricted to server moderators.\n**Modlog -** Sets the modlog channel.\n**Muted -** Sets the muted role.\n**Modrole -** Adds or removes a role from the list of moderator roles.", inline = true},
+        {name = "Settings", value = "**Toggle -** Toggles the automod plugin.\n**Log -** Sets the automod log.\n**Spam -** Toggles the anti-spam filter.\n**Words -** Toggles the words filter.\n**Invites -** Toggles the invites filter.\n**Newlines -** Toggles the newlines filter.\n**Spoilers -** Toggles the spoilers filter.\n**Mentions -** Toggles the mass-mentions filter.\n**Filter -** Add or remove a word from the words filter.", inline = true},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
