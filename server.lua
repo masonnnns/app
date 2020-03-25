@@ -147,32 +147,54 @@ client:on("reactionAdd", function(reaction, userId)
   page.processReaction(reaction,userId)
 end)
 
+local bulkDeletes = {}
+local debounceBulk = {}
+--guildid..channelid
+
 client:on("messageDelete", function(message)
-  require("timer").sleep(250)
   if message.author.bot ~= false then return end
   if message.guild == nil then return end
   local data = require("/app/config.lua").getConfig(message.guild.id)
-  if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
   for _,items in pairs(data.general.auditignore) do if items == message.channel.id then return end end
+  if bulkDeletes[message.guild.id..message.channel.id] == nil then bulkDeletes[message.guild.id..message.channel.id] = {} end
+  bulkDeletes[message.guild.id..message.channel.id][1+#bulkDeletes[message.guild.id..message.channel.id]] = {content = message.content, author = message.author.tag, id = message.author.id, mention = message.author.mentionString}
+  require("timer").sleep(250)
+  if debounceBulk[message.guild.id..message.channel.id] == true then return end
+  debounceBulk[message.guild.id..message.channel.id] = true
+  if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
   local auditlog = message.guild:getAuditLogs({type = 72,limit = 1})
   if auditlog == nil then return end
   auditlog = auditlog:toArray()
   auditlog = auditlog[#auditlog]
-  --for c,d in pairs(auditlog[1]) do print(c,d) if type(d) == "table" then for e,f in pairs(d) do print(e,f) end end end
-  local log = {
-    title = "Message Deleted",
-    color = 3447003,
-    timestamp = require("discordia").Date():toISO('T', 'Z'),
-    fields = {
-      {name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true},
-      {name = "Channel", value = message.channel.mentionString, inline = true},
-      {name = "Deleted By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = false},
-      {name = "Message", value = (message.content == "" and "`[[ No Message Content ]]`" or message.content), inline = false}
-    },
-  }
-  if message.attachments ~= nil then log.image = {url = message.attachments[1].proxy_url} end
-  if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
+  local log = {}
+  if #bulkDeletes[message.guild.id..message.channel.id] > 1 then
+    log = {
+      title = "Bulk Message Deletion",
+      color = 3447003,
+      timestamp = require("discordia").Date():toISO('T', 'Z'),
+      fields = {
+        {name = "Channel", value = message.channel.id, inline = true},
+        {name = "Number of Messages", #bulkDeletes[message.guild.id..message.channel.id]}
+      },
+    }
+  else
+    log = {
+      title = "Message Deleted",
+      color = 3447003,
+      timestamp = require("discordia").Date():toISO('T', 'Z'),
+      fields = {
+        {name = "Message Author", value = message.author.mentionString.." (`"..message.author.id.."`)", inline = true},
+        {name = "Channel", value = message.channel.mentionString, inline = true},
+        {name = "Deleted By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = false},
+        {name = "Message", value = (message.content == "" and "`[[ No Message Content ]]`" or message.content), inline = false}
+      },
+    }
+    if message.attachments ~= nil then log.image = {url = message.attachments[1].proxy_url} end
+    if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
+  end
   message.guild:getChannel(data.general.auditlog):send{embed = log}
+  bulkDeletes[message.guild.id..message.channel.id] = nil
+  debounceBulk[message.guild.id..message.channel.id] = false
 end)
 
 client:on("messageUpdate", function(message) 
