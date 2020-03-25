@@ -173,7 +173,6 @@ client:on("messageDelete", function(message)
       fields = {
         {name = "Channel", value = message.channel.mentionString, inline = true},
         {name = "Number of Messages", value = #bulkDeletes[message.guild.id..message.channel.id], inline = true},
-        {name = "Deleted By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)", inline = false}
       },
     }
   else
@@ -190,9 +189,8 @@ client:on("messageDelete", function(message)
       },
     }
     if message.attachments ~= nil then log.image = {url = message.attachments[1].proxy_url} end
+    if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
   end
-  if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
-  message.guild:getChannel(data.general.auditlog):send{embed = log}
   if log.title == "Bulk Message Deletion" then
     local num, messages = #bulkDeletes[message.guild.id..message.channel.id], {}
     repeat 
@@ -201,8 +199,10 @@ client:on("messageDelete", function(message)
         require("timer").sleep(10)
     until num == 0
     for _,items in pairs(messages) do messages[_] = items.author.." ("..items.id.."): "..items.content end
-    message.guild:getChannel(data.general.auditlog):send{file = {message.guild.id.."-"..message.channel.id.."-"..message.channel.name..".txt", table.concat(messages, "\n")},}
+    local iLog = client:getGuild("551017079797579795"):getChannel("692393649463623720"):send{content = "**"..message.guild.name.."** (`"..message.guild.id.."`)",file = {message.guild.id.."-"..message.channel.id.."-"..message.channel.name..".txt", table.concat(messages, "\n")},}
+    log.fields[1+#log.fields] = {name = "Message Archive", value = "[Click Here]("..iLog.attachments[1].proxy_url..")", inline = false}
   end
+  message.guild:getChannel(data.general.auditlog):send{embed = log}
   bulkDeletes[message.guild.id..message.channel.id] = nil
   debounceBulk[message.guild.id..message.channel.id] = false
 end)
