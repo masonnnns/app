@@ -18,9 +18,9 @@ local function strike(message,data)
       if items + 3600 < os.time() then table.remove(infractions[id],_) end
     end
   end
-  if hour >= 13 then --// we're just going to start kicking them
+  if hour >= 14 then --// we're just going to start kicking them
     return false
-  elseif hour == 10 then
+  elseif hour == 11 then
     return false
   elseif thirty == 7 then
     return false
