@@ -3,11 +3,30 @@ local discordia = require('discordia')
 local client = discordia.Client {
 	logFile = 'mybot.log',
 	cacheAllMembers = true,
-	autoReconnect = false,
+	autoReconnect = true,
 }
 
 local config = require("/app/config.lua")
 config.setupConfigs('xddd')
+
+local Utopia = require('utopia')
+local app = Utopia:new()
+
+app:use(function (req, res)
+  res:finish('lol')
+end)
+
+app:listen(8080)
+
+local http = require('coro-http')
+client:on("ready", function()
+  while true do
+    if os.time() - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
+    http.request("GET","https://stellar-cosmic-lasagna.glitch.me/")
+    http.request("GET","https://verify-bot-aaron.glitch.me/")
+    require("timer").sleep(10000)
+  end
+end)
 
 local function sepMsg(msg)
 	local Args = {}
@@ -493,25 +512,6 @@ client:on("warning", function(message)
     footer = {txt = "Non-fatal error."},
     color = 15105570,
   }}
-end)
-
-local Utopia = require('utopia')
-local app = Utopia:new()
-
-app:use(function (req, res)
-  res:finish('lol')
-end)
-
-app:listen(8080)
-
-local http = require('coro-http')
-client:on("ready", function()
-  while true do
-    if os.time() - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
-    http.request("GET","https://stellar-cosmic-lasagna.glitch.me/")
-    http.request("GET","https://verify-bot-aaron.glitch.me/")
-    require("timer").sleep(10000)
-  end
 end)
 
 client:run("Bot NDE0MDMwNDYzNzkyMDU0Mjgy.Xl4MvA.VSNimdDDRzNnA1gwHiOjB_6i6PI")
