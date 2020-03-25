@@ -18,14 +18,18 @@ local function strike(message,data)
       if items + 3600 < os.time() then table.remove(infractions[id],_) end
     end
   end
-  if hour >= 14 then --// we're just going to start kicking them
-    return false
-  elseif hour == 11 then
-    return false
-  elseif thirty == 7 then
-    return false
-  elseif ten == 3 then
-    return false
+  if data.general.mutedrole ~= "nil" and message.guild:getRole(data.general.mutedrole) ~= nil then
+    if hour >= 14 then --// we're just going to start kicking them
+      return false
+    elseif hour == 11 then
+      return false
+    elseif thirty == 8 then
+      return false
+    elseif ten == 5 then
+      return false
+    else
+      return true
+    end
   else
     return true
   end

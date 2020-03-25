@@ -40,7 +40,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  if message.guild:getMember("414030463792054282"):getPermissions():has("manageRoles") == false and message.guild:getMember("414030463792054282"):getPermissions():has("administrator")  == false then return {success = false, msg = "I need the **Ban Members** permission to do this."} end
+  if message.guild:getMember("414030463792054282"):getPermissions():has("manageRoles") == false and message.guild:getMember("414030463792054282"):getPermissions():has("administrator")  == false then return {success = false, msg = "I need the **Manage Roles** permission to do this."} end
   if config.getConfig(message.guild.id).general.mutedrole == "nil" or message.guild:getRole(config.getConfig(message.guild.id).general.mutedrole) == nil then return {success = false, msg = "**Config Error:** There is no muted role setup."} end
   if args[2] == nil then return {success = false, msg = "You must provide a **member to "..command.info.Name:lower().."** in argument 2."} end
   local user = utils.resolveUser(message,args[2])
@@ -49,7 +49,7 @@ command.execute = function(message,args,client)
   elseif utils.Permlvl(message,client,user.id) >= utils.Permlvl(message,client) then
     return {success = false, msg = "You cannot "..command.info.Name:lower().." people with **higher than or equal permissions as you.**"}
   elseif user.highestRole and user.highestRole.position >= message.guild:getMember("414030463792054282").highestRole.position then
-    return {success = false, msg = "I cannot "..command.info.Name:lower().." "..user.tag.." because their **role is higher than mine**."}
+    return {success = false, msg = "I cannot "..command.info.Name:lower().." **"..user.tag.."** because their **role is higher than mine**."}
   elseif user.id == client.user.id then
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
   elseif user:hasRole(config.getConfig(message.guild.id).general.mutedrole) then

@@ -49,7 +49,7 @@ command.execute = function(message,args,client)
   elseif utils.Permlvl(message,client,user.id) >= utils.Permlvl(message,client) then
     return {success = false, msg = "You cannot "..command.info.Name:lower().." people with **higher than or equal permissions as you.**"}
   elseif user.highestRole and user.highestRole.position >= message.guild:getMember("414030463792054282").highestRole.position then
-    return {success = false, msg = "I cannot "..command.info.Name:lower().." "..user.tag.." because their **role is higher than mine**."}
+    return {success = false, msg = "I cannot "..command.info.Name:lower().." **"..user.tag.."** because their **role is higher than mine**."}
   elseif user.id == client.user.id then
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
   else
