@@ -36,7 +36,7 @@ command.execute = function(message,args,client)
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
     }
     local num = 0
-    for _,items in pairs(data.general.auditignore) do local role = message.guild:getChannel(items) if role then num = num + 1 if pages[1].fields[8].value == "" then pages[1].fields[8].value = role.mentionString else pages[1].fields[8].value = pages[1].fields[8].value..", "..role.mentionString end end end
+    for _,items in pairs(data.general.auditignore) do local role = message.guild:getChannel(items) if role then num = num + 1 if pages[1].fields[4].value == "" then pages[1].fields[4].value = role.mentionString else pages[1].fields[4].value = pages[1].fields[4].value..", "..role.mentionString end end end
     pages[1].fields[4].name = "Audit Ignored Channels ["..num.."]"
     if num == 0 then pages[1].fields[4].value = "None set!" end
     pages[2] = {
@@ -57,6 +57,13 @@ command.execute = function(message,args,client)
     for _,items in pairs(data.general.modroles) do local role = message.guild:getRole(items) if role ~= nil then modRoles[1+#modRoles] = role.mentionString end end
     if #modRoles >= 1 then pages[2].fields[4].value = table.concat(modRoles," ") end
     if #modRoles == 1 then pages[2].fields[4].name = "Moderator Role [1]" else pages[2].fields[4].name = "Moderator Roles ["..#modRoles.."]" end
+    pages[3] = {
+      title = "Automod Settings",
+      description = "To edit a setting in this plugin, say **"..data.general.prefix..args[1].." automod**.",
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    }
+    if data.automod.enabled == false then pages[3].description = "This plugin is disabled, say  **"..data.general.prefix..args[1].." automod toggle** to enable it." pages[3].fields = nil pages[3].color = 15158332 end
     require("/app/pages.lua").addDictionary(message,pages,message.author.id)
   end
   return {success = "stfu"}
