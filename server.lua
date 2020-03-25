@@ -168,7 +168,6 @@ client:on("messageDelete", function(message)
   auditlog = auditlog[#auditlog]
   local log = {}
   if #bulkDeletes[message.guild.id..message.channel.id] > 1 then
-    print('BULK BRO')
     log = {
       title = "Bulk Message Deletion",
       color = 3447003,
@@ -192,13 +191,18 @@ client:on("messageDelete", function(message)
       },
     }
     if message.attachments ~= nil then log.image = {url = message.attachments[1].proxy_url} end
-    if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
   end
+  if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
   message.guild:getChannel(data.general.auditlog):send{embed = log}
   if log.title == "Bulk Message Deletion" then
     local num, messages = #bulkDeletes[message.guild.id..message.channel.id], {}
-    repeat messages[1+#messages] = bulkDeletes[message.guild.id][num] num = num - 1 require("timer").sleep(10) until num = 0
-    for _,items in pairs(messages) do print(_,items.content) end
+    repeat 
+        messages[1+#messages] = bulkDeletes[message.guild.id..message.channel.id][num] 
+        num = num - 1 
+        require("timer").sleep(10)
+    until num == 0
+    for _,items in pairs(messages) do messages[_] = items.author.." ("..items.id.."): "..items.content end
+    message.guild:getChannel(data.general.auditlog):send{file = {message.guild.id.."-"..message.channel.id.."-"..message.channel.name..".txt", table.concat(messages, "\n")},}
   end
   bulkDeletes[message.guild.id..message.channel.id] = nil
   debounceBulk[message.guild.id..message.channel.id] = false
