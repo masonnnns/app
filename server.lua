@@ -151,7 +151,6 @@ local debounceBulk = {}
 --guildid..channelid
 
 client:on("messageDelete", function(message)
-  if message.author.bot ~= false then return end
   if message.guild == nil then return end
   local data = require("/app/config.lua").getConfig(message.guild.id)
   for _,items in pairs(data.general.auditignore) do if items == message.channel.id then return end end
@@ -178,6 +177,7 @@ client:on("messageDelete", function(message)
       },
     }
   else
+    if message.author.bot ~= false then return end
     log = {
       title = "Message Deleted",
       color = 3447003,
