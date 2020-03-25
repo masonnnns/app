@@ -114,7 +114,7 @@ client:on("ready", function()
                   data.moderation.cases[#data.moderation.cases].modlog = modlog.id  
                 end
               elseif items.type == "mute" then
-                if guilds:getMember(items.id) and guilds:getMember("414030463792054282"):getPermissions():has("manageRoles") or guilds:getMember("414030463792054282"):getPermissions():has("administrator") then guilds:getMember(items.id):removeRole(data.general.mutedrole) end
+                if guilds:getMember(items.id) and guilds:getMember("414030463792054282"):getPermissions():has("manageRoles") or guilds:getMember("414030463792054282"):getPermissions():has("administrator") then guilds:getMember(items.id):addRole(data.general.mutedrole) guilds:getMember(items.id):removeRole(data.general.mutedrole) end
                 data.moderation.cases[1+#data.moderation.cases] = {type = "unmute", user = items.id, moderator = client.user.id, reason = "Mute duration expired. (Case "..items.case..")", modlog = "nil"}
                 if data.general.modlog ~= "nil" and guilds:getChannel(data.general.modlog) ~= nil then
                   local modlog = guilds:getChannel(data.general.modlog):send{embed = {

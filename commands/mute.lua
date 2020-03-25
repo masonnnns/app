@@ -1,6 +1,7 @@
 command = {}
 
 local durationTable = {
+  --["s"] = {1,"Seconds"},
 	["min"] = {60, "Minute"},
 	["mi"] = {60, "Minute"},
 	["m"] = {60, "Minute"},
