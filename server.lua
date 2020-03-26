@@ -18,10 +18,12 @@ end)
 
 app:listen(8080)
 
+local startOS = os.time()
+
 local http = require('coro-http')
 client:on("ready", function()
   while true do
-    if os.time() - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
+    if startOS - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
     http.request("GET","https://stellar-cosmic-lasagna.glitch.me/")
     http.request("GET","https://verify-bot-aaron.glitch.me/")
     require("timer").sleep(10000)
@@ -79,7 +81,7 @@ client:on("messageCreate",function(message)
     else
       if cooldown[message.author.id..message.guild.id] ~= nil and cooldown[message.author.id..message.guild.id].time > os.time() then
         cooldown[message.author.id..message.guild.id].strike = cooldown[message.author.id..message.guild.id].strike + 1
-        if cooldown[message.author.id..message.guild.id] < 3 then
+        if cooldown[message.author.id..message.guild.id].strike < 3 then
           local reply = message:reply("⚠️ **Too spicy!** Try running another command in "..cooldown[message.author.id..message.guild.id].time-os.time().." seconds.")
           require("timer").sleep(5000)
           reply:delete()
@@ -89,7 +91,7 @@ client:on("messageCreate",function(message)
       if message and data.general.delcmd then message:delete() end
       local execute
       cooldown[message.author.id..message.guild.id] = {time = 0, strike = 0}
-      cooldown[message.author.id..message.guild.id].time = os.time() + (command.info.Cooldown == nil and 1 or command.info.Cooldown)
+      cooldown[message.author.id..message.guild.id].time = os.time() + (command.info.Cooldown == nil and 2 or command.info.Cooldown)
       local cmdSuccess, cmdMsg = pcall(function() execute = command.execute(message,args,client) end)
       if not (cmdSuccess) then
         message:reply(":rotating_light: **An error occured!** Please report this to our support team.")
@@ -382,6 +384,7 @@ client:on("memberJoin", function(member)
     fields = {
       {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
       {name = "Guild Members", value = #member.guild.members, inline = true},
+      {name = "Created At", value = discordia.Date.fromSnowflake(member.id):toISO(' ', ''), inline = false}
     },
   }
   member.guild:getChannel(data.general.auditlog):send{embed = log}
@@ -455,7 +458,7 @@ client:on("channelDelete", function(channel)
     fields = {
       {name = "Channel", value = channel.name.." (`"..channel.id.."`)", inline = true},
       {name = "Category", value = (channel.category == nil and "N/A" or channel.category.name), inline = true},
-      {name = "Created By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)"},
+      {name = "Deleted By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)"},
     },
   }
   if channel.type == 2 then log.title = "Voice Channel Deleted" log.fields[1].value = channel.name.." (`"..channel.id.."`)" end

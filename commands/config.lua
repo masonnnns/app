@@ -10,6 +10,7 @@ command.info = {
   Category = "Administration",
   Description = "Configure AA-R0N in your server.",
   PermLvl = 2,
+  Cooldown = 5,
 }
 
 command.execute = function(message,args,client)
