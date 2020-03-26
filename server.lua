@@ -47,6 +47,7 @@ local cooldown = {}
 --userid..guildid = {time = os.time(), strike = num}
 
 client:on("messageCreate",function(message)
+  if message.content == nil then return end
   if message.guild == nil then return end
   if message.author.bot or message.guild.id == nil then return false end
   local data = config.getConfig(message.guild.id)
@@ -193,7 +194,7 @@ client:on("messageDelete", function(message)
   if bulkDeletes[message.guild.id..message.channel.id] == nil then bulkDeletes[message.guild.id..message.channel.id] = {} end
   bulkDeletes[message.guild.id..message.channel.id][1+#bulkDeletes[message.guild.id..message.channel.id]] = {content = message.content, author = message.author.tag, id = message.author.id, mention = message.author.mentionString}
   debounceBulk[message.guild.id..message.channel.id] = message.id
-  require("timer").sleep(250)
+  require("timer").sleep(100)
   if debounceBulk[message.guild.id..message.channel.id] ~= message.id then return end
   if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
   local auditlog = message.guild:getAuditLogs({type = 72,limit = 1})

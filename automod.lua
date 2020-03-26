@@ -19,13 +19,29 @@ local function strike(message,data)
     end
   end
   if data.general.mutedrole ~= "nil" and message.guild:getRole(data.general.mutedrole) ~= nil then
-    if hour >= 13 then --// we're just going to start kicking them
+    if hour >= 14 then --// we're just going to start kicking them
       return false
-    elseif hour == 10 then
+    elseif hour == 11 then
       return false
-    elseif thirty == 5 then
+    elseif thirty == 6 then
       return false
-    elseif ten == 3 then
+    elseif ten == 4 then
+      data.moderation.cases[1+#data.moderation.cases] = {type = "mute", user = message.author.id, moderator = "414030463792054282", reason = "Three automod violations in ten minutes.", duration = "5 Minutes", modlog = "nil"}
+      data.moderation.actions[1+#data.moderation.actions] = {type = "mute", duration = os.time() + 300, moderator = "414030463792054282", case = #data.moderation.cases, id = message.author.id}
+      message.guild:getMember(message.author.id):addRole(data.general.mutedrole)
+      if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
+          local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
+          title = "Automatic Mute - Case "..#data.moderation.cases,
+          fields = {
+            {name = "User", value = message.author.tag.." (`"..message.author.id.."`)", inline = false},
+            {name = "Moderator", value = message.guild:getMember("414030463792054282").tag.." (`414030463792054282`)",inline = true},
+            {name = "Duration", value = "5 Minutes", inline = true},
+            {name = "Reason", value = "Three automod violations in ten minutes.", inline = false},
+          },
+          color = 15105570,
+        }}
+        data.moderation.cases[#data.moderation.cases].modlog = modlog.id    
+      end
       return false
     else
       return true
