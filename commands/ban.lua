@@ -40,7 +40,8 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  if message.guild:getMember("414030463792054282"):getPermissions():has("banMembers") == false and message.guild:getMember("414030463792054282"):getPermissions():has("administrator")  == false then return {success = false, msg = "I need the **Ban Members** permission to do this."} end
+  local perms = message.guild:getMember("414030463792054282"):getPermissions()
+  if perms:has("banMembers") == false and perms:has("administrator") == false then return {success = false, msg = "I need the **Ban Members** permission to do this."} end
   if args[2] == nil then return {success = false, msg = "You must provide a **member to "..command.info.Name:lower().."** in argument 2."} end
   local user = utils.resolveUser(message,args[2])
   if user == false and tonumber(args[2]) ~= nil and client:getUser(args[2]) ~= nil then user = client:getUser(args[2]) end
