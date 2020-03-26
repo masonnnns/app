@@ -30,8 +30,21 @@ command.execute = function(message,args,client)
     embed.color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color)
     if inGuild == true then
       embed.fields = {
-        
+        {name = "Mention", value = user.mentionString, inline = true},
+        {name = "ID", value = user.id, inline = true},
+        {name = "Nickname", value = (user.nickname == nil and "None Set." or user.nickname), inline = true},
+        {name = "Status", value = "loading...", inline = true},
+        {name = "Activity", value = "loading...", inline = true},
+        {name = "Server Permission", value = "Member", inline = true},
+        {name = "Created At", value = Date.fromSnowflake(user.id):toISO(' ', ''), inline = true},
+        {name = "Joined At", value = (user.joinedAt and user.joinedAt:gsub('%..*', ''):gsub('T', ' ') or "ERROR"), inline = true},
+        {name = "Roles [0]", value = "None!", inline = false},
+        {name = "Permissions", value = "None!", inline = false},
       }
+      if user.status == "online" then embed.fields[4].value = "Online" end
+      if user.status == "idle" then embed.fields[4].value = "Idle" end
+      if user.status == "dnd" then embed.fields[4].value = "Do Not Disturb" end
+      if user.status == "offline" then embed.fields[4].value = "Offline" end
     end
     message:reply{embed = embed}
     return {success = "stfu"}
