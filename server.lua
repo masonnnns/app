@@ -41,6 +41,9 @@ local function sepMsg(msg)
 	return Args
 end
 
+local cooldown = {}
+--userid..guildid = {time = os.time(), strike = num}
+
 client:on("messageCreate",function(message)
   if message.guild == nil then return end
   if message.author.bot or message.guild.id == nil then return false end
@@ -67,14 +70,26 @@ client:on("messageCreate",function(message)
     local permLvl = require("/app/utils.lua").Permlvl(message,client)
     if found ~= nil and command.info.Category == "Private" and message.author.id == client.owner.id then permLvl = 6 end
     if found == nil or permLvl == 0 and data.general.modonly == true or permLvl < command.info.PermLvl then
+      if data.automod.enabled and require("/app/utils.lua").Permlvl(message,client) == 0 then require("/app/automod.lua")(message,data,client) end
       if found ~= nil and data.general.modonly == false then 
-          local m = message:reply("<:aforbidden:678187354242023434> You **don't have permissions** to use this command!")
-          require("timer").sleep(5000)
-          m:delete()
+        local m = message:reply("<:aforbidden:678187354242023434> You **don't have permissions** to use this command!")
+        require("timer").sleep(5000)
+        m:delete()
       end
     else
+      if cooldown[message.author.id..message.guild.id] ~= nil and cooldown[message.author.id..message.guild.id].time > os.time() then
+        cooldown[message.author.id..message.guild.id].strike = cooldown[message.author.id..message.guild.id].strike + 1
+        if cooldown[message.author.id..message.guild.id] < 3 then
+          local reply = message:reply("⚠️ **Too spicy!** Try running another command in "..cooldown[message.author.id..message.guild.id].time-os.time().." seconds.")
+          require("timer").sleep(5000)
+          reply:delete()
+        end
+        return
+      end
       if message and data.general.delcmd then message:delete() end
       local execute
+      cooldown[message.author.id..message.guild.id] = {time = 0, strike = 0}
+      cooldown[message.author.id..message.guild.id].time = os.time() + (command.info.Cooldown == nil and 1 or command.info.Cooldown)
       local cmdSuccess, cmdMsg = pcall(function() execute = command.execute(message,args,client) end)
       if not (cmdSuccess) then
         message:reply(":rotating_light: **An error occured!** Please report this to our support team.")
@@ -102,7 +117,7 @@ client:on("messageCreate",function(message)
       end
     end
   else
-      if data.automod.enabled then require("/app/automod.lua")(message,data,client) end
+      if data.automod.enabled and require("/app/utils.lua").Permlvl(message,client) == 0 then require("/app/automod.lua")(message,data,client) end
   end
 end)
 

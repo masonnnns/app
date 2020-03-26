@@ -13,7 +13,8 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  if message.guild:getMember("414030463792054282"):getPermissions():has("manageRoles") == false and message.guild:getMember("414030463792054282"):getPermissions():has("administrator")  == false then return {success = false, msg = "I need the **Manage Roles** permission to do this."} end
+  local perms = message.guild:getMember("414030463792054282"):getPermissions()
+  if perms:has("manageRoles") == false and perms:has("administrator")  == false then return {success = false, msg = "I need the **Manage Roles** permission to do this."} end
   if args[2] == nil then return {success = false, msg = "You must provide a user to role."} end
   if args[3] == nil then return {success = false, msg = "You must provide a role to give or take."} end
   local data = config.getConfig(message.guild.id)
