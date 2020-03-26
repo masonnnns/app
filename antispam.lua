@@ -3,7 +3,7 @@ local banned = {}
 local warned = {}
 local messageLog = {}
 
-local warnBuffer = 5
+local warnBuffer = 10
 local maxDuplicatesWarning = 5
 local interval = 5050
 

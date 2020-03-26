@@ -19,13 +19,13 @@ local function strike(message,data)
     end
   end
   if data.general.mutedrole ~= "nil" and message.guild:getRole(data.general.mutedrole) ~= nil then
-    if hour >= 14 then --// we're just going to start kicking them
+    if hour >= 13 then --// we're just going to start kicking them
       return false
-    elseif hour == 11 then
+    elseif hour == 10 then
       return false
-    elseif thirty == 8 then
+    elseif thirty == 5 then
       return false
-    elseif ten == 5 then
+    elseif ten == 3 then
       return false
     else
       return true
