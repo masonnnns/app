@@ -43,8 +43,12 @@ module.resolveUser = function(message,user)
       return message.guild:getMember(message.mentionedUsers[1][1])
     end
   end
-  if tonumber(user) ~= nil and message.guild:getMember(user) ~= nil then
-    return message.guild:getMember(user)
+  if tonumber(user) ~= nil then
+    for _,items in pairs(message.guild.members) do
+      if items.id == user then
+        return items
+      end
+    end
   end
   for _,items in pairs(message.guild.members) do
     if string.sub(items.name,1,string.len(user)):lower() == user:lower() then

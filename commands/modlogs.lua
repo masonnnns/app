@@ -24,23 +24,25 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I couldn't find the user you mentioned."}
   else
     local foundCases = {}
-    for a,items in pairs(data.moderation.cases) do if items.user == user.id or items.id == user.id then foundCases[a] = items end end
+    for a,items in pairs(data.moderation.cases) do if items.user == user.id then foundCases[a] = items else foundCases[a] = "no" end end
     if #foundCases == 0 then
       return {success = false, msg = "**"..user.tag.."** has no modlogs."}
     else
       for a,items in pairs(foundCases) do
-        local type = string.sub(items.type,1,1):upper()..string.sub(items.type,2)
-        if items.moderator == client.user.id and string.sub(type,1,4) ~= "Auto" then type = "Automatic "..type end
-        page[1+#page] = {
-          title = "Case "..a.." - "..type,
-          fields = {},
-          footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-          color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
-        }
-        local modTag = (message.guild:getMember(items.moderator) ~= nil and message.guild:getMember(items.moderator).tag or client:getUser(items.moderator).tag)
-        page[#page].fields[1+#page[#page].fields] = {name = "Moderator", value = modTag.." (`"..items.moderator.."`)", inline = true}
-        if items.duration then page[#page].fields[1+#page[#page].fields] = {name = "Duration", value = items.duration, inline = true} end
-        page[#page].fields[1+#page[#page].fields] = {name = "Reason", value = items.reason, inline = false}
+        if items ~= "no" then
+          local type = string.sub(items.type,1,1):upper()..string.sub(items.type,2)
+          if items.moderator == client.user.id and string.sub(type,1,4) ~= "Auto" then type = "Automatic "..type end
+          page[1+#page] = {
+            title = "Case "..a.." - "..type,
+            fields = {},
+            footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+            color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+          }
+          local modTag = (message.guild:getMember(items.moderator) ~= nil and message.guild:getMember(items.moderator).tag or client:getUser(items.moderator).tag)
+          page[#page].fields[1+#page[#page].fields] = {name = "Moderator", value = modTag.." (`"..items.moderator.."`)", inline = true}
+          if items.duration then page[#page].fields[1+#page[#page].fields] = {name = "Duration", value = items.duration, inline = true} end
+          page[#page].fields[1+#page[#page].fields] = {name = "Reason", value = items.reason, inline = false}
+        end
       end
       require("/app/pages.lua").addDictionary(message,page,message.author.id, "<:aaronwrench:678970116985061417> **"..user.tag.."'s modlog"..(#page == 1 and "" or "s")..":**")
       return {success = "stfu"}
