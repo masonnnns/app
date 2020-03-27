@@ -79,6 +79,33 @@ command.execute = function(message,args,client)
         {name = "ID", value = user.id, inline = true},
         {name = "Created At", value = Date.fromSnowflake(user.id):toISO(' ', ''), inline = true},
       }
+      if #user.mutualGuilds:toArray() ~= 0 then
+        user = user.mutualGuilds:toArray()[1]:getMember(user.id)
+        embed.fields[1+#embed.fields] = {name = "Status", value = "Loading...", inline = true}
+        embed.fields[1+#embed.fields] = {name = "Activity", value = "Nothing", inline = true}
+        if user.status == "online" then embed.fields[4].value = "Online" end
+        if user.status == "idle" then embed.fields[4].value = "Idle" end
+        if user.status == "dnd" then embed.fields[4].value = "Do Not Disturb" end
+        if user.status == "offline" then embed.fields[4].value = "Offline" end
+        if user.activity then
+          if user.activity.type == 4 then --// Custom Status
+            embed.fields[5].value = user.activity.state
+          elseif user.activity.type == 2 then
+            embed.fields[5].value = "Listening to "..user.activity.name
+          elseif user.activity.type == 1 then
+            embed.fields[5].value = "Streaming "..user.activity.name
+          else
+            embed.fields[5].value = "Playing "..user.activity.name
+          end
+        end
+      end
+    end
+    if user.id == "276294288529293312" then
+      embed.fields[1+#embed.fields] = {name = "Notes", value = "AA-R0N Owner and Developer", inline = false}
+    elseif user.id == "414030463792054282" then
+      embed.fields[1+#embed.fields] = {name = "Notes", value = "Official AA-R0N Bot.", inline = false}
+    elseif user.id == "463845841036115978" then
+      embed.fields[1+#embed.fields] = {name = "Notes", value = "Official AA-R0N Development Bot.", inline = false}
     end
     message:reply{embed = embed}
     return {success = "stfu"}
