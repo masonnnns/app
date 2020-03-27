@@ -550,7 +550,6 @@ client:on("guildCreate", function(guild)
 end)
 
 client:on("guildDelete", function(guild)
-  local data = require("/app/config.lua").getConfig(guild.id)
   client:getGuild("551017079797579795"):getChannel("551758183274905600"):send{embed = {
     title = "Guild Removed",
     fields = {

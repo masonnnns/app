@@ -73,6 +73,12 @@ command.execute = function(message,args,client)
       roles = {}
       for a,items in pairs(user:getPermissions():toTable()) do if items == true then roles[1+#roles] = string.sub(a,1,1):upper()..string.sub(a,2) end end
       embed.fields[10].value = table.concat(roles,", ")
+    else
+      embed.fields = {
+        {name = "Mention", value = user.mentionString, inline = true},
+        {name = "ID", value = user.id, inline = true},
+        {name = "Created At", value = Date.fromSnowflake(user.id):toISO(' ', ''), inline = true},
+      }
     end
     message:reply{embed = embed}
     return {success = "stfu"}
