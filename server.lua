@@ -533,4 +533,20 @@ client:on("warning", function(message)
   }}
 end)
 
+client:on("guildCreate", function(guild)
+  local data = require("/app/config.lua").getConfig(guild.id)
+  client:getGuild("551017079797579795"):getChannel("551758183274905600"):send{embed = {
+    title = "Guild Added",
+    fields = {
+      {name = "Guild", value = guild.name.." (`"..guild.id.."`)", inline = true},
+      {name = "Owner", value = guild.owner.tag.." (`"..guild.owner.id.."`)", inline = true},
+      {name = "Members", value = #guild.members, inline = true},
+    },
+    thumbnail = {url = (guild.iconURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or guild.iconURL)},
+    footer = {text = "I am now in "..#client.guilds.." guilds."}
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    color = 3066993,
+  }}
+end)
+
 client:run("Bot NDE0MDMwNDYzNzkyMDU0Mjgy.Xl4MvA.VSNimdDDRzNnA1gwHiOjB_6i6PI")
