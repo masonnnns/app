@@ -36,6 +36,7 @@ command.execute = function(message,args,client)
       end
     end
   end
+  if found ~= nil and require("/app/commands/"..found).info.PermLvl >= 4 and message.author.id ~= client.owner.id then found = nil end
   if found == nil then
     return {success = false, msg = "command still being developed, run the command on specific commands tho"}
   else
@@ -53,7 +54,7 @@ command.execute = function(message,args,client)
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
     }
     if #cmdFound.info.Alias ~= 0 then embed.fields[1+#embed.fields] = {name = "Alias"..(#cmdFound.info.Alias == 1 and "" or "es"), value = table.concat(cmdFound.info.Alias,", "), inline = false} end
-    if cmdFound.info.PermLvl > utils.Permlvl(message,client) then embed.description = "You don't have permissions to run this command." end
+    if cmdFound.info.PermLvl > utils.Permlvl(message,client) and cmdFound.info.PermLvl <= 3 then embed.description = "You don't have permissions to run this command." end
     if cmdFound.info.PermLvl == 1 then embed.fields[5].value = "Moderator" end
     if cmdFound.info.PermLvl == 2 then embed.fields[5].value = "Administrator" end
     if cmdFound.info.PermLvl == 3 then embed.fields[5].value = "Server Owner" end
