@@ -56,22 +56,31 @@ command.info = {
   PermLvl = 4,
 }
 
+local function capsFirst(string)
+  return string.sub(string,1,1):upper()..string.sub(string,2)
+end
+
 command.execute = function(message,args,client)
   local headers = {
     {"app_id", "050df1ed"},
     {"app_key", "dca7fd868c5eba269c58d493e4539a55"}
   }
   local result, body = http.request("GET","https://od-api.oxforddictionaries.com/api/v2/entries/en-us/"..args[2],headers)
-  --print(tableToString(result))
-  if result.code ~= 200 then return {success = false, msg = "I had trouble defining that word. Try again. (HTTP "..result.code..")"}
+  if result.code ~= 200 then return {success = false, msg = "I had trouble defining that word. Try again. (HTTP "..result.code..")"} end
   body = json.decode(body)
-  --body.results[1].lexicalEntries[1].entries[1].senses[1].definitions[1]
-  message:reply{embed = {
-    title = "Definition of "..string.sub(args[2],1,1):upper()..string.sub(args[2],2),
-    description = body.results[1].lexicalEntries[1].entries[1].senses[1].definitions[1],
-    footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+  local embed = {
+    title = "Definition of "..capsFirst(args[2]),
+    description = capsFirst(body.results[1].lexicalEntries[1].entries[1].senses[1].definitions[1])..".",
+    fields = {
+      {name = "Synonyms of "..capsFirst(args[2]), value = "None!", inline = false},   
+    },
+    footer = {icon_url = message.author:getAvatarURL(), text = "By Oxford Dictionary • Responding to "..message.author.tag},
     color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
-  }}
+  }
+  local num = 0
+  if #body.results[1].lexicalEntries[1].entries[1].senses[1].synonyms ~= 0 then embed.fields[1].value = "" end
+  for _,items in pairs(body.results[1].lexicalEntries[1].entries[1].senses[1].synonyms) do num = num+1 if num - 1 == 5 then break end embed.fields[1].value = embed.fields[1].value..", "..capsFirst(items.text) end
+  message:reply{embed = embed}
   return {success = 'stfu'}
 end
 
