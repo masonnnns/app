@@ -10,11 +10,11 @@ local function addConfig(id)
 end
 
 module.isLoaded = function()
-  if #config == 0 then return false else return true end
+  if #config == 0 then return true else return true end
 end
 
 module.setupConfigs = function()
-  --if 1 == 1 then return end
+  if 1 == 1 then return config end
   print("[DB]: Starting Data Loading Process.")
   if io.open("./data.txt","r"):read() == nil or io.open("./data.txt","r"):read() == "" then return config end
   local decode = json.decode(io.open("./data.txt","r"):read())
@@ -43,7 +43,8 @@ module.getConfig = function(id)
     addConfig(id)
     local decode = json.decode(io.open("./data.txt","r"):read())
     if decode[id] ~= nil then
-      for c,d in pairs(b) do
+      local a = id
+      for c,d in pairs(decode[id]) do
         if type(config[a][c]) == "table" then
           for e,f in pairs(d) do
             config[a][c][e] = f
@@ -53,6 +54,7 @@ module.getConfig = function(id)
         end
       end
     end
+    back = config[id]
   end
   local configForSaving = {
 		guilds = {},

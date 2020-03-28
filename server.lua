@@ -45,7 +45,6 @@ local cooldown = {}
 --userid..guildid = {time = os.time(), strike = num}
 
 client:on("messageCreate",function(message)
-  if config.isLoaded == false then return end --// Don't allow commands to be ran before data loads.
   if message.content == nil then return end
   if message.guild == nil then return end
   if message.author.bot or message.guild.id == nil then return false end
@@ -79,9 +78,9 @@ client:on("messageCreate",function(message)
         m:delete()
       end
     else
-      if cooldown[message.author.id..message.guild.id] ~= nil and cooldown[message.author.id..message.guild.id].time > os.time() then
+      if cooldown[message.author.id..message.guild.id] ~= nil and cooldown[message.author.id..message.guild.id].strike > 3 then
         cooldown[message.author.id..message.guild.id].strike = cooldown[message.author.id..message.guild.id].strike + 1
-        if cooldown[message.author.id..message.guild.id].strike < 3 then
+        if cooldown[message.author.id..message.guild.id].strike > 3 and cooldown[message.author.id..message.guild.id].strike < 6 then
           local reply = message:reply("⚠️ **Too spicy!** Try running another command in "..cooldown[message.author.id..message.guild.id].time-os.time().." seconds.")
           require("timer").sleep(5000)
           reply:delete()
@@ -90,8 +89,12 @@ client:on("messageCreate",function(message)
       end
       if message and data.general.delcmd then message:delete() end
       local execute
-      cooldown[message.author.id..message.guild.id] = {time = 0, strike = 0}
-      cooldown[message.author.id..message.guild.id].time = os.time() + (command.info.Cooldown == nil and 2 or command.info.Cooldown)
+      if cooldown[message.author.id..message.guild.id] ~= nil and cooldown[message.author.id..message.guild.id].time > os.time() then
+        cooldown[message.author.id..message.guild.id].strike = cooldown[message.author.id..message.guild.id].strike + 1
+      else
+        cooldown[message.author.id..message.guild.id] = {time = 0, strike = 0}
+        cooldown[message.author.id..message.guild.id].time = os.time() + (command.info.Cooldown == nil and 2 or command.info.Cooldown)
+      end
       local cmdSuccess, cmdMsg = pcall(function() execute = command.execute(message,args,client) end)
       if not (cmdSuccess) then
         message:reply(":rotating_light: **An error occured!** Please report this to our support team.")
@@ -126,12 +129,10 @@ end)
 -- [[ ON READY ]]
 
 client:on("ready", function()
-  client:setGame("Booting - Please wait.")
-  config.setupConfigs('xddd')
   client:setGame("?help")
   while true do
     for id,data in pairs(config.getConfig("*")) do
-      if #data.moderation.actions >= 0 then
+      if data.moderation ~= nil and data.moderation.actions ~= nil and #data.moderation.actions >= 0 then
         for _,items in pairs(data.moderation.actions) do
           if items.duration <= os.time() then
             local guilds = client:getGuild(id)
