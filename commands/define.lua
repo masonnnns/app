@@ -57,7 +57,10 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  local result, body = http.request("GET","https://od-api.oxforddictionaries.com/api/v2/entries/en-us/"..args[2],"{\"app_id\" = \"050df1ed\"}")
+  local headers = {
+    
+  }
+  local result, body = http.request("GET","https://od-api.oxforddictionaries.com/api/v2/entries/en-us/"..args[2],headers)
   print('done')
   print(result,body)
   print(tableToString(result))
