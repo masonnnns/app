@@ -7,8 +7,6 @@ local client = discordia.Client {
 }
 
 local config = require("/app/config.lua")
-config.setupConfigs('xddd')
-
 local Utopia = require('utopia')
 local app = Utopia:new()
 
@@ -47,6 +45,7 @@ local cooldown = {}
 --userid..guildid = {time = os.time(), strike = num}
 
 client:on("messageCreate",function(message)
+  if config.isLoaded == false then return end --// Don't allow commands to be ran before data loads.
   if message.content == nil then return end
   if message.guild == nil then return end
   if message.author.bot or message.guild.id == nil then return false end
@@ -127,6 +126,8 @@ end)
 -- [[ ON READY ]]
 
 client:on("ready", function()
+  client:setGame("Booting - Please wait.")
+  config.setupConfigs('xddd')
   client:setGame("?help")
   while true do
     for id,data in pairs(config.getConfig("*")) do

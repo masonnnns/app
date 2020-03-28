@@ -40,7 +40,7 @@ command.execute = function(message,args,client)
   if found == nil then
     local embed = {
       title = "Commands List",
-      description = "Say **"..data.general.prefix.."<command name>** to use a command.\nSay **"..data.general.prefix.."help <command name>** to view information about a command.",
+      description = "Say **"..data.general.prefix.."<command name>** to use a command.\nSay **"..data.general.prefix.."help <command name>** to view information about a command.\n**[Support Server](https://discordapp.com/invite/PjKaAXx) - [Bot Invite](https://discordapp.com/oauth2/authorize?client_id=414030463792054282&scope=bot&permissions=502787319)**",
       fields = {},
       footer = {icon_url = message.author:getAvatarURL(), text = "From "..message.guild.name},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
@@ -58,6 +58,7 @@ command.execute = function(message,args,client)
         end
       end
     end
+    if message.author.id ~= client.owner.id then for _,items in pairs(embed.fields) do if items.name == "Private" then table.remove(embed.fields,_) end end end
     local result = message.author:getPrivateChannel():send{embed = embed}
     if result == nil or result == false then
       return {success = false, msg = "I couldn't **direct message** you."}

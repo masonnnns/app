@@ -9,16 +9,19 @@ local function addConfig(id)
 	}
 end
 
+module.isLoaded = function()
+  if #config == 0 then return false else return true end
+end
 
 module.setupConfigs = function()
   --if 1 == 1 then return end
   print("[DB]: Starting Data Loading Process.")
   if io.open("./data.txt","r"):read() == nil or io.open("./data.txt","r"):read() == "" then return config end
   local decode = json.decode(io.open("./data.txt","r"):read())
+  print(decode["439866052684283905"])
   for a,b in pairs(decode) do
     addConfig(a)
 	  for c,d in pairs(b) do
-      print(c)
 	  	if type(config[a][c]) == "table" then
         for e,f in pairs(d) do
           config[a][c][e] = f
