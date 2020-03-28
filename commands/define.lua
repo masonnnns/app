@@ -62,8 +62,10 @@ command.execute = function(message,args,client)
     {"app_key", "dca7fd868c5eba269c58d493e4539a55"}
   }
   local result, body = http.request("GET","https://od-api.oxforddictionaries.com/api/v2/entries/en-us/"..args[2],headers)
-  print(tableToString(body)
-  --message:reply("```lua\n"..tableToString(body.results[1]).."```")
+  --print(tableToString(result))
+  message:reply{file = {args[2]..".txt", body}}
+  body = json.decode(body)
+  for a,b in pairs(body.results) do print(a,b) end
 end
 
 return command
