@@ -58,7 +58,8 @@ command.info = {
 
 command.execute = function(message,args,client)
   local result, body = http.request("GET","https://od-api.oxforddictionaries.com/api/v2/entries/en-us/"..args[2],"{\"app_id\" = \"050df1ed\"}")
-  
+  print('done')
+  print(result,body)
   print(tableToString(result))
   print("--")
   print(body)
