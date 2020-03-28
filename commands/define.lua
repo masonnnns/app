@@ -10,7 +10,7 @@ command.info = {
   Alias = {},
   Usage = "define <word>",
   Category = "Fun",
-  Description = "Get a definition for the specified word.",
+  Description = "Get a definition for the specified word.\n`*` We are not responsible for innapropriate results.",
   PermLvl = 0,
   Cooldown = 5,
 }
