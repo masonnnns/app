@@ -37,6 +37,7 @@ module.setupConfigs = function()
 end
 
 module.getConfig = function(id)
+  if id == "*" then return config end
   local back
   if config[id] ~= nil then back = config[id] end
   if back == nil then

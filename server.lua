@@ -80,7 +80,7 @@ client:on("messageCreate",function(message)
     else
       if cooldown[message.author.id..message.guild.id] ~= nil and cooldown[message.author.id..message.guild.id].time > os.time() then
         cooldown[message.author.id..message.guild.id].strike = cooldown[message.author.id..message.guild.id].strike + 1
-        if cooldown[message.author.id..message.guild.id].strike < 3 then
+        if cooldown[message.author.id..message.guild.id].strike == 1 then
           local reply = message:reply("⚠️ **Too spicy!** Try running another command in "..cooldown[message.author.id..message.guild.id].time-os.time().." seconds.")
           require("timer").sleep(5000)
           reply:delete()
