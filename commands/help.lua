@@ -11,7 +11,7 @@ command.info = {
   Usage = "help <command>",
   Category = "Information",
   Description = "View a list of commands or get information on a specific commmand.",
-  PermLvl = 1,
+  PermLvl = 0,
 } 
 
 command.execute = function(message,args,client)
@@ -37,6 +37,7 @@ command.execute = function(message,args,client)
     end
   end
   if found == nil then
+    return {success = false, msg = "command still being developed, run the command on specific commands tho"}
   else
     local cmdFound = require("/app/commands/"..found)
     local embed = {
