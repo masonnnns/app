@@ -18,7 +18,6 @@ module.setupConfigs = function()
   print("[DB]: Starting Data Loading Process.")
   if io.open("./data.txt","r"):read() == nil or io.open("./data.txt","r"):read() == "" then return config end
   local decode = json.decode(io.open("./data.txt","r"):read())
-  print(decode["439866052684283905"])
   for a,b in pairs(decode) do
     addConfig(a)
 	  for c,d in pairs(b) do
@@ -38,6 +37,36 @@ module.setupConfigs = function()
 end
 
 module.getConfig = function(id)
+  local back
+  if config[id] ~= nil then back = config[id] end
+  if back == nil then
+    addConfig(id)
+    local decode = json.decode(io.open("./data.txt","r"):read())
+    if decode[id] ~= nil then
+      for c,d in pairs(b) do
+        if type(config[a][c]) == "table" then
+          for e,f in pairs(d) do
+            config[a][c][e] = f
+          end
+        else
+          config[a][c] = d
+        end
+      end
+    end
+  end
+  local configForSaving = {
+		guilds = {},
+	}
+	for a,b in pairs(config) do
+		configForSaving.guilds[a] = b
+	end
+	file = io.open("./data.txt", "w+") 
+  file:write(json.encode(configForSaving.guilds))
+	file:close()
+  return back
+end
+
+--[[module.getConfig = function(id)
   if id == "*" then return config end
   if config[id] == nil then addConfig(id) end
   local configForSaving = {
@@ -50,7 +79,7 @@ module.getConfig = function(id)
   file:write(json.encode(configForSaving.guilds))
 	file:close()
   return config[id]
-end
+end--]]
 
 module.updateConfig = function(id,newTable)
   config[id] = newTable
