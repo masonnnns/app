@@ -22,11 +22,11 @@ local function capsFirst(str)
     local upper = {}
     for _,items in pairs(str) do
       if items ~= nil then
-        local up = string.sub(items,1,1):upper()..string.sub(items,2)
-        upper[1+#upper] = up
+        items = items:lower()
+        upper[1+#upper] = string.sub(items,1,1):upper()..string.sub(items,2)
       end
     end
-    return table.concat(uppper," ")
+    return table.concat(upper," ")
   end
 end
 
@@ -63,7 +63,7 @@ command.execute = function(message,args,client)
   if body.results[1].lexicalEntries[1].entries[1].senses[1].examples == nil or #body.results[1].lexicalEntries[1].entries[1].senses[1].examples == 0 then
     table.remove(embed.fields,#embed.fields)
   else
-    for _,items in pairs(body.results[1].lexicalEntries[1].entries[1].senses[1].examples) do num = num + 1 if num - 1 == 2 then break end if embed.fields[#embed.fields].value == "" then embed.fields[#embed.fields].value = capsFirst(items.text) else embed.fields[#embed.fields].value = embed.fields[#embed.fields].value.."\n"..capsFirst(items.text) end end
+    for _,items in pairs(body.results[1].lexicalEntries[1].entries[1].senses[1].examples) do num = num + 1 if num - 1 == 2 then break end if embed.fields[#embed.fields].value == "" then embed.fields[#embed.fields].value = capsFirst(items.text).."." else embed.fields[#embed.fields].value = embed.fields[#embed.fields].value.."\n"..capsFirst(items.text).."." end end
   end
   if #embed.fields == 0 then embed.fields = nil end
   message:reply{embed = embed}
