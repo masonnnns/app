@@ -5,6 +5,48 @@ local config = require("/app/config.lua")
 local http = require("coro-http")
 local json = require('json')
 
+local function getNames(tab,name,res,lev)
+	res = res or {[tab]="ROOT"}
+	local pls = {} lev = lev or 0
+	for k,v in pairs(tab) do
+		if type(v) == "table" and not res[v] then
+			local n = name.."."..tostring(k)
+			res[v] = n pls[v] = n
+		end
+	end
+	for k,v in pairs(pls) do
+		getNames(k,v,res)
+		pls[k] = lev
+	end return res,pls
+end
+
+local function tableToString(tab,a,b,c,d)
+	a,b = a or 0, b or {[tab]=true}
+	local name = b[tab]
+	local white = ("\t"):rep(a+1)
+	if not c then
+		c,d = getNames(tab,"ROOT")
+	end local res = {"{"}
+	for k,v in pairs(tab) do
+		local value
+		if type(v) == "table" then
+			if d[v] == a and not b[v] then
+				b[v] = true
+				value = tableToString(v,a+1,b,c,d)
+			else
+				value = c[v]
+			end
+		elseif type(v) == "string" then
+			value = '"'..v:gsub("\n","\\n"):gsub("\t","\\t")..'"'
+		else
+			value = tostring(v)
+		end
+		table.insert(res,white..tostring(k).." = "..value)
+	end white = white:sub(2)
+	table.insert(res,white.."}")
+	return table.concat(res,"\n")
+end
+
 command.info = {
   Name = "Define",
   Alias = {},
@@ -34,24 +76,27 @@ command.execute = function(message,args,client)
     description = capsFirst(body.results[1].lexicalEntries[1].entries[1].senses[1].definitions[1])..".",
     fields = {
       {name = "Synonyms", value = "", inline = false},
-      {name = "Examples", value = "", inline = false},
+      {name = "Examples", value = "ERR", inline = false},
     },
     footer = {icon_url = message.author:getAvatarURL(), text = "By Oxford Dictionary • Responding to "..message.author.tag},
     color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
   }
   local num = 0
-  if body.results[1].lexicalEntries[1].entries[1].senses[1].synonyms == nil then
+  if body.results[1].lexicalEntries[1].entries[1].senses[1].synonyms == nil or #body.results[1].lexicalEntries[1].entries[1].senses[1].synonyms == 0 then
     embed.fields[1] = nil
   else
     if #body.results[1].lexicalEntries[1].entries[1].senses[1].synonyms ~= 0 then embed.fields[1].value = "" end
     for _,items in pairs(body.results[1].lexicalEntries[1].entries[1].senses[1].synonyms) do num = num+1 if num - 1 == 5 then break end if embed.fields[1].value == "" then embed.fields[1].value = capsFirst(items.text) else embed.fields[1].value = embed.fields[1].value..", "..capsFirst(items.text) end end
   end
-  if body.results[1].lexicalEntries[1].entries[1].senses[1].examples == nil then
-    if #embed.fields == 2 then embed.fields[2] = nil else embed.fields[1] = nil end
+  num = 0
+  if body.results[1].lexicalEntries[1].entries[1].senses[1].examples == nil or #body.results[1].lexicalEntries[1].entries[1].senses[1].examples == 0 then
+    embed.fields[#embed.fields] = nil
   else
-    local field = (#embed.fields == 2 and embed.fields[2] or embed.fields[1])
-    for _,items in pairs(body.results[1].lexicalEntries[1].entries[1].senses[1].examples) do if fields.value == "" then fields.value = capsFirst(items.text) else fields.value = fields.value.."\n"..capsFirst(items.text) end end
+    for _,items in pairs(body.results[1].lexicalEntries[1].entries[1].senses[1].examples) do num = num + 1 if num - 1 == 2 then break end if embed.fields[#embed.fields].value == "" then embed.fields[#embed.fields].value = capsFirst(items.text) else embed.fields[#embed.fields].value = embed.fields[#embed.fields].value.."\n"..capsFirst(items.text) end end
   end
+  print(tableToString(embed))
+  for _,items in pairs(embed.fields) do print(tableToString(items)) end
+  if #embed.fields == 0 then embed.fields = nil end
   message:reply{embed = embed}
   return {success = 'stfu'}
 end
