@@ -63,9 +63,16 @@ command.execute = function(message,args,client)
   }
   local result, body = http.request("GET","https://od-api.oxforddictionaries.com/api/v2/entries/en-us/"..args[2],headers)
   --print(tableToString(result))
-  message:reply{file = {args[2]..".txt", body}}
+  if result.code ~= 200 then return {success = false, msg = "I had trouble defining that word. Try again. (HTTP "..result.code..")"}
   body = json.decode(body)
-  for a,b in pairs(body.results) do print(a,b) end
+  --body.results[1].lexicalEntries[1].entries[1].senses[1].definitions[1]
+  message:reply{embed = {
+    title = "Definition of "..string.sub(args[2],1,1):upper()..string.sub(args[2],2),
+    description = body.results[1].lexicalEntries[1].entries[1].senses[1].definitions[1],
+    footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+    color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+  }}
+  return {success = 'stfu'}
 end
 
 return command
