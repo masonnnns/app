@@ -180,9 +180,29 @@ end)
 
 -- [[ EVENTS ]]
 
-client:on("reactionAdd", function(reaction, userId) 
-  local page = require("/app/pages.lua")
-  page.processReaction(reaction,userId)
+client:on("reactionAdd", function(reaction, userId)
+  if reaction.emojiName == "⬅️" or reaction.emojiName == "➡️" or reaction.emojiName== "⏮️" or reaction.emojiName == "⏭️" then
+    local page = require("/app/pages.lua")
+    page.processReaction(reaction,userId)
+  elseif reaction == ⭐ and config.getConfig(reaction.message.guild.id).starboard.enabled then
+    local data = config.getConfig(reaction.message.guild.id)
+    if data.starboard.messages[reaction.message.id] == nil then
+      data.starboard.messages[reaction.message.id] = {stars = 1, starboardID = "nil", message = {channel = reaction.message.channel.id, id = reaction.message.id}}
+    end
+    if data.starboard.channel == "nil" or reaction.message.guild:getChannel(data.starboard.channel) == nil then return end
+    if data.starboard.messages[reaction.message.id].stars >= data.starboard.threshold then
+      local author = reaction.message.guild:getMember(reaction.message.author.id)
+      local msg = reaction.message.guild:getChannel(data.starboard.channel):send{
+        embed = {
+          author = {name = (author.nickname == nil and author.tag or author.nickname.." ("..author.tag..")"), icon_url = (author.user.avatarURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or author.user.avatarURL)}
+          description = reaction.message.content,
+          footer = {text = "ID: "..reaction.message.id},
+          timestamp = require("discordia").Date():toISO('T', 'Z'),
+        },
+        content = ":star: **"..
+      }
+    end
+  end
 end)
 
 local bulkDeletes = {}
