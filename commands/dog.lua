@@ -6,7 +6,7 @@ local json = require("json")
 
 command.info = {
   Name = "Dog",
-  Alias = {},
+  Alias = {"woof"},
   Usage = "dog",
   Category = "Fun",
   Description = "Get a random picture of a dog.",
@@ -18,6 +18,7 @@ command.execute = function(message,args,client)
   body = json.decode(body)
   if result.code ~= 200 or body.status ~= "success" then return {success = false, msg = "I'm having trouble fetching a picture. Try again. (HTTP "..result.code..")"} end
   message:reply{embed = {
+    title = "Woof!",
     description = "Having trouble viewing the image? [Click here]("..body.message..")",
     image = {url = body.message},
     footer = {icon_url = message.author:getAvatarURL(), text = "By dog.ceo • Responding to "..message.author.tag},
