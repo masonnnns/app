@@ -8,7 +8,7 @@ local json = require("json")
 command.info = {
   Name = "covid-19",
   Alias = {"corona", "coronavirus"},
-  Usage = "covid-19 <optional country>",
+  Usage = "covid-19",
   Category = "Information",
   Description = "Get statistics about the COVID-19 pandemic.",
   PermLvl = 0,
@@ -25,7 +25,7 @@ command.execute = function(message,args,client)
     fields = {
       {name = "Cases", value = utils.addCommas(body.cases), inline = true},
       {name = "Deaths", value = utils.addCommas(body.deaths), inline = true},
-       {name = "Recoveries", value = utils.addCommas(body.recovered), inline = true},    
+      {name = "Recoveries", value = utils.addCommas(body.recovered), inline = true},    
     },
     footer = {icon_url = message.author:getAvatarURL(), text = "By Worldometers • Responding to "..message.author.tag},
     color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
