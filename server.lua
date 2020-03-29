@@ -125,6 +125,7 @@ end)
 -- [[ ON READY ]]
 
 client:on("ready", function()
+  config.setupConfigs("xd")
   client:setGame("?help")
   while true do
     for id,data in pairs(config.getConfig("*")) do
