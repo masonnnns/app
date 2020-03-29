@@ -15,6 +15,7 @@ command.info = {
 } 
 
 command.execute = function(message,args,client)
+  if config.getConfig(message.guild.id).general.funlock and message.channel.nsfw == false then return {success = false, msg = "You must be in a **NSFW Channel** to use this command. You can disable this by running **"..config.getConfig(message.guild.id).general.prefix.."config nolock**"} end
   message.channel:broadcastTyping()
   local result, body = http.request("GET","https://meme-api.herokuapp.com/gimme")
   body = json.decode(body)

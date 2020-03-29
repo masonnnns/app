@@ -14,6 +14,7 @@ command.info = {
 } 
 
 command.execute = function(message,args,client)
+  if config.getConfig(message.guild.id).general.funlock and message.channel.nsfw == false then return {success = false, msg = "You must be in a **NSFW Channel** to use this command. You can disable this by running **"..config.getConfig(message.guild.id).general.prefix.."config nolock**"} end
   local result, body = http.request("GET","https://api.thecatapi.com/v1/images/search")
   body = json.decode(body)
   if result.code ~= 200 then return {success = false, msg = "I'm having trouble fetching a picture. Try again. (HTTP "..result.code..")"} end

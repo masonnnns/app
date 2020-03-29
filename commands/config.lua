@@ -26,6 +26,9 @@ command.execute = function(message,args,client)
     if data.automod.enabled == false and args[3]:lower() ~= "toggle" then return {success = false, msg = "This plugin is disabled, enable it to edit it's settings."} end
     local xd = require("/app/commands/configcmds/automod.lua")(message,args,client,data)
     return xd
+  elseif args[2] == "nolock" then
+    data.general.funlock = not data.general.funlock
+    return {success = true, msg = "**"..(data.general.funlock and "Enabled" or "Disabled").."** the NSFW Channel lock on fun commands."}
   else
     local pages = {}
     pages[1] = {
