@@ -9,19 +9,20 @@ command.info = {
   Alias = {},
   Usage = "meme",
   Category = "Fun",
-  Description = "Get a random picture of a dog.",
+  Description = "Get a random meme.",
   PermLvl = 0,
+  Cooldown = 3,
 } 
 
 command.execute = function(message,args,client)
-  local result, body = http.request("GET","https://dog.ceo/api/breeds/image/random")
+  message.channel:broadcastTyping()
+  local result, body = http.request("GET","https://meme-api.herokuapp.com/gimme")
   body = json.decode(body)
-  if result.code ~= 200 or body.status ~= "success" then return {success = false, msg = "I'm having trouble fetching a picture. Try again. (HTTP "..result.code..")"} end
+  if result.code ~= 200 then return {success = false, msg = "I'm having trouble fetching a meme. Try again. (HTTP "..result.code..")"} end
   message:reply{embed = {
-    title = "Woof!",
-    description = "Having trouble viewing the image? [Click here]("..body.message..")",
-    image = {url = body.message},
-    footer = {icon_url = message.author:getAvatarURL(), text = "By dog.ceo • Responding to "..message.author.tag},
+    title = body.title,
+    image = {url = body.url},
+    footer = {icon_url = message.author:getAvatarURL(), text = "By Reddit • Responding to "..message.author.tag},
     color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
   }}
   return {success = "stfu"}
