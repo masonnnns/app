@@ -203,12 +203,12 @@ client:on("reactionAdd", function(reaction, userId)
             timestamp = require("discordia").Date():toISO('T', 'Z'),
             color = 15844367,
           },
-          content = ":star: **"..data.starboard.messages[reaction.message.id].stars.." Stars**",
+          content = ":star: **"..data.starboard.messages[reaction.message.id].stars.." stars**",
         }
         data.starboard.messages[reaction.message.id].starboardID = msg.id
       else
         if reaction.message.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[reaction.message.id].starboardID) then
-          reaction.message.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[reaction.message.id].starboardID):setContent(":star: **"..data.starboard.messages[reaction.message.id].stars.."**")
+          reaction.message.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[reaction.message.id].starboardID):setContent(":star: **"..data.starboard.messages[reaction.message.id].stars.." stars**")
         end
       end
     end
@@ -226,7 +226,7 @@ client:on("reactionAddUncached", function(channel, messageId, hash, userId)
     if data.starboard.messages[messageId].stars >= data.starboard.threshold then
       if data.starboard.channel == "nil" or channel.guild:getChannel(data.starboard.channel) == nil then return end
       if data.starboard.messages[messageId].starboardID == "nil" then
-        local author = channel.guild:getMember(userId)
+        local author = channel.guild:getMember(channel:getMessage(messageId).author.id)
         local msg = channel.guild:getChannel(data.starboard.channel):send{
           embed = {
             author = {name = (author.nickname == nil and author.tag or author.nickname.." ("..author.tag..")"), icon_url = (author.user.avatarURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or author.user.avatarURL)},
@@ -235,13 +235,45 @@ client:on("reactionAddUncached", function(channel, messageId, hash, userId)
             timestamp = require("discordia").Date():toISO('T', 'Z'),
             color = 15844367,
           },
-          content = ":star: **"..data.starboard.messages[messageId].stars.." Stars**",
+          content = ":star: **"..data.starboard.messages[messageId].stars.." stars**",
         }
         data.starboard.messages[messageId].starboardID = msg.id
       else
         if channel.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[messageId].starboardID) then
-          channel.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[messageId].starboardID):setContent(":star: **"..data.starboard.messages[messageId].stars.." Stars**")
+          channel.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[messageId].starboardID):setContent(":star: **"..data.starboard.messages[messageId].stars.." stars**")
         end
+      end
+    end
+  end
+end)
+
+client:on('reactionRemove', function(reaction, userId)
+  if reaction.emojiName == "⭐" and config.getConfig(reaction.message.guild.id).starboard.enabled then
+    local data = config.getConfig(message.guild.id)
+    if data.starboard.messages[reaction.message.id] ~= nil then
+      data.starboard.messages[reaction.message.id].stars = data.starboard.messages[reaction.message.id].stars - 1
+      if data.starboard.channel == "nil" or reaction.message.guild:getChannel(data.starboard.channel) == nil then return end
+      local channel = reaction.message.guild:getChannel(data.starboard.channel)
+      local msg = channel:getMessage(data.starboard.messages[reaction.message.id].starboardID)
+      if msg then
+        if data.starboard.messages[reaction.message.id].stars == 0 then msg:delete() return end
+        msg:setContent(":star: **"..data.starboard.messages[reaction.message.id].stars.." stars**")
+      end
+    end
+  end
+end)
+
+client:on('reactionRemoveUncached', function(channel, messageId, hash, userId)
+  if hash == "⭐" and config.getConfig(channel.guild.id).starboard.enabled then
+    local data = config.getConfig(channel.guild.id)
+    if data.starboard.messages[messageId] ~= nil then
+      data.starboard.messages[messageId].stars = data.starboard.messages[messageId].stars - 1
+      if data.starboard.channel == "nil" or channel.guild:getChannel(data.starboard.channel) == nil then return end
+      local channels = channel.guild:getChannel(data.starboard.channel)
+      local msg = channels:getMessage(data.starboard.messages[messageId].starboardID)
+      if msg then
+        if data.starboard.messages[messageId].stars == 0 then msg:delete() return end
+        msg:setContent(":star: **"..data.starboard.messages[messageId].stars.." stars**")
       end
     end
   end
