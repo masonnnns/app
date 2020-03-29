@@ -7,6 +7,7 @@ local client = discordia.Client {
 }
 
 local config = require("/app/config.lua")
+config.setupConfigs("xd")
 local Utopia = require('utopia')
 local app = Utopia:new()
 
@@ -45,7 +46,6 @@ local cooldown = {}
 --userid..guildid = {time = os.time(), strike = num}
 
 client:on("messageCreate",function(message)
-  if config.isLoaded() == false then return end
   if message.content == nil then return end
   if message.guild == nil then return end
   if message.author.bot or message.guild.id == nil then return false end
@@ -129,7 +129,6 @@ end)
 -- [[ ON READY ]]
 
 client:on("ready", function()
-  config.setupConfigs("xd")
   client:setGame("?help")
   while true do
     for id,data in pairs(config.getConfig("*")) do
