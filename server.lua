@@ -45,6 +45,7 @@ local cooldown = {}
 --userid..guildid = {time = os.time(), strike = num}
 
 client:on("messageCreate",function(message)
+  if config.isLoaded() == false then return end
   if message.content == nil then return end
   if message.guild == nil then return end
   if message.author.bot or message.guild.id == nil then return false end
@@ -80,16 +81,19 @@ client:on("messageCreate",function(message)
     else
       if cooldown[message.author.id..message.guild.id] ~= nil and cooldown[message.author.id..message.guild.id].time > os.time() then
         cooldown[message.author.id..message.guild.id].strike = cooldown[message.author.id..message.guild.id].strike + 1
-        if cooldown[message.author.id..message.guild.id].strike == 1 then
-          local reply = message:reply("⚠️ **Too spicy!** Try running another command in "..cooldown[message.author.id..message.guild.id].time-os.time().." seconds.")
-          require("timer").sleep(5000)
-          reply:delete()
+        if cooldown[message.author.id..message.guild.id].strike >= 2 then
+          if cooldown[message.author.id..message.guild.id].strike == 2 then
+            local reply = message:reply("⚠️ **Too spicy!** Try running another command in "..cooldown[message.author.id..message.guild.id].time-os.time().." seconds.")
+            require("timer").sleep(5000)
+            reply:delete()
+          end
+          return
         end
-        return
+      else
+          cooldown[message.author.id..message.guild.id] = {time = 0, strike = 0}
       end
       if message and data.general.delcmd then message:delete() end
       local execute
-      cooldown[message.author.id..message.guild.id] = {time = 0, strike = 0}
       cooldown[message.author.id..message.guild.id].time = os.time() + (command.info.Cooldown == nil and 2 or command.info.Cooldown)
       local cmdSuccess, cmdMsg = pcall(function() execute = command.execute(message,args,client) end)
       if not (cmdSuccess) then

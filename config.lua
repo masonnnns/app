@@ -11,7 +11,7 @@ local function addConfig(id)
 end
 
 module.isLoaded = function()
-  if #config == 0 then return true else return true end
+  if #config == 0 then return false else return true end
 end
 
 module.setupConfigs = function()

@@ -38,9 +38,10 @@ command.execute = function(message,args,client)
     {"app_key", "dca7fd868c5eba269c58d493e4539a55"}
   }
   local result, body = http.request("GET","https://od-api.oxforddictionaries.com/api/v2/entries/en-us/"..table.concat(args," "):lower(),headers)
-  if result.code == 404 then return {success = false, msg = "I couldn't find a defionition for that word."} end
+  if result.code == 404 then return {success = false, msg = "I couldn't find a definition for that word."} end
   if result.code ~= 200 then return {success = false, msg = "I had trouble defining that word. Try again. `(HTTP "..result.code..")`"} end
   body = json.decode(body)
+  if body.results[1].lexicalEntries[1].entries[1].senses[1].definitions == nil then return {success = false, msg = "I couldn't find a definition for that word."} end
   local meaning = body.results[1].lexicalEntries[1].entries[1].senses[1].definitions[1]
   local embed = {
     title = "Definition of "..capsFirst(args),
