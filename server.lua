@@ -201,12 +201,47 @@ client:on("reactionAdd", function(reaction, userId)
             description = reaction.message.content,
             footer = {text = "ID: "..reaction.message.id},
             timestamp = require("discordia").Date():toISO('T', 'Z'),
+            color = 15844367,
           },
           content = ":star: **"..data.starboard.messages[reaction.message.id].stars.." Stars**",
         }
         data.starboard.messages[reaction.message.id].starboardID = msg.id
       else
-        if reaction.message.guild:getChannel(data.starboard.channel):getMessage()
+        if reaction.message.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[reaction.message.id].starboardID) then
+          reaction.message.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[reaction.message.id].starboardID):setContent(":star: **"..data.starboard.messages[reaction.message.id].stars.."**")
+        end
+      end
+    end
+  end
+end)
+
+client:on("reactionAddUncached", function(channel, messageId, hash, userId)
+  if hash == "⭐" and config.getConfig(channel.guild.id).starboard.enabled then
+    local data = config.getConfig(channel.guild.id)
+    if data.starboard.messages[messageId] == nil then
+      data.starboard.messages[messageId] = {stars = 1, starboardID = "nil", message = {channel = channel.id, id = messageId}}
+    else
+      data.starboard.messages[messageId].stars = data.starboard.messages[messageId].stars + 1
+    end
+    if data.starboard.messages[messageId].stars >= data.starboard.threshold then
+      if data.starboard.channel == "nil" or channel.guild:getChannel(data.starboard.channel) == nil then return end
+      if data.starboard.messages[messageId].starboardID == "nil" then
+        local author = channel.guild:getMember(userId)
+        local msg = channel.guild:getChannel(data.starboard.channel):send{
+          embed = {
+            author = {name = (author.nickname == nil and author.tag or author.nickname.." ("..author.tag..")"), icon_url = (author.user.avatarURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or author.user.avatarURL)},
+            description = channel:getMessage(messageId).content,
+            footer = {text = "ID: "..messageId},
+            timestamp = require("discordia").Date():toISO('T', 'Z'),
+            color = 15844367,
+          },
+          content = ":star: **"..data.starboard.messages[messageId].stars.." Stars**",
+        }
+        data.starboard.messages[messageId].starboardID = msg.id
+      else
+        if channel.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[messageId].starboardID) then
+          channel.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[messageId].starboardID):setContent(":star: **"..data.starboard.messages[messageId].stars.." Stars**")
+        end
       end
     end
   end
