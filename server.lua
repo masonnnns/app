@@ -208,8 +208,14 @@ client:on("reactionAdd", function(reaction, userId)
         }
         data.starboard.messages[reaction.message.id].starboardID = msg.id
       else
-        if reaction.message.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[reaction.message.id].starboardID) then
-          reaction.message.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[reaction.message.id].starboardID):setContent(":star: **"..data.starboard.messages[reaction.message.id].stars.."**")
+        local msg =  reaction.message.guild:getChannel(data.starboard.channel):getMessage(data.starboard.messages[reaction.message.id].starboardID)
+        if msg then
+         msg:setContent(":star: **"..data.starboard.messages[reaction.message.id].stars.."**")
+         if msg.embed.description ~= reaction.message.content then
+           local embeds = msg.embed
+           emebds.description = reaction.message.content
+           msg:setEmbed(embeds)
+         end
         end
       end
     end
