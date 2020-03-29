@@ -6,9 +6,9 @@ local http = require('coro-http')
 local json = require("json")
 
 command.info = {
-  Name = "covid-19",
+  Name = "COVID-19",
   Alias = {"corona", "coronavirus"},
-  Usage = "covid-19",
+  Usage = "COVID-19",
   Category = "Information",
   Description = "Get statistics about the COVID-19 pandemic.",
   PermLvl = 0,
