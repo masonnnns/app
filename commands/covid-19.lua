@@ -16,24 +16,20 @@ command.info = {
 } 
 
 command.execute = function(message,args,client)
-  if args[2] == nil then
-    local result, body = http.request("GET","https://coronavirus-19-api.herokuapp.com/all")
-    body = json.decode(body)
-    if result.code ~= 200 then return {success = false, msg = "I'm having trouble fetching the latest global COVID-19 statistics. Try again. (HTTP "..result.code..")"} end
-    message:reply{embed = {
-      title = "COVID-19 Statistics",
-      description = "For the most up-to-date information and other information consult the [World Health Organization](https://www.who.int/emergencies/diseases/novel-coronavirus-2019) and your local health organization's website.",
-      fields = {
-        {name = "Cases", value = utils.addCommas(body.cases), inline = true},
-        {name = "Deaths", value = utils.addCommas(body.deaths), inline = true},
-        {name = "Recoveries", value = utils.addCommas(body.recovered), inline = true},    
-      },
-      footer = {icon_url = message.author:getAvatarURL(), text = "By Worldometers • Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
-    }}
-  else
-    
-  end
+  local result, body = http.request("GET","https://coronavirus-19-api.herokuapp.com/all")
+  body = json.decode(body)
+  if result.code ~= 200 then return {success = false, msg = "I'm having trouble fetching the latest global COVID-19 statistics. Try again. (HTTP "..result.code..")"} end
+  message:reply{embed = {
+    title = "COVID-19 Statistics",
+    description = "For the most up-to-date information and other information consult the [World Health Organization](https://www.who.int/emergencies/diseases/novel-coronavirus-2019) and your local health organization's website.",
+    fields = {
+      {name = "Cases", value = utils.addCommas(body.cases), inline = true},
+      {name = "Deaths", value = utils.addCommas(body.deaths), inline = true},
+       {name = "Recoveries", value = utils.addCommas(body.recovered), inline = true},    
+    },
+    footer = {icon_url = message.author:getAvatarURL(), text = "By Worldometers • Responding to "..message.author.tag},
+    color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+  }}
   return {success = "stfu"}
 end
 
