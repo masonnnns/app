@@ -43,7 +43,11 @@ end
 local module = {}
 
 module.request = function(res, req)
-  print(tableToString(res))
+  if res.req.url == "/" or res.req.url == "/favicon.ico" then return end
+  if res.req.headers[6][1] ~= "api-key" then return "403 - Service Unavailable"
+  print(res.req.url)
+  print(res.req.headers[6][1])
+  --for a,b in pairs(res.req.headers) do print(a,b) for c,d in pairs(b) do print(c,d) end end
 end
 
 return module

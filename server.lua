@@ -13,6 +13,7 @@ local app = Utopia:new()
 
 app:use(function (req, res)
   local api = require("/app/api.lua").request(res, req)
+  res:status
   res:finish('lol')
 end)
 
