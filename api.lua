@@ -56,8 +56,6 @@ module.request = function(res, req, client)
     if data[res.req.headers[7][2]] == nil then return "404 - Not Found" end
     return json.encode(data[res.req.headers[7][2]])
   end
-  print(res.req.url)
-  print(res.req.headers[6][1])
   --for a,b in pairs(res.req.headers) do print(a,b) for c,d in pairs(b) do print(c,d) end end
 end
 
