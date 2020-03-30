@@ -456,9 +456,10 @@ client:on("memberJoin", function(member)
     fields = {
       {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
       {name = "Guild Members", value = #member.guild.members, inline = true},
-      {name = "Created At", value = discordia.Date.fromSnowflake(member.id):toISO(' ', ''), inline = false}
+      {name = "Created At", value = require("/app/utils.lua").parseDateString(discordia.Date.fromSnowflake(member.id):toString(),1), inline = false}
     },
   }
+  if os.time() + 3600 >= discordia.Date.fromSnowflake(member.id):toSeconds() then log.description = ":warning: **New Account**" end
   member.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 

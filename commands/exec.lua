@@ -120,6 +120,7 @@ command.execute = function(message,args,client)
   if args[2] == nil then return {success = false, msg = "You must provide **code to execute**."} end
   sandbox.client = client
   sandbox.config = require("/app/config.lua")
+  sandbox.utils = require("/app/utils.lua")
   sandbox.date = require("discordia").Date
   sandbox.timer = require("timer")
   local code = exec(table.concat(args," ",2),message)

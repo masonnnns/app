@@ -37,7 +37,7 @@ command.execute = function(message,args,client)
         {name = "Activity", value = "Nothing!", inline = true},
         {name = "Server Permission", value = "Member", inline = true},
         {name = "Created At", value = utils.parseDateString(Date.fromSnowflake(user.id):toString(),1), inline = true},
-        {name = "Joined At", value = (user.joinedAt and user.joinedAt:gsub('%..*', ''):gsub('T', ' ') or "ERROR"), inline = true},
+        {name = "Joined At", value = (user.joinedAt and utils.parseDateString(Date(Date.parseISO(user.joinedAt)):toString(),1) or "ERROR"), inline = true},
         {name = "Roles [0]", value = "None!", inline = false},
         {name = "Permissions", value = "None!", inline = false},
       }

@@ -33,7 +33,7 @@ command.execute = function(message,args,client)
       {name = "Color", value = role:getColor():toHex(), inline = true},
       {name = "Members", value = (#role.members == 0 and "None!" or #role.members), inline = true},
       {name = "Position", value = role.position.."/"..#message.guild.roles, inline = true},
-      {name = "Created At", value = Date.fromSnowflake(role.id):toISO(' ', ''), inline = true},
+      {name = "Created At", value = utils.parseDateString(Date.fromSnowflake(role.id):toString(),1), inline = true},
       {name = "Hoisted", value = (role.hoisted and "Yes." or "No."), inline = true},
       {name = "Managed", value = (role.managed and "Yes." or "No."), inline = true},
       {name = "Mentionable", value = (role.mentionable and "Yes." or "No."), inline = true},

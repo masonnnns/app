@@ -114,7 +114,7 @@ command.execute = function(message,args,client)
         {name = "Region", value = region, inline = true},
         {name = "Verification Level", value = verification, inline = true},
         {name = "Explicit Content Filter", value = filter, inline = true},
-        {name = "Created At", value = Date.fromSnowflake(message.guild.id):toISO(' ', ''), inline = true},
+        {name = "Created At", value = require("/app/utils.lua").parseDateString(Date.fromSnowflake(message.guild.id):toString(),1), inline = true},
         --{name = "I Joined At", value = message.guild:getMember(client.user.id).joinedAt:gsub('%..*', ''):gsub('T', ' '),inline = true},
         {name = "Members ["..members[1].."]", value = ">>> **Online:** "..members[2]["online"].."\n**Do not Disturb:** "..members[2]["dnd"].."\n**Idle:** "..members[2]["idle"].."\n**Offline:** "..members[2]["offline"].."\n**Bots:** "..members[2].bots,inline = true},
         {name = "Channels ["..#message.guild.voiceChannels + #message.guild.textChannels + #message.guild.categories.."]", value = ">>> **Categories:** "..(#message.guild.categories == 0 and "None!" or #message.guild.categories).."\n**Text Channels:** "..(#message.guild.textChannels == 0 and "None!" or #message.guild.textChannels).."\n**Voice Channels:** "..(#message.guild.voiceChannels == 0 and "None!" or #message.guild.voiceChannels), inline = true},
