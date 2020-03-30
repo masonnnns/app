@@ -28,7 +28,7 @@ client:on("ready", function()
   end)
   while true do
     if startOS - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
-    http.request("GET","https://stellar-cosmic-lasagna.glitch.me/")
+    http.request("GET","https://aa-r0nbot.glitch.me/")
     http.request("GET","https://verify-bot-aaron.glitch.me/")
     require("timer").sleep(10000)
   end
