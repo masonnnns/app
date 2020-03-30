@@ -32,6 +32,8 @@ module.parseDateString = function(string,use) --// 1 = Human Readable, 2 = Full 
   local str = sepStr(string)
   if use == 1 then
     return str[2].." "..str[3]..", "..str[4]
+  elseif use == 2 then
+    return str[1]..", "..str[2].." "..str[3]..", "..str[4]
   end
 end
 
