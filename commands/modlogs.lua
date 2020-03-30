@@ -17,7 +17,7 @@ command.info = {
 command.execute = function(message,args,client)
  local data = config.getConfig(message.guild.id)
   local page = {}
-  if args[2] == nil then return {success = false, msg = "You must provide a **user to view** in argument 2."} end
+  if args[2] == nil then return {success = false, msg = "You must specify a member."} end
   local user = utils.resolveUser(message,args[2])
   if user == false and tonumber(args[2]) ~= nil then if client:getUser(args[2]) ~= nil then user = client:getUser(args[2]) else user = false end end
   if user == false then

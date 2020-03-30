@@ -13,7 +13,7 @@ command.info = {
 } 
 
 command.execute = function(message,args,client)
-  if args[2] == nil then return {success = false, msg = "You must provide a **member to give moderator permissions** to."} end
+  if args[2] == nil then return {success = false, msg = "You must specify a member."} end
   local user = utils.resolveUser(message,table.concat(args," ",2))
   if user == false then return {success = false, msg = "I couldn't find the user you mentioned."} end
   if user.id == client.user.id then return {success = false, msg = "I cannot give myself moderator permissions."} end

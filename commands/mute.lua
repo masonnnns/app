@@ -44,12 +44,12 @@ command.execute = function(message,args,client)
   local perms = message.guild:getMember("414030463792054282"):getPermissions()
   if perms:has("manageRoles") == false and perms:has("administrator") == false then return {success = false, msg = "I need the **Manage Roles** permission to do this."} end
   if config.getConfig(message.guild.id).general.mutedrole == "nil" or message.guild:getRole(config.getConfig(message.guild.id).general.mutedrole) == nil then return {success = false, msg = "**Config Error:** There is no muted role setup."} end
-  if args[2] == nil then return {success = false, msg = "You must provide a **member to "..command.info.Name:lower().."** in argument 2."} end
+  if args[2] == nil then return {success = false, msg = "You must specify a member."} end
   local user = utils.resolveUser(message,args[2])
   if user == false then 
     return {success = false, msg = "I couldn't find the user you mentioned."}
   elseif utils.Permlvl(message,client,user.id) >= utils.Permlvl(message,client) then
-    return {success = false, msg = "You cannot "..command.info.Name:lower().." people with **higher than or equal permissions as you.**"}
+    return {success = false, msg = "You cannot "..command.info.Name:lower().." other **moderators/administrators**."}
   elseif user.highestRole and user.highestRole.position >= message.guild:getMember("414030463792054282").highestRole.position then
     return {success = false, msg = "I cannot "..command.info.Name:lower().." **"..user.tag.."** because their **role is higher than mine**."}
   elseif user.id == client.user.id then
@@ -104,7 +104,7 @@ command.execute = function(message,args,client)
           }}
           data.moderation.cases[#data.moderation.cases].modlog = modlog.id    
         end
-        return {success = true, msg = "**"..user.tag.."** has been muted for "..durationString:lower()..". `[Case "..#data.moderation.cases.."]`"}
+        return {success = true, msg = "**"..user.tag.."** has been muted for **"..durationString:lower().."**. `[Case "..#data.moderation.cases.."]`"}
       end
     end
   end

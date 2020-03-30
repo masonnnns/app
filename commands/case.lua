@@ -13,8 +13,8 @@ command.info = {
 } 
 
 command.execute = function(message,args,client)
-  if args[2] == nil then return {success = false, msg = "You must provide a **case to view** in argument 2."} end
-  if tonumber(args[2]) == nil then return {success = false, msg = "**Invalid argument** - Argument 2 must be a number. ```"..config.getConfig(message.guild.id).general.prefix..command.info.Usage.."```"} end
+  if args[2] == nil then return {success = false, msg = "You must specify a case number."} end
+  if tonumber(args[2]) == nil then return {success = false, msg = "You must specify a case number."} end
   local data = config.getConfig(message.guild.id)
   if data.moderation.cases[tonumber(args[2])] == nil then return {success = false, msg = "**Case "..args[2].."** doesn't exist."} end
   local case = data.moderation.cases[tonumber(args[2])]
