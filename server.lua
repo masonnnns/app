@@ -444,7 +444,6 @@ end)
 
 client:on("memberJoin", function(member) 
   require("timer").sleep(150)
-  if member.bot ~= false then return end
   if member.guild == nil then return end
   local data = require("/app/config.lua").getConfig(member.guild.id)
   if data.general.auditlog == "nil" or member.guild:getChannel(data.general.auditlog) == nil then return end
@@ -466,7 +465,6 @@ end)
 
 client:on("memberLeave", function(member) 
   require("timer").sleep(150)
-  if member.bot ~= false then return end
   if member.guild == nil then return end
   local data = require("/app/config.lua").getConfig(member.guild.id)
   if data.general.auditlog == "nil" or member.guild:getChannel(data.general.auditlog) == nil then return end
