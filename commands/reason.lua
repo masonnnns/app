@@ -15,9 +15,9 @@ command.info = {
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   if args[2] == nil or tonumber(args[2]) == nil then
-    return {success = false, msg = "You must provide a **case number** in argument 2."}
+    return {success = false, msg = "You must specify a case number."}
   elseif args[3] == nil then
-    return {success = false, msg = "You must provide a **new reason**."}
+    return {success = false, msg = "You must provide a new reason."}
   elseif data.moderation.cases[tonumber(args[2])] == nil then
       return {success = false, msg = "**Case "..args[2].."** doesn't exist."}
   else

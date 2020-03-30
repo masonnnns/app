@@ -16,7 +16,7 @@ command.info = {
 
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
-  if args[2] == nil then return {success = false, msg = "You must provide a **role** in argument 2."} end
+  if args[2] == nil then return {success = false, msg = "You must specify a role."} end
   local role = utils.resolveRole(message,table.concat(args," ",2))
   if role == false then return {success = false, msg = "I couldn't find the role you mentioned."} end
   local perms = {}

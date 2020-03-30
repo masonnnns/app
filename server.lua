@@ -582,6 +582,47 @@ client:on("roleDelete", function(role)
   role.guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
+client:on("userBan", function(member, guild)
+  local data = require("/app/config.lua").getConfig(guild.id)
+  if data.general.auditlog == "nil" or guild:getChannel(data.general.auditlog) == nil then return end
+  local auditlog = guild:getAuditLogs({limit = 1,type = 22})
+  if auditlog == nil then return end
+  auditlog = auditlog:toArray()
+  auditlog = auditlog[1]
+  if auditlog.createdAt <= os.time() - 2 then return end
+  local log = {
+    title = "Member Banned",
+    color = 15105570,
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    fields = {
+      {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
+      {name = "Banned By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)",inline = true},
+      {name = "Reason", value = (auditlog.reason == nil and "No Reason Provided." or auditlog.reason), inline = false}
+    },
+  }
+  guild:getChannel(data.general.auditlog):send{embed = log}
+end)
+
+client:on("userBan", function(member, guild)
+  local data = require("/app/config.lua").getConfig(guild.id)
+  if data.general.auditlog == "nil" or guild:getChannel(data.general.auditlog) == nil then return end
+  local auditlog = guild:getAuditLogs({limit = 1,type = 23})
+  if auditlog == nil then return end
+  auditlog = auditlog:toArray()
+  auditlog = auditlog[1]
+  if auditlog.createdAt <= os.time() - 2 then return end
+  local log = {
+    title = "Member Unbanned",
+    color = 1752220,
+    timestamp = require("discordia").Date():toISO('T', 'Z'),
+    fields = {
+      {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
+      {name = "Unbanned By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)",inline = true},
+    },
+  }
+  guild:getChannel(data.general.auditlog):send{embed = log}
+end)
+
 -- [[ PRIVATE LOGS ]]
 
 client:on("error", function(message)

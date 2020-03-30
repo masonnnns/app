@@ -25,9 +25,9 @@ end
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   if args[2] == nil then
-    return {success = false, msg = "You must provide **rock, paper or scissors** in argument 2."}
+    return {success = false, msg = "You must specify rock, paper or scissors."}
   elseif args[2]:lower() ~= "rock" and args[2]:lower() ~= "paper" and args[2]:lower() ~= "scissors" and args[2]:lower() ~= "r" and args[2]:lower() ~= "p" and args[2]:lower() ~= "s" then
-    return {success = false, msg = "You must provide **rock, paper or scissors** in argument 2."}
+    return {success = false, msg = "You must specify rock, paper or scissors."}
   else
     local botNum, theirNum = 0, 0
     args[2] = args[2]:lower()
