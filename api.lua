@@ -46,7 +46,11 @@ local json = require('json')
 local module = {}
 
 module.request = function(res, req, client)
-  if res.req.url == "/" or res.req.url == "/favicon.ico" then return "Keepalive." end
+  if res.req.url == "/" or res.req.url == "/favicon.ico" then return "403 - Forbidden" end
+  if string.sub(res.req.url,1,9) == "/archives" then
+    local path = res.req.url:split("/")
+    return table.concat(path," ")
+  end
   if res.req.headers[6][1] ~= "api-key" then return "403 - Forbidden" end
   if res.req.headers[6][2] ~= "0E73FC8D00EA076D94CDDD71629C63A52359CB45FFCC736701966FA3A032CC71" then return "403 - Forbidden" end
   --res.req.headers[7][1]
