@@ -40,6 +40,9 @@ local function tableToString(tab,a,b,c,d)
 	return table.concat(res,"\n")
 end
 
+local config = require("/app/config.lua")
+local json = require('json')
+
 local module = {}
 
 module.request = function(res, req)
@@ -47,7 +50,12 @@ module.request = function(res, req)
   if res.req.headers[6][1] ~= "api-key" then return "403 - Forbidden" end
   if res.req.headers[6][2] ~= "0E73FC8D00EA076D94CDDD71629C63A52359CB45FFCC736701966FA3A032CC71" then return "403 - Forbidden" end
   --res.req.headers[7][1]
-  8
+  if res.req.url == "/api/getConfig" then
+    if res.req.headers[7][1] ~= "guild" then return "400 - Bad Request" end
+    local data = require("/app/config.lua").getConfig("*")
+    if data[res.req.headers[7][2]] == nil then return "404 - Not Found" end
+    return json.encode(data[res.req.headers[7][2]])
+  end
   print(res.req.url)
   print(res.req.headers[6][1])
   --for a,b in pairs(res.req.headers) do print(a,b) for c,d in pairs(b) do print(c,d) end end
