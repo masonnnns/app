@@ -312,8 +312,9 @@ client:on("messageDelete", function(message)
         require("timer").sleep(10)
     until num == 0
     for _,items in pairs(messages) do messages[_] = items.author.." ("..items.id.."): "..items.content end
-    local iLog = client:getGuild("551017079797579795"):getChannel("692393649463623720"):send{content = "**"..message.guild.name.."** (`"..message.guild.id.."`)",file = {message.guild.id.."-"..message.channel.id.."-"..message.channel.name..".txt", table.concat(messages, "\n")},}
-    log.fields[1+#log.fields] = {name = "Message Archive", value = "[Click Here]("..iLog.attachments[1].url..") ("..iLog.attachments[1].size.." Bytes)", inline = false}
+    data.general.archives[message.channel.id..os.time()..message.guild.id] = {date = "", messages = table.concat(messages, "\n"), channelName = message.channel.name, channelId = message.channel.id}
+    --local iLog = client:getGuild("551017079797579795"):getChannel("692393649463623720"):send{content = "**"..message.guild.name.."** (`"..message.guild.id.."`)",file = {message.guild.id.."-"..message.channel.id.."-"..message.channel.name..".txt", table.concat(messages, "\n")},}
+    log.fields[1+#log.fields] = {name = "Message Archive", value = "[Click Here](https://aa-r0nbot.glitch.me/archives/"..message.guild.id.."/"..message.channel.id..os.time()..message.guild.id..")", inline = false}
   end
   message.guild:getChannel(data.general.auditlog):send{embed = log}
   bulkDeletes[message.guild.id..message.channel.id] = nil

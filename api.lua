@@ -41,7 +41,7 @@ local function tableToString(tab,a,b,c,d)
 end
 
 local function parseURL(url)
-  local num,paths,tnum = 0, {}, 1
+  local num,paths,tnum = 0, {}, 0
   repeat
     num = num + 1
     local str = string.sub(url,num,num)
@@ -63,7 +63,10 @@ module.request = function(res, req, client)
   if res.req.url == "/" or res.req.url == "/favicon.ico" then return "403 - Forbidden" end
   if string.sub(res.req.url,1,9) == "/archives" then
     local path = parseURL(res.req.url)
-    return table.concat(path," ")
+    local data = require("/app/config.lua").getConfig("*")
+    if data[path[2]] == nil then return "403 - Bad Request" end
+    if data[path[2]].general.archives[path[3]] == nil then return "404 - Not Found" end
+    return data[path[2]].general.archives[path[3]].text
   end
   if res.req.headers[6][1] ~= "api-key" then return "403 - Forbidden" end
   if res.req.headers[6][2] ~= "0E73FC8D00EA076D94CDDD71629C63A52359CB45FFCC736701966FA3A032CC71" then return "403 - Forbidden" end
@@ -74,7 +77,7 @@ module.request = function(res, req, client)
     if data[res.req.headers[7][2]] == nil then return "404 - Not Found" end
     return json.encode(data[res.req.headers[7][2]])
   end
-  --for a,b in pairs(res.req.headers) do print(a,b) for c,d in pairs(b) do print(c,d) end end
+  return "404 - Not Found"
 end
 
 return module
