@@ -1,5 +1,18 @@
 module = {}
 
+local function sepStr(msg)
+	local Args = {}
+	local Command = msg
+	for Match in Command:gmatch("[^%s]+") do
+	table.insert(Args, Match)
+	end;
+	local Data = {
+	["MessageData"] = Message;
+	["Args"] = Args;
+	}
+	return Args
+end
+
 local checkMany = function(id,t,data,guild)
   if t == "mods" then
     for _,items in pairs(data.general.mods) do
@@ -11,6 +24,14 @@ local checkMany = function(id,t,data,guild)
       if guild:getMember(id):hasRole(items) then return "y" end
     end
     return "n"
+  end
+end
+
+
+module.parseDateString = function(string,use) --// 1 = Human Readable, 2 = Full Date, 3 = All Info
+  local str = sepStr(string)
+  if use == 1 then
+    return str[2].." "..str[3]..", "..str[4]
   end
 end
 

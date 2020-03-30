@@ -41,8 +41,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  local perms = message.guild:getMember("414030463792054282"):getPermissions()
-  if perms:has("manageRoles") == false and perms:has("administrator") == false then return {success = false, msg = "I need the **Manage Roles** permission to do this."} end
+  if message.guild:getMember(client.user.id):hasPermission("manageRoles") == false then return {success = false, msg = "I need the **Manage Roles** permission to do this."} end
   if config.getConfig(message.guild.id).general.mutedrole == "nil" or message.guild:getRole(config.getConfig(message.guild.id).general.mutedrole) == nil then return {success = false, msg = "**Config Error:** There is no muted role setup."} end
   if args[2] == nil then return {success = false, msg = "You must specify a member."} end
   local user = utils.resolveUser(message,args[2])

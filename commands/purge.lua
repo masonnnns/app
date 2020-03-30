@@ -12,8 +12,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  local perms = message.guild:getMember("414030463792054282"):getPermissions()
-  if perms:has("manageMessages") == false and perms:has("administrator")  == false then return {success = false, msg = "I need the **Manage Messages** permission to do this."} end
+  if message.guild:getMember(client.user.id):hasPermission("manageMessages") == false then return {success = false, msg = "I need the **Manage Messages** permission to do this."} end
   if args[2] == nil then return {success = false, msg = "You must specify a number of messages."} end
   if tonumber(args[2]) == nil then return {success = false, msg = "You must specify a number of messages."} end
   message.channel:bulkDelete(message.channel:getMessages(tonumber(args[2])+1))

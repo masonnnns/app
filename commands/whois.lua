@@ -36,7 +36,7 @@ command.execute = function(message,args,client)
         {name = "Status", value = "loading...", inline = true},
         {name = "Activity", value = "Nothing!", inline = true},
         {name = "Server Permission", value = "Member", inline = true},
-        {name = "Created At", value = Date.fromSnowflake(user.id):toISO(' ', ''), inline = true},
+        {name = "Created At", value = utils.parseDateString(Date.fromSnowflake(user.id):toString(),1), inline = true},
         {name = "Joined At", value = (user.joinedAt and user.joinedAt:gsub('%..*', ''):gsub('T', ' ') or "ERROR"), inline = true},
         {name = "Roles [0]", value = "None!", inline = false},
         {name = "Permissions", value = "None!", inline = false},
@@ -77,7 +77,7 @@ command.execute = function(message,args,client)
       embed.fields = {
         {name = "Mention", value = user.mentionString, inline = true},
         {name = "ID", value = user.id, inline = true},
-        {name = "Created At", value = Date.fromSnowflake(user.id):toISO(' ', ''), inline = true},
+        {name = "Created At", value = utils.parseDateString(Date.fromSnowflake(user.id):toString(),1), inline = true},
       }
       if #user.mutualGuilds:toArray() ~= 0 then
         user = user.mutualGuilds:toArray()[1]:getMember(user.id)
