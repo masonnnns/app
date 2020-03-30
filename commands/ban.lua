@@ -40,8 +40,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  local perms = message.guild:getMember("414030463792054282"):getPermissions()
-  if perms:has("banMembers") == false and perms:has("administrator") == false then return {success = false, msg = "I need the **Ban Members** permission to do this."} end
+  if message.guild:getMember(client.user.id):hasPermission("banMembers") == false then return {success = false, msg = "I need the **Ban Members** permission to do this."} end
   if args[2] == nil then return {success = false, msg = "You must specify a member."} end
   local user = utils.resolveUser(message,args[2])
   if user == false and tonumber(args[2]) ~= nil and client:getUser(args[2]) ~= nil then user = client:getUser(args[2]) end
@@ -53,7 +52,8 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I cannot "..command.info.Name:lower().." **"..user.tag.."** because their **role is higher than mine**."}
   elseif user.id == client.user.id then
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
-  elseif 
+  elseif message.guild:getBans():get(user.id) ~= nil then
+    return {success = false, msg = "**"..user.tag.."** is already banned."}
   else
     local duration = getDuration({args[1], args[2], (args[3] == nil and "NO_ARG_3" or args[3])})
     local data = config.getConfig(message.guild.id)
