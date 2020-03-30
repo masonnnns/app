@@ -43,8 +43,11 @@ end
 local module = {}
 
 module.request = function(res, req)
-  if res.req.url == "/" or res.req.url == "/favicon.ico" then return end
-  if res.req.headers[6][1] ~= "api-key" then return "403 - Service Unavailable"
+  if res.req.url == "/" or res.req.url == "/favicon.ico" then return "Keepalive." end
+  if res.req.headers[6][1] ~= "api-key" then return "403 - Forbidden" end
+  if res.req.headers[6][2] ~= "0E73FC8D00EA076D94CDDD71629C63A52359CB45FFCC736701966FA3A032CC71" then return "403 - Forbidden" end
+  --res.req.headers[7][1]
+  8
   print(res.req.url)
   print(res.req.headers[6][1])
   --for a,b in pairs(res.req.headers) do print(a,b) for c,d in pairs(b) do print(c,d) end end
