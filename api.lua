@@ -40,6 +40,20 @@ local function tableToString(tab,a,b,c,d)
 	return table.concat(res,"\n")
 end
 
+local function parseURL(url)
+  local num,paths,tnum = 0, {}, 1
+  repeat
+    num = num + 1
+    local str = string.sub(url,num,num)
+    if str ~= "/" then
+      if paths[tnum] == nil then paths[tnum] = str else paths[tnum] = paths[tnum]..str end
+    else
+      tnum = tnum + 1
+    end
+  until num >= string.len(url)
+  return paths
+end
+
 local config = require("/app/config.lua")
 local json = require('json')
 
@@ -48,7 +62,7 @@ local module = {}
 module.request = function(res, req, client)
   if res.req.url == "/" or res.req.url == "/favicon.ico" then return "403 - Forbidden" end
   if string.sub(res.req.url,1,9) == "/archives" then
-    local path = res.req.url:split("/")
+    local path = parseURL(res.req.url)
     return table.concat(path," ")
   end
   if res.req.headers[6][1] ~= "api-key" then return "403 - Forbidden" end
