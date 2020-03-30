@@ -583,6 +583,7 @@ client:on("roleDelete", function(role)
 end)
 
 client:on("userBan", function(member, guild)
+  require("timer").sleep(250)
   local data = require("/app/config.lua").getConfig(guild.id)
   if data.general.auditlog == "nil" or guild:getChannel(data.general.auditlog) == nil then return end
   local auditlog = guild:getAuditLogs({limit = 1,type = 22})
@@ -597,13 +598,14 @@ client:on("userBan", function(member, guild)
     fields = {
       {name = "Member", value = member.mentionString.." (`"..member.id.."`)", inline = true},
       {name = "Banned By", value = auditlog:getMember().mentionString.." (`"..auditlog:getMember().id.."`)",inline = true},
-      {name = "Reason", value = (auditlog.reason == nil and "No Reason Provided." or auditlog.reason), inline = false}
+      {name = "Reason", value = (auditlog.reason == nil and "No Reason Provided." or auditlog.reason), inline = false},
     },
   }
   guild:getChannel(data.general.auditlog):send{embed = log}
 end)
 
-client:on("userBan", function(member, guild)
+client:on("userUnban", function(member, guild)
+  require("timer").sleep(150)
   local data = require("/app/config.lua").getConfig(guild.id)
   if data.general.auditlog == "nil" or guild:getChannel(data.general.auditlog) == nil then return end
   local auditlog = guild:getAuditLogs({limit = 1,type = 23})

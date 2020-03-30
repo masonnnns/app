@@ -113,6 +113,7 @@ command.info = {
   Category = "Private",
   Description = "run cool code right from discord isnt that neat",
   PermLvl = 5,
+  Cooldown = 0,
 }
 
 command.execute = function(message,args,client)

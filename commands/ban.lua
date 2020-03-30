@@ -53,6 +53,7 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I cannot "..command.info.Name:lower().." **"..user.tag.."** because their **role is higher than mine**."}
   elseif user.id == client.user.id then
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
+  elseif 
   else
     local duration = getDuration({args[1], args[2], (args[3] == nil and "NO_ARG_3" or args[3])})
     local data = config.getConfig(message.guild.id)
@@ -78,7 +79,7 @@ command.execute = function(message,args,client)
         }}
         data.moderation.cases[#data.moderation.cases].modlog = modlog.id    
       end
-      return {success = true, msg = "**"..user.tag.."** has been permanently banned. `[Case: "..#data.moderation.cases.."]`"}
+      return {success = true, msg = "**"..user.tag.."** has been permanently banned. `[Case "..#data.moderation.cases.."]`"}
     else
       if tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1] <= 0 then
         return {success = false, msg = "Invalid duration."}
