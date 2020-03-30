@@ -11,10 +11,10 @@ config.setupConfigs("xd")
 local Utopia = require('utopia')
 local app = Utopia:new()
 
-app:use(function (req, res)
+--[[app:use(function (req, res)
   local api = require("/app/api.lua").request(res, req, client)
   res:finish(api)
-end)
+end)--]]
 
 app:listen(8080)
 
@@ -22,6 +22,10 @@ local startOS = os.time()
 
 local http = require('coro-http')
 client:on("ready", function()
+  app:use(function (req, res)
+    local api = require("/app/api.lua").request(res, req, client)
+    res:finish(api)
+  end)
   while true do
     if startOS - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
     http.request("GET","https://stellar-cosmic-lasagna.glitch.me/")
