@@ -31,7 +31,7 @@ client:on("ready", function()
     http.request("GET","https://aa-r0nbot.glitch.me/")
     http.request("GET","https://verify-bot-aaron.glitch.me/")
     http.request("GET","https://interroutes.glitch.me/")
-    require("timer").sleep(10000)
+    require("timer").sleep(15000)
   end
 end)
 
