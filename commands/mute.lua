@@ -53,7 +53,7 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I cannot "..command.info.Name:lower().." **"..user.tag.."** because their **role is higher than mine**."}
   elseif user.id == client.user.id then
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
-  elseif user:hasRole(config.getConfig(message.guild.id).general.mutedrole) then
+  elseif message.guild:getRole(config.getConfig(message.guild.id).general.mutedrole).members:has() then
     return {success = false, msg = "**"..user.tag.."** is already muted."}
   else
     local duration = getDuration({args[1], args[2], (args[3] == nil and "NO_ARG_3" or args[3])})
