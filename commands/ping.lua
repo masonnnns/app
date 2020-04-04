@@ -28,7 +28,7 @@ command.execute = function(message,args,client)
   --[[m:setContent(":ping_pong: Ping?")
   local edited = require("discordia").Date.fromISO(m.editedTimestamp):toMilliseconds() - require("discordia").Date.fromISO(m.timestamp):toMilliseconds()
   latency = latency + edited--]]
-  m:setContent(":ping_pong: Pong! `"..parse(latency).."ms`")
+  m:setContent(":ping_pong: Pong! `"..(string.sub(parse(latency),1,1) == "-" and "1" or parse(latency)).."ms`")
   return {success = "stfu", msg = "PONG!!", emote = ":ping_pong:"}
 end
 
