@@ -118,9 +118,9 @@ client:on("messageCreate",function(message)
           color = 15158332,
         }}
       elseif execute == nil or type(execute) ~= "table" then
-        message:reply("<:atickno:678186665616998400> An **unknown error** occured.")
+        message:reply("<:atickno:678186665616998400>  An **unknown error** occured.")
       elseif execute.success == false then
-        message:reply("<:atickno:678186665616998400> "..execute.msg)
+        message:reply("<:atickno:678186665616998400>  "..execute.msg)
       elseif tostring(execute.success):lower() == "stfu" then
         -- stfu literally
       else
