@@ -265,6 +265,7 @@ local debounceBulk = {}
 --guildid..channelid
 
 client:on("messageDelete", function(message)
+  print('msg deleted')
   if message.guild == nil then return end
   local data = require("/app/config.lua").getConfig(message.guild.id)
   for _,items in pairs(data.general.auditignore) do if items == message.channel.id then return end end
@@ -272,7 +273,9 @@ client:on("messageDelete", function(message)
   bulkDeletes[message.guild.id..message.channel.id][1+#bulkDeletes[message.guild.id..message.channel.id]] = {content = message.content, author = message.author.tag, id = message.author.id, mention = message.author.mentionString}
   debounceBulk[message.guild.id..message.channel.id] = message.id
   require("timer").sleep(100)
+  print(debounceBulk[message.guild.id..message.channel.id])
   if debounceBulk[message.guild.id..message.channel.id] ~= message.id then return end
+  print('xd')
   if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
   local auditlog = message.guild:getAuditLogs({type = 72,limit = 1})
   if auditlog == nil then return end
@@ -290,7 +293,8 @@ client:on("messageDelete", function(message)
       },
     }
   else
-    if message.author.bot ~= false then return end
+    print("LLOLL")
+    if message.author.bot == true then return end
     log = {
       title = "Message Deleted",
       color = 3447003,
@@ -302,7 +306,7 @@ client:on("messageDelete", function(message)
         {name = "Message", value = (message.content == "" and "`[[ No Message Content ]]`" or message.content), inline = false}
       },
     }
-    if message.attachments ~= nil then log.image = {url = message.attachments[1].proxy_url} end
+    if message.attachments ~= nil then print('has image') log.image = {url = message.attachments[1].proxy_url} end
     if auditlog:getMember().id == message.author.id then table.remove(log.fields,3) end
   end
   if log.title == "Bulk Message Deletion" then
@@ -318,7 +322,7 @@ client:on("messageDelete", function(message)
     log.fields[1+#log.fields] = {name = "Message Archive", value = "[Click Here](https://aa-r0nbot.glitch.me/archives/"..message.guild.id.."/"..message.channel.id..os.time()..message.guild.id..")", inline = false}
   end
   message.guild:getChannel(data.general.auditlog):send{embed = log}
-  bulkDeletes[message.guild.id..message.channel.id] = nil
+  bulkDeletes[message.guild.id..message.channel.id] = {}
   debounceBulk[message.guild.id..message.channel.id] = false
 end)
 
