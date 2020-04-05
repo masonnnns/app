@@ -79,6 +79,7 @@ command.execute = function(message,args,client)
         {name = "ID", value = user.id, inline = true},
         {name = "Created At", value = utils.parseDateString(Date.fromSnowflake(user.id):toString(),1), inline = true},
       }
+      embed.description = "This user isn't in the guild."
       if #user.mutualGuilds:toArray() ~= 0 then
         user = user.mutualGuilds:toArray()[1]:getMember(user.id)
         embed.fields[1+#embed.fields] = {name = "Status", value = "Loading...", inline = true}
