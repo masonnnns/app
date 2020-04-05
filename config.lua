@@ -71,4 +71,18 @@ module.resetConfig = function(id)
   return true
 end
 
+module.delConfig = function(id)
+  if config[id] ~= nil then config[id] = nil end
+  local configForSaving = {
+		guilds = {},
+	}
+	for a,b in pairs(config) do
+		configForSaving.guilds[a] = b
+	end
+	file = io.open("./blacklist.txt", "w+") 
+  file:write(json.encode(configForSaving.guilds))
+	file:close()
+  return true
+end
+
 return module

@@ -55,6 +55,7 @@ client:on("messageCreate",function(message)
   if message.content == nil then return end
   if message.guild == nil then return end
   if message.author.bot or message.guild.id == nil then return false end
+  if require("/app/blacklist.lua").getBlacklist("user_"..message.author.id) ~= false then return end
   local data = config.getConfig(message.guild.id)
   if string.sub(message.content,1,string.len(data.general.prefix)) == data.general.prefix then
     local args = sepMsg(string.sub(message.content,string.len(data.general.prefix)+1))
@@ -651,6 +652,7 @@ client:on("warning", function(message)
 end)
 
 client:on("guildCreate", function(guild)
+  if require("/app/blacklist.lua").getBlacklist("guilds_"..guild.id) then guild:leave() return end
   local data = require("/app/config.lua").getConfig(guild.id)
   client:getGuild("551017079797579795"):getChannel("551758183274905600"):send{embed = {
     title = "Guild Added",
@@ -667,6 +669,7 @@ client:on("guildCreate", function(guild)
 end)
 
 client:on("guildDelete", function(guild)
+  if require("/app/blacklist.lua").getBlacklist("guilds_"..guild.id) then return end
   client:getGuild("551017079797579795"):getChannel("551758183274905600"):send{embed = {
     title = "Guild Removed",
     fields = {
