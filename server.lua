@@ -55,10 +55,9 @@ client:on("messageCreate",function(message)
   if message.content == nil then return end
   if message.guild == nil then return end
   if message.author.bot or message.guild.id == nil then return false end
-  if require("/app/blacklist.lua").getBlacklist("users_"..message.author.id) ~= false then return end
   if require("/app/blacklist.lua").getBlacklist("guilds_"..message.guild.id) ~= false then return end
   local data = config.getConfig(message.guild.id)
-  if string.sub(message.content,1,string.len(data.general.prefix)) == data.general.prefix then
+  if string.sub(message.content,1,string.len(data.general.prefix)) == data.general.prefix and require("/app/blacklist.lua").getBlacklist("users_"..message.author.id) == false then
     local args = sepMsg(string.sub(message.content,string.len(data.general.prefix)+1))
     local found
     for file, _type in require("fs").scandirSync("./commands") do
