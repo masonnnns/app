@@ -458,7 +458,17 @@ client:on("memberJoin", function(member)
     if #data.welcome.autorole ~= 0 then
       if data.vip == false then data.welcome.autorole = {data.welcome.autorole[1]} end
       for _,items in pairs(data.welcome.autorole) do
-        if member.guild:
+        if member.guild.roles:get(items) ~= nil then
+          member:addRole(items)
+        end
+      end
+    end
+  end
+  if data.general.mutedrole ~= "nil" and member.guild.roles:get(data.general.mutedrole) ~= nil then
+    for _,actions in pairs(data.moderation.actions) do 
+      if actions.id == member.id and actions.type == "mute" then
+        member:addRole(data.general.mutedrole)
+        break
       end
     end
   end

@@ -6,7 +6,7 @@ local config = require("/app/config.lua")
 command.info = {
   Name = "Config",
   Alias = {"settings","setup"},
-  Usage = "config <plugin> (setting name) (new value)",
+  Usage = "config <plugin/start> (setting name) (new value)",
   Category = "Administration",
   Description = "Configure AA-R0N in your server.",
   PermLvl = 2,
@@ -16,7 +16,9 @@ command.info = {
 command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   if args[2] ~= nil then args[2] = args[2]:lower() end
-  if args[2] == "general" then
+  if args[2] == "start" then
+    
+  elseif args[2] == "general" then
     local xd = require("/app/commands/configcmds/general.lua")(message,args,client,data)
     return xd
   elseif args[2] == "moderation" then
