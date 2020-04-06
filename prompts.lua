@@ -1,21 +1,41 @@
+local function sepMsg(msg)
+	local Args = {}
+	local Command = msg
+	for Match in Command:gmatch("[^%s]+") do
+	table.insert(Args, Match)
+	end;
+	local Data = {
+	["MessageData"] = Message;
+	["Args"] = Args;
+	}
+	return Args
+end
+
 module = {}
 local prompts = {}
--- [guildid..channelid..userid] = {type = "type", stage = "stage", expire = "NUM"}
+-- [guildid..channelid..userid] = {type = "type", stage = "stage", expire = "NUM", substage = "substage"}
 local botreplies = {}
 botreplies["config"] = {}
+botreplies["config"][1] = {}
 
-botreplies["config"][1] = function(message,data)
+botreplies["config"][1]["s"] = function(message,data)
   if data == nil then
     message:reply{embed = {
       title = "Prompt",
-      description = "Which setting would you like to edit?\n\n**Prefix -** Edits the bot's prefix.",
+      description = "Which setting would you like to edit?\n\n**Prefix -** Edits the bot's prefix.\n\nSay `cancel` to cancel this prompt.",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = 3066993,
     }}
   else
     local msg = message.content:lower()
     if msg == "prefix" then
-      -- start the next prompt
+      message:reply{embed = {
+        title = "Prompt",
+        description = "What would you like to set the command prefix to?\n\nSay `cancel` to cancel this prompt.",
+        footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+        color = 3066993,
+      }}
+      prompts[message.guild.id..message.channel.id..message.author.id].substage = "prefix"
     else
       message:reply{embed = {
         title = "Prompt Error",
@@ -23,7 +43,21 @@ botreplies["config"][1] = function(message,data)
         footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
         color = 15158332,
       }}
+      prompts[message.guild.id..message.channel.id..message.author.id] = nil
     end
+  end
+end
+
+botreplies["config"][1]["prefix"] = function(message,data)
+  local args = sepMsg(message.content)
+  args = table.concat(args," ")
+  if string.len(args) > 15 then
+    message:reply{embed = {
+      title = "Prompt Error",
+      description = "Your prefix cannot exceed **15 characters**.",
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+      color = 15158332,
+    }}
   end
 end
 
@@ -47,20 +81,23 @@ module.isPrompted = function(id)
 end
 
 module.startPrompt = function(message,type)
-  prompts[message.guild.id..message.channel.id..message.author.id] = {type = type, stage = 1, expire = os.time() + 240}
-  botreplies[type][1](message)
+  prompts[message.guild.id..message.channel.id..message.author.id] = {type = type, stage = 1, expire = os.time() + 240, substage = "s"}
+  botreplies[type][1]["s"](message)
 end
 
 module.newMsg = function(id,message,data)
   if message.content and message.content:lower() == "cancel" then 
     prompts[message.guild.id..message.channel.id..message.author.id] = nil
     reply(message,"Prompt Cancelled", "This prompt has been cancelled.")
+  elseif message.content == nil then
+    reply(message,"Prompt Error", "**Invalid response provided!** Aborting prompt.",15158332)
+    prompts[id] = nil
   else
     if prompts[message.guild.id..message.channel.id..message.author.id] == nil then return end
     local pdata = prompts[message.guild.id..message.channel.id..message.author.id]
     pdata.expire = os.time() + 240
     if botreplies[pdata.type][pdata.stage] == nil then return end
-    botreplies[pdata.type][pdata.stage](message,data)
+    botreplies[pdata.type][pdata.stage][pdata.substage](message,data)
   end
 end
 
