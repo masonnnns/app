@@ -17,7 +17,8 @@ command.execute = function(message,args,client)
   local data = config.getConfig(message.guild.id)
   if args[2] ~= nil then args[2] = args[2]:lower() end
   if args[2] == "start" then
-    
+    require("/app/prompts.lua").startPrompt(message,"config")
+    return {success = "stfu"}
   elseif args[2] == "general" then
     local xd = require("/app/commands/configcmds/general.lua")(message,args,client,data)
     return xd
