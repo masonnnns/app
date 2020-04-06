@@ -40,6 +40,7 @@ end
 module.Permlvl = function(message,client,id)
   if id == nil then id = message.author.id end
   if require("/app/blacklist.lua").getBlacklist("users_"..message.author.id) ~= false then return 0 end
+  if require("/app/blacklist.lua").getBlacklist("guilds_"..message.guild.id) ~= false then return 0 end
   local data = require("/app/config.lua").getConfig(message.guild.id)
   local found
   for items,_ in pairs(message.guild.members) do if items == id then found = true break end end
