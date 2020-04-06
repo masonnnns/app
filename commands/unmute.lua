@@ -27,7 +27,6 @@ command.execute = function(message,args,client)
     end
   end
   user:removeRole(config.getConfig(message.guild.id).general.mutedrole)
-  user:unmute()
   data.moderation.cases[1+#data.moderation.cases] = {type = "unmute", user = user.id, moderator = message.author.id, reason = reason, modlog = "nil"}
   if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
     local modlog = message.guild:getChannel(data.general.modlog):send{embed = {

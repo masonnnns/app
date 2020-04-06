@@ -66,7 +66,6 @@ command.execute = function(message,args,client)
         reason = table.concat(args," ",3)
       end
       user:addRole(data.general.mutedrole)
-      user:mute()
       data.moderation.cases[1+#data.moderation.cases] = {type = "mute", user = user.id, moderator = message.author.id, reason = reason, duration = "Permanent", modlog = "nil"}
       if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
         local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
@@ -91,7 +90,6 @@ command.execute = function(message,args,client)
         data.moderation.cases[1+#data.moderation.cases] = {type = "mute", user = user.id, moderator = message.author.id, reason = reason, duration = durationString, modlog = "nil"}
         data.moderation.actions[1+#data.moderation.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], moderator = message.author.id, case = #data.moderation.cases, id = user.id}
         user:addRole(data.general.mutedrole)
-        user:mute()
         if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
           local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
             title = "Mute - Case "..#data.moderation.cases,
