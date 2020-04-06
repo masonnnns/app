@@ -3,7 +3,12 @@ command = {}
 command = function(message,args,client,data)
   if args[3] ~= nil then args[3] = args[3]:lower() end
   if args[3] == "joinchannel" then
-    
+    if args[4] == nil then return {success = false, msg = "You must provide an auditlog channel."} end
+    if args[4]:lower() == "off" then data.welcome.join.channel = "nil" return {success = false, msg = "Disabled the **join message**."} end
+    local channel = require("/app/utils.lua").resolveChannel(message,table.concat(args," ",4))
+    if channel == false then return {success = false, msg = "I couldn't find the channel you mentioned."} end
+    data.general.auditlog = channel.id
+    return {success = true, msg = "Set the **join message channel** to "..channel.mentionString.."."}
   else
     message:reply{embed = {
       title = "General Settings",

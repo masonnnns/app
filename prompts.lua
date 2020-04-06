@@ -24,6 +24,7 @@ botreplies["yn"] = function(message,data,type,stage,substage)
     pdata.type = type
     pdata.stage = stage
     pdata.substage = substage
+    pdata.yn = false
     botreplies[type][stage][substage](message)
   elseif message.content:lower() == "no" then
     message:reply{embed = {
@@ -95,7 +96,10 @@ botreplies["config"][1]["prefix"] = function(message,data)
       color = 3066993,
     }}
     local pdata = prompts[message.guild.id..message.channel.id..message.author.id]
-    botreplies["yn"](message,data,pdata.type,pdata.stage,pdata.substage)
+    pdata.type = "config"
+    pdata.stage = 1
+    pdata.substage = "s"
+    --botreplies["yn"](message,data,pdata.type,pdata.stage,pdata.substage)
     prompts[message.guild.id..message.channel.id..message.author.id].yn = true
   end
 end
