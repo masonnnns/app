@@ -18,6 +18,26 @@ local botreplies = {}
 botreplies["config"] = {}
 botreplies["config"][1] = {}
 
+botreplies["yn"] = function(message,data,type,stage,substage)
+  if message.content:lower == "yes" then
+    local pdata = prompts[message.guild.id..message.channel.id..message.author.id]
+    pdata.type = type
+    pdata.stage = stage
+    pdata.substage = substage
+    botreplies[type][stage][substage](message)
+  elseif message.content:lower() == "no" then
+    message:reply{embed = {
+      title = "Prompt",
+      description = "Ended the prompt.",
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+      color = 3066993,
+    }}
+    prompts[message.guild.id..message.channel.id..message.author.id] = nil
+  else
+    botreplies["yn"](message,data,type,stage,substage)
+  end
+end
+
 botreplies["config"][1]["s"] = function(message,data)
   if data == nil then
     message:reply{embed = {
@@ -54,9 +74,20 @@ botreplies["config"][1]["prefix"] = function(message,data)
   if string.len(args) > 15 then
     message:reply{embed = {
       title = "Prompt Error",
-      description = "Your prefix cannot exceed **15 characters**.",
+      description = "Your prefix cannot exceed **15 characters**.\n\nSay `cancel` to cancel this prompt or `back` to go to the previous prompt.",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = 15158332,
+    }}
+  elseif args:lower() == "back" then
+    botreplies["config"][1]["s"](message,nil)
+    prompts[message.guild.id..message.channel.id..message.author.id].substage = "s"
+  else
+    data.general.prefix = args
+    message:reply{embed = {
+      title = "Prompt",
+      description = "Set the command prefix to `"..data.general.prefix.."`\n\nWould you like to continue? `Yes` or `No`?",
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+      color = 3066993,
     }}
   end
 end
