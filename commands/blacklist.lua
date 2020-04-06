@@ -17,11 +17,21 @@ command.execute = function(message,args,client)
   if args[2]:lower() == "guild" then
     local guild = client:getGuild(args[3])
     if guild == nil then return {success = false, msg = "That guild doesn't exist."} end
-    if blacklist.getBlacklist("guilds_"..args[3]) ~= false then return {success = false, msg = "**"..guild.name.."** is already blacklisted."} end
+    if blacklist.getBlacklist("guilds_"..args[3]) ~= false then
+    else
+      local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
+      blacklist.blacklist("guilds_"..args[3],reason)
+      if client.guilds:get(args[3]) ~= nil then guild:leave() end
+      require("/app/config.lua").delConfig(message.guild.id)
+      return {success = true, msg = "**"..guild.name.."** has been blacklisted."}
+    end
+  elseif args[2]:lower() == "user" then
+    local user = client:getGuild(args[3])
+    if user == nil then return {success = false, msg = "That user doesn't exist."} end
+    if blacklist.getBlacklist("users_"..args[3]) ~= false then return {success = false, msg = "**"..user.tag.."** is already blacklisted."} end
     local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
-    blacklist.blacklist("guilds_"..args[3],reason)
-    require("/app/config.lua").delConfig(message.guild.id)
-    return {success = true, msg = "**"..guild.name.."** has been blacklisted."}
+    blacklist.blacklist("users_"..args[3],reason)
+    return {success = true, msg = "**"..user.tag.."** has been blacklisted."}
   end
   return {success = "stfu"}
 end
