@@ -450,6 +450,12 @@ client:on("memberJoin", function(member)
   require("timer").sleep(150)
   if member.guild == nil then return end
   local data = require("/app/config.lua").getConfig(member.guild.id)
+  if data.welcome.enabled then
+    if data.welcome.join.channel ~= nil and member.guild:getChannel(data.welcome.join.channel) ~= nil then
+      local msg = utils.subString(data.welcome.join.msg,member)
+      member.guild:getChannel(data.welcome.join.channel):send(msg)
+    end
+  end
   if data.general.auditlog == "nil" or member.guild:getChannel(data.general.auditlog) == nil then return end
   local log = {
     title = "Member Joined",

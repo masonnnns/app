@@ -172,4 +172,14 @@ module.addCommas = function(str)
     return #str % 3 == 0 and str:reverse():gsub("(%d%d%d)", "%1,"):reverse():sub(2) or str:reverse():gsub("(%d%d%d)", "%1,"):reverse()
 end
 
+module.subString = function(str,path)
+  str = string.gsub(str, "{user}", path.mentionString)
+  str = string.gsub(str, "{tag}", path.tag)
+  str = string.gsub(str, "{username}", path.username)
+  str = string.gsub(str, "{discrim}", path.discriminator)
+  str = string.gsub(str, "{server}", path.guild.name)
+  str = string.gsub(str, "{members}", #path.guild.members)
+  return str
+end
+
 return module
