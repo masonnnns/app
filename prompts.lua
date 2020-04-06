@@ -13,13 +13,13 @@ end
 
 module = {}
 local prompts = {}
--- [guildid..channelid..userid] = {type = "type", stage = "stage", expire = "NUM", substage = "substage"}
+-- [guildid..channelid..userid] = {type = "type", stage = "stage", expire = "NUM", substage = "substage", yn = false}
 local botreplies = {}
 botreplies["config"] = {}
 botreplies["config"][1] = {}
 
 botreplies["yn"] = function(message,data,type,stage,substage)
-  if message.content:lower == "yes" then
+  if message.content:lower() == "yes" then
     local pdata = prompts[message.guild.id..message.channel.id..message.author.id]
     pdata.type = type
     pdata.stage = stage
@@ -34,7 +34,12 @@ botreplies["yn"] = function(message,data,type,stage,substage)
     }}
     prompts[message.guild.id..message.channel.id..message.author.id] = nil
   else
-    botreplies["yn"](message,data,type,stage,substage)
+    message:reply{embed = {
+      title = "Prompt Error",
+      description = "**Invalid response provided!** `Yes` or `No`?\n\nSay `cancel` to cancel this prompt.",
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+      color = 15158332,
+    }}
   end
 end
 
@@ -89,6 +94,9 @@ botreplies["config"][1]["prefix"] = function(message,data)
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = 3066993,
     }}
+    local pdata = prompts[message.guild.id..message.channel.id..message.author.id]
+    botreplies["yn"](message,data,pdata.type,pdata.stage,pdata.substage)
+    prompts[message.guild.id..message.channel.id..message.author.id].yn = true
   end
 end
 
@@ -128,7 +136,11 @@ module.newMsg = function(id,message,data)
     local pdata = prompts[message.guild.id..message.channel.id..message.author.id]
     pdata.expire = os.time() + 240
     if botreplies[pdata.type][pdata.stage] == nil then return end
-    botreplies[pdata.type][pdata.stage][pdata.substage](message,data)
+    if pdata.yn == true then
+      botreplies["yn"](message,data,pdata.type,pdata.stage,pdata.substage)
+    else  
+      botreplies[pdata.type][pdata.stage][pdata.substage](message,data)
+    end
   end
 end
 
