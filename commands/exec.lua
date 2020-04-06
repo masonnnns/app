@@ -81,8 +81,12 @@ local function exec(arg, msg)
       elseif type == "execute" then
         local execute = command.execute(...)
         table.insert(lines,tableToString(execute))
+      elseif type == "view" then
+        local msgs = {}
+        local code = io.open("/app/commands/"..cmd..".lua","r"):read("*all")
+        table.insert(lines,string.sub(code,1,2000))
       else
-        error("invalid option (execute, info)")
+        error("invalid option (execute, info, view)")
       end
     end
 
