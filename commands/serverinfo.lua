@@ -106,7 +106,7 @@ command.execute = function(message,args,client)
       end
     end
   end
-   message:reply{embed = {
+   local embed = {
       title = message.guild.name,
       fields = {
         {name = "Owner", value = client:getUser(message.guild.ownerId).mentionString, inline = true},
@@ -124,7 +124,9 @@ command.execute = function(message,args,client)
       thumbnail = {url = (message.guild.iconURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or message.guild.iconURL)},
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
-  }}
+  }
+  if require("/app/config.lua").getConfig(message.guild.id).vip == true then embed.description = ":tada: This is a **VIP Guild**." end
+  message:reply{embed = embed}
   return {success = "stfu", msg = ""}
 end
 

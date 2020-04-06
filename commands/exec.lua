@@ -120,6 +120,7 @@ command.execute = function(message,args,client)
   if args[2] == nil then return {success = false, msg = "You must provide **code to execute**."} end
   sandbox.client = client
   sandbox.config = require("/app/config.lua")
+  sandbox.data = require("/app/config.lua").getConfig(message.guild.id)
   sandbox.utils = require("/app/utils.lua")
   sandbox.http = require("coro-http")
   sandbox.date = require("discordia").Date
