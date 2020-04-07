@@ -33,7 +33,7 @@ command = function(message,args,client,data)
   else
     message:reply{embed = {
       title = "Moderation Settings",
-      description = "To edit a setting in the general plugin, say **?"..args[1].." "..args[2].." <setting name> <new value>**",
+      description = "To edit a setting in the general plugin, say **"..data.general.prefix..args[1].." "..args[2].." <setting name> <new value>**",
       fields = {
         {name = "Settings", value = "**Modonly -** Toggles wither or not commands are restricted to server moderators.\n**Modlog -** Sets the modlog channel.\n**Muted -** Sets the muted role.\n**Modrole -** Adds or removes a role from the list of moderator roles.", inline = true},
       },

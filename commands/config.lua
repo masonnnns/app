@@ -89,6 +89,16 @@ command.execute = function(message,args,client)
     }
     if data.automod.log ~= "nil" and message.guild:getChannel(data.automod.log) ~= nil then pages[3].fields[1].value = message.guild:getChannel(data.automod.log).mentionString end
     if data.automod.enabled == false then pages[3].description = "This plugin is disabled, say  **"..data.general.prefix..args[1].." automod toggle** to enable it." pages[3].fields = nil pages[3].color = 15158332 end
+    pages[4] = {
+      title = "Welcome Settings",
+      description = "To edit a setting in this plugin, say **"..data.general.prefix..args[1].." welcome**.",
+      fields = {
+        {name = "Join Channel", value = "Not Configured.", inline = true},
+        {name = "Leave Channel", value = "Not Configured."}
+      }
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    }
     require("/app/pages.lua").addDictionary(message,pages,message.author.id)
   end
   return {success = "stfu"}

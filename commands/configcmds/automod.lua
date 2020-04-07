@@ -70,7 +70,7 @@ command = function(message,args,client,data)
   else
     message:reply{embed = {
       title = "Automod Settings",
-      description = "To edit a setting in the automod plugin, say **?"..args[1].." "..args[2].." <setting name> <new value>**",
+      description = "To edit a setting in the automod plugin, say **"..data.general.prefix..args[1].." "..args[2].." <setting name> <new value>**",
       fields = {
         {name = "Settings", value = "**Toggle -** Toggles the automod plugin.\n**Log -** Sets the automod log.\n**Spam -** Toggles the anti-spam filter.\n**Words -** Toggles the words filter.\n**Invites -** Toggles the invites filter.\n**Newlines -** Toggles the newlines filter.\n**Spoilers -** Toggles the spoilers filter.\n**Mentions -** Toggles the mass-mentions filter.\n**Filter -** Add or remove a word from the words filter.", inline = true},
       },

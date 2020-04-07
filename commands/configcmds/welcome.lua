@@ -17,19 +17,33 @@ command = function(message,args,client,data)
     data.welcome.leave.channel = channel.id
     return {success = true, msg = "Set the **leave message channel** to "..channel.mentionString.."."}
   elseif args[3] == "joinmsg" or args[3] == "joinmessage" then
+    if args[4] == nil then return {success = false, msg = "You must specify a message."} end
     if data.welcome.join.channel == "nil" then return {success = false, msg = "You must specify a join channel before you can set the message."} end
     local msg = string.sub(message.content,string.len(table.concat(args," ",1,3))+3)
     if string.len(msg) > 2000 then return {success = false, msg = "The join message must be **2,000 characters or shorter**."} end
     data.welcome.join.msg = msg
     return {success = true, msg = "Set the join message."}
   elseif args[3] == "leavemsg" or args[3] == "leavemessage" then
+    if args[4] == nil then return {success = false, msg = "You must specify a message."} end
     if data.welcome.leave.channel == "nil" then return {success = false, msg = "You must specify a leave channel before you can set the message."} end
     local msg = string.sub(message.content,string.len(table.concat(args," ",1,3))+3)
     if string.len(msg) > 2000 then return {success = false, msg = "The leave message must be **2,000 characters or shorter**."} end
     data.welcome.leave.msg = msg
     return {success = true, msg = "Set the leave message."}
   elseif args[3] == "autorole" then
+    if args[4] == nil then return {success = false, msg = "You must specify a role."} end 
     if data.vip then
+      local role = require("/app/utils.lua").resolveRole(message,table.concat(args," ",4))
+      if role == false then return {success = false, msg = "I couldn't find the role you mentioned."} end
+      for _,items in pairs(data.welcome.autorole) do
+        if items == role.id then
+          table.remove(data.welcome.autorole,_)
+          return {success = true, msg = "Removed **"..role.name.."** from the autorole."}
+        end
+      end
+      if #data.welcome.autorole + 1 > 5 then return {success = false, msg = "You can have a max of **5 autoroles**, remove some then try again."} end
+      data.welcome.autorole[1+#data.welcome.autorole] = role.id
+      return {success = true, msg = "Added **"..role.name.."** to the autorole."}
     else
       local role = require("/app/utils.lua").resolveRole(message,table.concat(args," ",4))
       if role == false then return {success = false, msg = "I couldn't find the role you mentioned."} end
@@ -38,10 +52,10 @@ command = function(message,args,client,data)
     end
   else
     message:reply{embed = {
-      title = "General Settings",
-      description = "To edit a setting in the general plugin, say **?"..args[1].." "..args[2].." <setting name> <new value>**",
+      title = "Weclome Settings",
+      description = "To edit a setting in the welcome plugin, say **"..data.general.prefix..args[1].." "..args[2].." <setting name> <new value>**",
       fields = {
-        {name = "Settings", value = "**Prefix -** Changes the prefix of the server.\n**Delcmd -** Toggles on or off AA-R0N deleting the command invocation message.\n**Auditlog -** Sets the auditlog channel.\n**Ignore -** Adds channel to the audit log's ignored channels.", inline = true},
+        {name = "Settings", value = "**Joinchannel -** Sets the channel where the join message is sent.\n**Joinmsg -** Sets the join message.\n**Leavechannel -** Sets the channel where the leave message is sent.\n**Leavemsg -** Sets the leave message.\n**Autorole -** Sets the autorole.", inline = true},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
