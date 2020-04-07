@@ -56,11 +56,13 @@ end
 
 local config = require("/app/config.lua")
 local json = require('json')
+require('/app/deps/response-methods')
+
 
 local module = {}
 
 module.request = function(res, req, client)
-  if res.req.url == "/" or res.req.url == "/favicon.ico" then return "403 - Forbidden" end
+  if res.req.url == "/" or res.req.url == "/favicon.ico" then res:status(404):send("Bad Request") return end
   if string.sub(res.req.url,1,9) == "/archives" then
     local path = parseURL(res.req.url)
     local data = require("/app/config.lua").getConfig("*")
