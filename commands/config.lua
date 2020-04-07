@@ -22,6 +22,9 @@ command.execute = function(message,args,client)
   elseif args[2] == "general" then
     local xd = require("/app/commands/configcmds/general.lua")(message,args,client,data)
     return xd
+  elseif args[2] == "welcome" then
+    local xd = require("/app/commands/configcmds/welcome.lua")(message,args,client,data)
+    return xd
   elseif args[2] == "moderation" then
     local xd = require("/app/commands/configcmds/moderation.lua")(message,args,client,data)
     return xd

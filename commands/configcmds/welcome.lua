@@ -7,15 +7,18 @@ command = function(message,args,client,data)
     if args[4]:lower() == "off" then data.welcome.join.channel = "nil" return {success = false, msg = "Disabled the **join message**."} end
     local channel = require("/app/utils.lua").resolveChannel(message,table.concat(args," ",4))
     if channel == false then return {success = false, msg = "I couldn't find the channel you mentioned."} end
-    data.general.auditlog = channel.id
+    data.welcome.join.channel = channel.id
     return {success = true, msg = "Set the **join message channel** to "..channel.mentionString.."."}
   elseif args[3] == "leavechannel" then
     if args[4] == nil then return {success = false, msg = "You must provide a leave message channel."} end
-    if args[4]:lower() == "off" then data.welcome.join.channel = "nil" return {success = false, msg = "Disabled the **leave message**."} end
+    if args[4]:lower() == "off" then data.welcome.leave.channel = "nil" return {success = false, msg = "Disabled the **leave message**."} end
     local channel = require("/app/utils.lua").resolveChannel(message,table.concat(args," ",4))
     if channel == false then return {success = false, msg = "I couldn't find the channel you mentioned."} end
-    data.general.auditlog = channel.id
-    return {success = true, msg = "Set the **join message channel** to "..channel.mentionString.."."}
+    data.welcome.leave.channel = channel.id
+    return {success = true, msg = "Set the **leave message channel** to "..channel.mentionString.."."}
+  elseif args[3] == "joinmsg" or args[3] == "joinmessage" then
+    local msg = string.sub(message.content,string.len(table.concat(args," ",1,3)))
+    print(msg)
   else
     message:reply{embed = {
       title = "General Settings",
