@@ -62,15 +62,18 @@ require('/app/deps/http-utils/libs/response-methods.lua')
 local module = {}
 
 module.request = function(res, req, client)
-  if res.req.url == "/" or res.req.url == "/favicon.ico" then res:send(io.open("/app/html/index.html","r"):read("*all")) return end
-  print(string.sub(res.req.url,1,26))
+  if res.req.url == "/" or res.req.url == "/favicon.ico" then --[[res:send(io.open("/app/html/index.html","r"):read("*all"))--]] return "403 - Forbidden" end
   if res.req.url == "/api/discord/login" then
     res:redirect('https://discordapp.com/api/oauth2/authorize?client_id=414030463792054282&redirect_uri=https%3A%2F%2Faa-r0nbot.glitch.me%2Fapi%2Fdiscord%2Fcallback&response_type=code&scope=identify')
     return
   elseif string.sub(res.req.url,1,26) == "/api/discord/callback?code" then
     local code = string.sub(res.req.url,28)
-    
-    return string.sub(res.req.url,28)
+    local headers = {
+      {"Authorization", "Basic 414030463792054282:eZwDFVWnPTZ9h12Zng3OH7sHFkCg-MkM"},
+    }
+    local response, body = require("coro-http").request("POST","https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code="..code.."&redirect_uri=https%3A%2F%2Faa-r0nbot.glitch.me%2F",headers)
+    print(body)
+    return
   end
   if string.sub(res.req.url,1,9) == "/archives" then
     local path = parseURL(res.req.url)
