@@ -20,7 +20,7 @@
 
 local json = require('json')
 local mimes = require('mimes')
-local fileType = require('file-type')
+--local fileType = require('file-type')
 local Buffer = require('buffer').Buffer
 local ServerResponse = require('http').ServerResponse
 
