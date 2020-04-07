@@ -2,16 +2,19 @@ command = {}
 
 command = function(message,args,client,data)
   if args[3] ~= nil then args[3] = args[3]:lower() end
-  if args[3] == "joinchannel" then
+  if args[3] == "toggle" then
+    data.welcome.enabled = not data.welcome.enabled
+    return {success = true, msg = "**"..(data.welcome.enabled and "Enabled" or "Disabled").."** the **welcome** plugin."}
+  elseif args[3] == "joinchannel" then
     if args[4] == nil then return {success = false, msg = "You must provide a join message channel."} end
-    if args[4]:lower() == "off" then data.welcome.join.channel = "nil" return {success = false, msg = "Disabled the **join message**."} end
+    if args[4]:lower() == "off" then data.welcome.join.channel = "nil" return {success = true, msg = "Disabled the **join message**."} end
     local channel = require("/app/utils.lua").resolveChannel(message,table.concat(args," ",4))
     if channel == false then return {success = false, msg = "I couldn't find the channel you mentioned."} end
     data.welcome.join.channel = channel.id
     return {success = true, msg = "Set the **join message channel** to "..channel.mentionString.."."}
   elseif args[3] == "leavechannel" then
     if args[4] == nil then return {success = false, msg = "You must provide a leave message channel."} end
-    if args[4]:lower() == "off" then data.welcome.leave.channel = "nil" return {success = false, msg = "Disabled the **leave message**."} end
+    if args[4]:lower() == "off" then data.welcome.leave.channel = "nil" return {success = true, msg = "Disabled the **leave message**."} end
     local channel = require("/app/utils.lua").resolveChannel(message,table.concat(args," ",4))
     if channel == false then return {success = false, msg = "I couldn't find the channel you mentioned."} end
     data.welcome.leave.channel = channel.id

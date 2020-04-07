@@ -23,6 +23,7 @@ command.execute = function(message,args,client)
     local xd = require("/app/commands/configcmds/general.lua")(message,args,client,data)
     return xd
   elseif args[2] == "welcome" then
+    if data.welcome.enabled == false and args[3]:lower() ~= "toggle" then return {success = false, msg = "This plugin is disabled, enable it to edit it's settings."} end
     local xd = require("/app/commands/configcmds/welcome.lua")(message,args,client,data)
     return xd
   elseif args[2] == "moderation" then
@@ -94,11 +95,26 @@ command.execute = function(message,args,client)
       description = "To edit a setting in this plugin, say **"..data.general.prefix..args[1].." welcome**.",
       fields = {
         {name = "Join Channel", value = "Not Configured.", inline = true},
-        {name = "Leave Channel", value = "Not Configured."}
-      }
+        {name = "Leave Channel", value = "Not Configured.", inline = true},
+        {name = "Join Message", value = "```"..data.welcome.join.msg.."```", inline = false},
+        {name = "Leave Message", value = "```"..data.welcome.leave.msg.."```", inline = false},
+        {name = "Autorole [0]", value = "Not Configured.", inline = false},
+      },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
     }
+    if data.welcome.join.channel ~= "nil" and message.guild:getChannel(data.welcome.join.channel) ~= nil then pages[4].fields[1].value = message.guild:getChannel(data.welcome.join.channel).mentionString end
+    if data.welcome.leave.channel ~= "nil" and message.guild:getChannel(data.welcome.leave.channel) ~= nil then pages[4].fields[2].value = message.guild:getChannel(data.welcome.leave.channel).mentionString end
+    if data.welcome.join.msg == "nil" or pages[4].fields[1].value == "Not Configured." then table.remove(pages[4].fields,3) end
+    if data.welcome.leave.msg == "nil" or pages[4].fields[2].value == "Not Configured." then table.remove(pages[4].fields,4) end
+    local tble = {}
+    for _,items in pairs(data.welcome.autorole) do
+      if message.guild.roles:get(items) ~= nil then
+        tble[1+#tble] = message.guild.roles:get(items).mentionString
+      end
+    end
+    if #tble >= 1 then pages[4].fields[5].value = table.concat(tble," ") pages[4].fields[5].name = "Autorole ["..#tble.."]" end
+    if data.welcome.enabled == false then pages[4].description = "This plugin is disabled, say  **"..data.general.prefix..args[1].." welcome toggle** to enable it." pages[4].fields = nil pages[4].color = 15158332 end
     require("/app/pages.lua").addDictionary(message,pages,message.author.id)
   end
   return {success = "stfu"}
