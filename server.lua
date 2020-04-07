@@ -61,7 +61,6 @@ client:on("messageCreate",function(message)
     require("/app/prompts.lua").newMsg(message.guild.id..message.channel.id..message.author.id,message,data)
     return
   end
-  string.gsub()
   if string.sub(message.content,1,string.len(data.general.prefix)) == data.general.prefix and require("/app/blacklist.lua").getBlacklist("users_"..message.author.id) == false then
     local args = sepMsg(string.sub(message.content,string.len(data.general.prefix)+1))
     local found
