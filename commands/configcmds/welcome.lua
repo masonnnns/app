@@ -17,8 +17,25 @@ command = function(message,args,client,data)
     data.welcome.leave.channel = channel.id
     return {success = true, msg = "Set the **leave message channel** to "..channel.mentionString.."."}
   elseif args[3] == "joinmsg" or args[3] == "joinmessage" then
-    local msg = string.sub(message.content,string.len(table.concat(args," ",1,3)))
-    print(msg)
+    if data.welcome.join.channel == "nil" then return {success = false, msg = "You must specify a join channel before you can set the message."} end
+    local msg = string.sub(message.content,string.len(table.concat(args," ",1,3))+3)
+    if string.len(msg) > 2000 then return {success = false, msg = "The join message must be **2,000 characters or shorter**."} end
+    data.welcome.join.msg = msg
+    return {success = true, msg = "Set the join message."}
+  elseif args[3] == "leavemsg" or args[3] == "leavemessage" then
+    if data.welcome.leave.channel == "nil" then return {success = false, msg = "You must specify a leave channel before you can set the message."} end
+    local msg = string.sub(message.content,string.len(table.concat(args," ",1,3))+3)
+    if string.len(msg) > 2000 then return {success = false, msg = "The leave message must be **2,000 characters or shorter**."} end
+    data.welcome.leave.msg = msg
+    return {success = true, msg = "Set the leave message."}
+  elseif args[3] == "autorole" then
+    if data.vip then
+    else
+      local role = require("/app/utils.lua").resolveRole(message,table.concat(args," ",4))
+      if role == false then return {success = false, msg = "I couldn't find the role you mentioned."} end
+      data.welcome.autorole[1] = role.id
+      return {success = true, msg = "Set the autorole to **"..role.name.."**."}
+    end
   else
     message:reply{embed = {
       title = "General Settings",
