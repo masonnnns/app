@@ -16,7 +16,18 @@ local alphabet = {
   ["d"] = "Delta",
   ["e"] = "Echo",
   ["f"] = "Foxtrot"
-  ["g"] = 
+  ["g"] = "Golf",
+  ["h"] = "Hotel",
+  ["i"] = "India",
+  ["j"] = "Juliet",
+  ["k"] = "Kilo",
+  ["l"] = "Lima",
+  ["m"] = "Mike",
+  ["n"] = "November",
+  ["o"] = "Oscar",
+  ["p"] = "Papa",
+  ["q"] = "Quebec",
+  [""]
 }
 
 command.execute = function(message,args,client)
