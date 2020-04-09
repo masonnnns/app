@@ -31,7 +31,7 @@ client:on("ready", function()
     http.request("GET","https://aa-r0nbot.glitch.me/")
     http.request("GET","https://verify-bot-aaron.glitch.me/")
     http.request("GET","https://interroutes.glitch.me/")
-    require("timer").sleep(15000)
+    require("timer").sleep(60000)
   end
 end)
 
@@ -63,6 +63,7 @@ client:on("messageCreate",function(message)
   end
   if string.sub(message.content,1,string.len(data.general.prefix)) == data.general.prefix and require("/app/blacklist.lua").getBlacklist("users_"..message.author.id) == false then
     local args = sepMsg(string.sub(message.content,string.len(data.general.prefix)+1))
+    if args[1] == nil then return end
     local found
     for file, _type in require("fs").scandirSync("./commands") do
       if _type ~= "directory" then
@@ -185,7 +186,7 @@ client:on("ready", function()
         end
       end
     end
-  require("timer").sleep(10000)
+  require("timer").sleep(30000)
   end
 end)
 

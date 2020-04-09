@@ -59,6 +59,7 @@ command = function(message,args,client,data)
       description = "To edit a setting in the welcome plugin, say **"..data.general.prefix..args[1].." "..args[2].." <setting name> <new value>**",
       fields = {
         {name = "Settings", value = "**Joinchannel -** Sets the channel where the join message is sent.\n**Joinmsg -** Sets the join message.\n**Leavechannel -** Sets the channel where the leave message is sent.\n**Leavemsg -** Sets the leave message.\n**Autorole -** Sets the autorole.", inline = true},
+        {name = "Variables", value = "`{user}` - Mentions the user.\n`{tag}` - Displays the user's tag.\n`{username}` - Displays the user's username.\n`{discrim}` - Displays the user's discriminator.\n`{server}` - Displays the server name.\n`{members}` - Displays the member count.", inline = false}
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),

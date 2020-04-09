@@ -113,7 +113,7 @@ command.execute = function(message,args,client)
     end
     if #tble >= 1 then pages[4].fields[5].value = table.concat(tble," ") pages[4].fields[5].name = "Autorole ["..#tble.."]" end
     if data.welcome.join.msg == "nil" or pages[4].fields[1].value == "Not Configured." then table.remove(pages[4].fields,3) end
-    if data.welcome.leave.msg == "nil" or pages[4].fields[2].value == "Not Configured." then table.remove(pages[4].fields,4) end
+    if data.welcome.leave.msg == "nil" or pages[4].fields[2].value == "Not Configured." then table.remove(pages[4].fields,#pages[4].fields-1) end
     if data.welcome.enabled == false then pages[4].description = "This plugin is disabled, say  **"..data.general.prefix..args[1].." welcome toggle** to enable it." pages[4].fields = nil pages[4].color = 15158332 end
     require("/app/pages.lua").addDictionary(message,pages,message.author.id)
   end
