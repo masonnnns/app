@@ -23,7 +23,7 @@ command.execute = function(message,args,client)
   local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
   local success, msg = user:removeRole(config.getConfig(message.guild.id).general.mutedrole)
   if type(success) == "boolean" and success == false then
-    if msg == "HTTP Error 50013 : Missing Permissions" then
+    if msg == "HTTP Error 50001 : Missing Access" then
       return {success = false, msg = "I need the **Manage Roles** permission to do this."}
     else
       return {success = false, msg = "Request failed! Try again?```"..msg.."```"}       
