@@ -13,7 +13,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  if message.guild:getMember(client.user.id):hasPermission("kickMembers") == false then return {success = false, msg = "I need the **Kick Members** permission to do this."} end
+  --if message.guild:getMember(client.user.id):hasPermission("kickMembers") == false then return {success = false, msg = "I need the **Kick Members** permission to do this."} end
   if args[2] == nil then return {success = false, msg = "You must specify a member."} end
   local user = utils.resolveUser(message,args[2])
   if user == false then 

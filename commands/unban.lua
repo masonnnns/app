@@ -13,10 +13,11 @@ command.info = {
 } 
 
 command.execute = function(message,args,client)
-  if message.guild:getMember(client.user.id):hasPermission("banMembers") == false then return {success = false, msg = "I need the **Ban Members** permission to do this."} end
+  --if message.guild:getMember(client.user.id):hasPermission("banMembers") == false then return {success = false, msg = "I need the **Ban Members** permission to do this."} end
   if tonumber(args[2]) == nil then return {success = false, msg = "I couldn't find the user you mentioned."} end
   local user = client:getUser(args[2])
   if user == nil then return {success = false, msg = "I couldn't find the user you mentioned."} end
+  if message.guild:getBans() == nil then return {success = false, msg = "I need the **Ban Members** permission to do this."} end
   if message.guild:getBans():get(user.id) == nil then return {success = false, msg = "**"..user.tag.."** isn't banned."} end
   local data = config.getConfig(message.guild.id)
   local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))

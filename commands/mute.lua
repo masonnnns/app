@@ -41,7 +41,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  if message.guild:getMember(client.user.id):hasPermission("manageRoles") == false then return {success = false, msg = "I need the **Manage Roles** permission to do this."} end
+  --if message.guild:getMember(client.user.id):hasPermission("manageRoles") == false then return {success = false, msg = "I need the **Manage Roles** permission to do this."} end
   if config.getConfig(message.guild.id).general.mutedrole == "nil" or message.guild:getRole(config.getConfig(message.guild.id).general.mutedrole) == nil then return {success = false, msg = "**Config Error:** There is no muted role setup."} end
   if args[2] == nil then return {success = false, msg = "You must specify a member."} end
   local user = utils.resolveUser(message,args[2])
@@ -65,7 +65,14 @@ command.execute = function(message,args,client)
       elseif durationTable[table.concat(duration.char,"")] == nil then
         reason = table.concat(args," ",3)
       end
-      user:addRole(data.general.mutedrole)
+      local success, msg = user:addRole(data.general.mutedrole)
+      if type(success) == "boolean" and success == false then
+        if msg == "HTTP Error 50001 : Missing Access" then
+          return {success = false, msg = "I need the **Manage Roles** permission to do this."}
+        else
+          return {success = false, msg = "Request failed! Try again?```"..msg.."```"}       
+        end
+      end
       data.moderation.cases[1+#data.moderation.cases] = {type = "mute", user = user.id, moderator = message.author.id, reason = reason, duration = "Permanent", modlog = "nil"}
       if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
         local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
@@ -86,10 +93,17 @@ command.execute = function(message,args,client)
         return {success = false, msg = "Invalid duration."}
       else
         local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
+        local success, msg = user:addRole(data.general.mutedrole)
+        if type(success) == "boolean" and success == false then
+          if msg == "HTTP Error 50001 : Missing Access" then
+            return {success = false, msg = "I need the **Manage Roles** permission to do this."}
+          else
+            return {success = false, msg = "Request failed! Try again?```"..msg.."```"}       
+          end
+        end
         local durationString = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s")
         data.moderation.cases[1+#data.moderation.cases] = {type = "mute", user = user.id, moderator = message.author.id, reason = reason, duration = durationString, modlog = "nil"}
         data.moderation.actions[1+#data.moderation.actions] = {type = "mute", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], moderator = message.author.id, case = #data.moderation.cases, id = user.id}
-        user:addRole(data.general.mutedrole)
         if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
           local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
             title = "Mute - Case "..#data.moderation.cases,
