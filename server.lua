@@ -664,7 +664,7 @@ end)
 
 -- [[ PRIVATE LOGS ]]
 
-client:on("error", function(message)
+--[[client:on("error", function(message)
   client:getGuild("551017079797579795"):getChannel("678756836349968415"):send{embed = {
     title = "Runtime Error",
     description = "```lua\n"..string.upper(message).."\n```",
@@ -682,7 +682,7 @@ client:on("warning", function(message)
     footer = {txt = "Non-fatal error."},
     color = 15105570,
   }}
-end)
+end)--]]
 
 client:on("guildCreate", function(guild)
   if require("/app/blacklist.lua").getBlacklist("guilds_"..guild.id) then guild:leave() return end

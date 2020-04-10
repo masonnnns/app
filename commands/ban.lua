@@ -40,7 +40,7 @@ command.info = {
 }
 
 command.execute = function(message,args,client)
-  if message.guild:getMember(client.user.id):hasPermission("banMembers") == false then return {success = false, msg = "I need the **Ban Members** permission to do this."} end
+  --if message.guild:getMember(client.user.id):hasPermission("banMembers") == false then return {success = false, msg = "I need the **Ban Members** permission to do this."} end
   if args[2] == nil then return {success = false, msg = "You must specify a member."} end
   local user = utils.resolveUser(message,args[2])
   if user == false and tonumber(args[2]) ~= nil and client:getUser(args[2]) ~= nil then user = client:getUser(args[2]) end
@@ -52,6 +52,8 @@ command.execute = function(message,args,client)
     return {success = false, msg = "I cannot "..command.info.Name:lower().." **"..user.tag.."** because their **role is higher than mine**."}
   elseif user.id == client.user.id then
     return {success = false, msg = "I cannot "..command.info.Name:lower().." myself."}
+  elseif message.guild:getBans() == nil then
+    return {success = false, msg = "I need the **Ban Members** permission to do this."}
   elseif message.guild:getBans():get(user.id) ~= nil then
     return {success = false, msg = "**"..user.tag.."** is already banned."}
   else
@@ -64,7 +66,14 @@ command.execute = function(message,args,client)
       elseif durationTable[table.concat(duration.char,"")] == nil then
         reason = table.concat(args," ",3)
       end
-      message.guild:banUser(user,reason,7)
+      local success, msg = message.guild:banUser(user,reason,7)
+      if type(success) == "boolean" and success == false then
+        if msg == "HTTP Error 50013 : Missing Permissions" then
+          return {success = false, msg = "I need the **Ban Members** permission to do this."}
+        else
+          return {success = false, msg = "Request failed! Try again?```"..msg.."```"}
+        end
+      end
       data.moderation.cases[1+#data.moderation.cases] = {type = "ban", user = user.id, moderator = message.author.id, reason = reason, duration = "Permanent", modlog = "nil"}
       if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
         local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
@@ -85,10 +94,17 @@ command.execute = function(message,args,client)
         return {success = false, msg = "Invalid duration."}
       else
         local reason = (args[4] == nil and "No Reason Provided." or table.concat(args," ",4))
+        local success, msg = message.guild:banUser(user,reason,7)
+        if type(success) == "boolean" and success == false then
+          if msg == "HTTP Error 50013 : Missing Permissions" then
+            return {success = false, msg = "I need the **Ban Members** permission to do this."}
+          else
+            return {success = false, msg = "Request failed! Try again?```"..msg.."```"}
+          end
+        end
         local durationString = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s")
         data.moderation.cases[1+#data.moderation.cases] = {type = "ban", user = user.id, moderator = message.author.id, reason = reason, duration = durationString, modlog = "nil"}
-        data.moderation.actions[1+#data.moderation.actions] = {type = "ban", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], moderator = message.author.id, case = #data.moderation.cases, id = user.id}
-        message.guild:banUser(user,reason,7)
+        data.moderation.actios[1+#data.moderation.actions] = {type = "ban", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], moderator = message.author.id, case = #data.moderation.cases, id = user.id}
         if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
           local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
             title = "Ban - Case "..#data.moderation.cases,

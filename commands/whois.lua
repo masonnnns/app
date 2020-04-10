@@ -72,7 +72,7 @@ command.execute = function(message,args,client)
       end
       roles = {}
       for a,items in pairs(user:getPermissions():toTable()) do if items == true then roles[1+#roles] = string.sub(a,1,1):upper()..string.sub(a,2) end end
-      embed.fields[10].value = table.concat(roles,", ")
+      embed.fields[10].value = string.sub(table.concat(roles,", "),1,1000)
     else
       embed.fields = {
         {name = "Mention", value = user.mentionString, inline = true},

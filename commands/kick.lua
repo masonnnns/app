@@ -27,7 +27,14 @@ command.execute = function(message,args,client)
   else
     local data = config.getConfig(message.guild.id)
     local reason = (args[3] == nil and "No Reason Provided." or table.concat(args," ",3))
-    message.guild:kickUser(user.id,reason)
+    local success, msg = message.guild:kickUser(user.id,reason)
+    if type(success) == "boolean" and success == false then
+      if msg == "HTTP Error 50013 : Missing Permissions" then
+        return {success = false, msg = "I need the **Kick Members** permission to do this."}
+      else
+        return {success = false, msg = "Request failed! Try again?```"..msg.."```"}       
+      end
+    end
     data.moderation.cases[1+#data.moderation.cases] = {type = "kick", user = user.id, moderator = message.author.id, reason = reason, modlog = "nil"}
     if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then
       local modlog = message.guild:getChannel(data.general.modlog):send{embed = {
