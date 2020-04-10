@@ -33,6 +33,7 @@ command.execute = function(message,args,client)
   if case.type:lower() == "kick" then embed.color = 15105570 end
   if case.type:lower() == "mute" then embed.color = 15105570 end
   if case.type:lower() == "warn" then embed.color = 15844367 end
+  if case.type:lower() == "softban" then embed.color = 10038562 end
   if data.general.modlog ~= "nil" and case.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) and message.guild:getChannel(data.general.modlog):getMessage(case.modlog) then
     embed.description = "[Jump to Modlog](https://discordapp.com/channels/"..message.guild.id.."/"..data.general.modlog.."/"..case.modlog..")"
   end
