@@ -134,7 +134,7 @@ client:on("messageCreate",function(message)
       end
     end
   else
-      if data.automod.enabled and require("/app/utils.lua").Permlvl(message,client) == 0 then require("/app/automod.lua")(message,data,client) end
+      if data.automod.enabled and require("/app/utils.lua").Permlvl(message,client) >= 0 then require("/app/automod.lua")(message,data,client) end
   end
 end)
 
@@ -329,6 +329,7 @@ client:on("messageUpdate", function(message)
   if message.author.bot ~= false then return end
   if message.guild == nil then return end
   local data = require("/app/config.lua").getConfig(message.guild.id)
+  if data.automod.enabled and require("/app/utils.lua").Permlvl(message,client) >= 0 then require("/app/automod.lua")(message,data,client) end
   if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
   for _,items in pairs(data.general.auditignore) do if items == message.channel.id then return end end
   local oldMsg

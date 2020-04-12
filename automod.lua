@@ -184,7 +184,7 @@ plugin = function(message, data, client)
       end
     end
     local antispam = require("/app/antispam.lua")(message)
-    if antispam.safe == false then
+    if antispam.safe == false and data.automod.spam.enabled then
       message.channel:bulkDelete(antispam.messages)
       if data.automod.log ~= "nil" and message.guild:getChannel(data.automod.log) ~= nil then
         message.guild:getChannel(data.automod.log):send{embed = {
