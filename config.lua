@@ -9,7 +9,7 @@ local function addConfig(id)
     automod = {enabled = false, log = "nil", spam = {enabled = false}, newline = {enabled = false, limit = 10}, spoilers = {enabled = false, limit = 5}, mentions = {enabled = false, limit = 10}, invites = {enabled = false}, words = {enabled = false, terms = {"fuck","ass","cunt","dick","penis","butt","kys","bitch","cock","sex","intercourse",":middle_finger:","discordgg.ga"}}},
     flags = {enabled = false, log = "nil", threshold = 5, autoflag = false},
     starboard = {enabled = false, channel = "nil", threshold = 5, self = false, blacklist = {roles = {}, messages = {}}, messages = {}},
-	  welcome = {enabled = false, join = {channel = "nil", msg = "nil"}, leave = {channel = "nil", message = "nil"}, autorole = {}},
+	  welcome = {enabled = false, join = {channel = "nil", msg = "nil"}, leave = {channel = "nil", msg = "nil"}, autorole = {}},
   }
 end
 
