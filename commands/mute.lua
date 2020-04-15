@@ -1,4 +1,4 @@
-command = {}
+onfigccommand = {}
 
 local durationTable = {
   --["s"] = {1,"Seconds"},
