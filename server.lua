@@ -94,6 +94,7 @@ client:on("messageCreate",function(message)
       if cooldown[message.author.id..message.guild.id] ~= nil and cooldown[message.author.id..message.guild.id].time > os.time() then
         cooldown[message.author.id..message.guild.id].strike = cooldown[message.author.id..message.guild.id].strike + 1
         if cooldown[message.author.id..message.guild.id].strike >= 2 then
+          print("[CMD COOLDOWN]: "..message.author.tag.." ("..message.author.id..") has been put on cooldown in "..message.guild.name.." ("..message.guild.id.."). [STRIKES: "..cooldown[message.author.id..message.guild.id].strike.."]")
           if cooldown[message.author.id..message.guild.id].strike == 2 then
             local reply = message:reply("⚠️ **Too spicy!** Try running another command in "..cooldown[message.author.id..message.guild.id].time-os.time().." seconds.")
             require("timer").sleep(5000)
@@ -108,6 +109,7 @@ client:on("messageCreate",function(message)
       local execute
       cooldown[message.author.id..message.guild.id].time = os.time() + (command.info.Cooldown == nil and 2 or command.info.Cooldown)
       local cmdSuccess, cmdMsg = pcall(function() execute = command.execute(message,args,client) end)
+      print("[CMD]: "..message.author.tag.." ("..message.author.id..") has ran the "..command.info.Name.." command in "..message.guild.name.." ("..message.guild.id..").\nMSG: "..message.content)
       if not (cmdSuccess) then
         message:reply(":rotating_light: **An error occured!** Please report this to our support team.")
         client:getGuild("551017079797579795"):getChannel("678756836349968415"):send{embed = {
