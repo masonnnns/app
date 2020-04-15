@@ -85,7 +85,7 @@ client:on("messageCreate",function(message)
     if found ~= nil and command.info.Category == "Private" and message.author.id == client.owner.id then permLvl = 6 end
     if found == nil or permLvl == 0 and data.general.modonly == true or permLvl < command.info.PermLvl then
       if data.automod.enabled and require("/app/utils.lua").Permlvl(message,client) == 0 then require("/app/automod.lua")(message,data,client) end
-      if found ~= nil and data.general.modonly == false then 
+      if found ~= nil and permLvl >= 1 then 
         local m = message:reply("<:aforbidden:678187354242023434> You **don't have permissions** to use this command!")
         require("timer").sleep(5000)
         m:delete()
