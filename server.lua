@@ -492,7 +492,7 @@ client:on("memberJoin", function(member)
   }
   print(os.time() + 3600,discordia.Date.fromSnowflake(member.id):toSeconds())
   if os.time() - 3600 <= discordia.Date.fromSnowflake(member.id):toSeconds() then log.description = ":warning: **New Account**" end
-  member.guild:getChannel(data.general.auditlog):send{embed = log}
+  member.guild:getChannel(data.general.auditlog):send{embed = log} 
 end)
 
 client:on("memberLeave", function(member) 
