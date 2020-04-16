@@ -317,7 +317,7 @@ client:on("messageDelete", function(message)
   if log.title == "Bulk Message Deletion" then
     local messages = {}
     for _,items in pairs(bulkDeletes[message.guild.id..message.channel.id]) do messages[_] = items.author.." ("..items.id.."): "..items.content end
-    data.general.archives[message.channel.id..os.time()..message.guild.id] = {date = require("/app/utils.lua").parseDateString(discordia.Date.fromSeconds(os.time()):toString(),2), messages = table.concat(messages, "\n"), channelName = message.channel.name, channelId = message.channel.id, num = #messages, guild = message.guild.name}
+    data.general.archives[message.channel.id..os.time()..message.guild.id] = {date = require("/app/utils.lua").parseDateString(discordia.Date.fromSeconds(os.time()):toString(),2), messages = table.concat(messages, "\n"), channelName = message.channel.name, channelId = message.channel.id, num = #messages, guild = message.guild.name, purge = true}
     --local iLog = client:getGuild("551017079797579795"):getChannel("692393649463623720"):send{content = "**"..message.guild.name.."** (`"..message.guild.id.."`)",file = {message.guild.id.."-"..message.channel.id.."-"..message.channel.name..".txt", table.concat(messages, "\n")},}
     log.fields[1+#log.fields] = {name = "Message Archive", value = "[Click Here](https://aa-r0nbot.glitch.me/archives/"..message.guild.id.."/"..message.channel.id..os.time()..message.guild.id..")", inline = false}
   end

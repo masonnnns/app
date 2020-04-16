@@ -80,7 +80,9 @@ module.request = function(res, req, client)
     local data = require("/app/config.lua").getConfig("*")
     if data[path[2]] == nil then return "403 - Bad Request" end
     if data[path[2]].general.archives[path[3]] == nil then return "404 - Not Found" end
-    return "=====\n\nArchive of "..data[path[2]].general.archives[path[3]].num.." deleted messages in "..data[path[2]].general.archives[path[3]].guild.." in #"..data[path[2]].general.archives[path[3]].channelName.." ("..data[path[2]].general.archives[path[3]].channelId..")\nOccured on "..data[path[2]].general.archives[path[3]].date.."\n\n=====\n\n"..data[path[2]].general.archives[path[3]].messages
+    local purged
+    if data[path[2]].general.archives[path[3]].purge == nil then purged = true else purged = data[path[2]].general.archives[path[3]].purge end
+    return "=====\n\nArchive of "..data[path[2]].general.archives[path[3]].num..""..(purged and " deleted " or " ").."messages in "..data[path[2]].general.archives[path[3]].guild.." in #"..data[path[2]].general.archives[path[3]].channelName.." ("..data[path[2]].general.archives[path[3]].channelId..")\nOccured on "..data[path[2]].general.archives[path[3]].date.."\n\n=====\n\n"..data[path[2]].general.archives[path[3]].messages
   end
   if res.req.headers[6][1] ~= "api-key" then return "403 - Forbidden" end
   if res.req.headers[6][2] ~= "0E73FC8D00EA076D94CDDD71629C63A52359CB45FFCC736701966FA3A032CC71" then return "403 - Forbidden" end
