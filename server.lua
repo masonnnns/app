@@ -93,9 +93,9 @@ client:on("messageCreate",function(message)
     else
       if cooldown[message.author.id..message.guild.id] ~= nil and cooldown[message.author.id..message.guild.id].time > os.time() then
         cooldown[message.author.id..message.guild.id].strike = cooldown[message.author.id..message.guild.id].strike + 1
-        if cooldown[message.author.id..message.guild.id].strike >= 2 then
+        if cooldown[message.author.id..message.guild.id].strike >= 3 then
           print("[CMD COOLDOWN]: "..message.author.tag.." ("..message.author.id..") has been put on cooldown in "..message.guild.name.." ("..message.guild.id.."). [STRIKES: "..cooldown[message.author.id..message.guild.id].strike.."]")
-          if cooldown[message.author.id..message.guild.id].strike == 2 then
+          if cooldown[message.author.id..message.guild.id].strike == 3 then
             local reply = message:reply("⚠️ **Too spicy!** Try running another command in "..cooldown[message.author.id..message.guild.id].time-os.time().." seconds.")
             require("timer").sleep(5000)
             reply:delete()
@@ -280,6 +280,7 @@ client:on("messageDelete", function(message)
   bulkDeletes[message.guild.id..message.channel.id][1+#bulkDeletes[message.guild.id..message.channel.id]] = {content = message.content, author = message.author.tag, id = message.author.id, mention = message.author.mentionString}
   debounceBulk[message.guild.id..message.channel.id] = message.id
   require("timer").sleep(100)
+  --print("continue processing? "..debounceBulk[message.guild.id..message.channel.id] == message.id)
   if debounceBulk[message.guild.id..message.channel.id] ~= message.id then return end
   debounceBulk[message.guild.id..message.channel.id] = 0
   if data.general.auditlog == "nil" or message.guild:getChannel(data.general.auditlog) == nil then return end
