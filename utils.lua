@@ -21,7 +21,9 @@ local checkMany = function(id,t,data,guild)
     return "n"
   elseif t == "roles" then
     for _,items in pairs(data.general.modroles) do
-      if guild.members:get(id):hasRole(items) then return "y" end
+      local role = guild.roles:get(items)
+      if role == nil then return "n" end
+      if role.members:get(id) ~= nil then return "y" end
     end
     return "n"
   end
