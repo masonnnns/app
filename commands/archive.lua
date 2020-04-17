@@ -37,7 +37,7 @@ command.execute = function(message,args,client)
   embed = {
     title = "Messages Archived",
     description = "[Click Here]("..link..") to view the **"..#messages.."** archived messages.",
-    footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+    footer = botReply.embed.footer,
     color = botReply.embed.color,
   }
   botReply:setEmbed(embed)

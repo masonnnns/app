@@ -82,7 +82,7 @@ command.execute = function(message,args,client)
       embed.description = "This user isn't in the guild."
       if #user.mutualGuilds:toArray() ~= 0 then
         user = user.mutualGuilds:toArray()[1]:getMember(user.id)
-        embed.fields[1+#embed.fields] = {name = "Status", value = "Loading...", inline = true}
+        embed.fields[1+#embed.fields] = {name = "Status", value = "Nothing", inline = true}
         embed.fields[1+#embed.fields] = {name = "Activity", value = "Nothing", inline = true}
         if user.status == "online" then embed.fields[4].value = "Online" end
         if user.status == "idle" then embed.fields[4].value = "Idle" end
