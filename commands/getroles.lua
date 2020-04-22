@@ -86,14 +86,14 @@ command.execute = function(message,args,client)
       require("timer").sleep(500)
     end
   end
-  if groupInfo.Rank >= 30 and groupInfo.Rank <= 60 then
+  if groupInfo.Rank >= 30 and groupInfo.Rank <= 69 then
     if message.member.roles:get("548533225958539264") == nil then
       added[1+#added] = "Low Rank"
       message.member:addRole("548533225958539264")
     end
     local remove = bulkRemove(message,{"515695801356386305", "515696031174754310", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
-  elseif groupInfo.Rank >= 69 and groupInfo.Rank <= 110 then
+  elseif groupInfo.Rank >= 80 and groupInfo.Rank <= 110 then
     if message.member.roles:get("515695801356386305") == nil then
       added[1+#added] = "Middle Rank"
       message.member:addRole("515695801356386305")
