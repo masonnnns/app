@@ -19,9 +19,12 @@ command.execute = function(message,args,client)
   local result, body = http.request("GET","https://verify.eryn.io/api/user/"..message.author.id)
   body = json.decode(body)
   if body.status == "ok" then
-    message.member:setNickname(body.robloxUsername)
+    local name = body.robloxUsername
+    local newNameR, newNameBody = http.request("GET","https://api.roblox.com/users/"..body.robloxId)
+    if newNameR.code == 200 then name = json.decode(newNameBody).Username end
+    message.member:setNickname(name)
     if message.member.roles:get("515647391676891138") then message.member:addRole("515647391676891138") end
-    return {success = true, msg = "You've been verified as **"..body.robloxUsername.."**."}
+    return {success = true, msg = "You've been verified as **"..name.."**."}
   else
     if body.errorCode ~= nil and body.errorCode == 404 then
       return {success = false, msg = "You're not verified with RoVer! Verify here: <https://verify.eryn.io/>"}

@@ -70,12 +70,23 @@ command.execute = function(message,args,client)
       require("timer").sleep(500)
     end
   end
+  if groupInfo.Rank >= 30 and groupInfo.Rank <= 60 then
+    added[1+#added] = "Low Rank"
+    message.member:addRole("548533225958539264")
+  elseif groupInfo.Rank >= 69 and groupInfo.Rank <= 110 then
+    added[1+#added] = "Middle Rank"
+    message.member:addRole("515695801356386305")
+  elseif groupInfo.Rank >= 120 and groupInfo.Rank <= 140 then
+    added[1+#added] = "Low Rank"
+    message.member:addRole("515696031174754310")
+  elseif groupInfo.Rank >= 
+  end
   if #added + #removed == 0 then return {success = false, msg = "No changes were made."} end
   local embed = {
     title = "Roles Changed",
     fields = {
-      {name = "Added ["..#added.."]", value = (#added == 0 and "None!" or table.concat(added,", ")), inline = false},
-      {name = "Removed ["..#removed.."]", value = (#removed == 0 and "None!" or table.concat(removed,", ")), inline = false},
+      {name = "Added ["..#added.."]", value = (#added == 0 and "None!" or table.concat(added,", ")), inline = true},
+      {name = "Removed ["..#removed.."]", value = (#removed == 0 and "None!" or table.concat(removed,", ")), inline = true},
     },
     footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
     color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
