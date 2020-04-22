@@ -16,6 +16,14 @@ command = function(message,args,client,data)
     end
     embed.description = table.concat(tble,", ")
     message:reply{embed = embed}
+  elseif args[3] == "delete" then
+    if args[4] == nil then return {success = false, msg = "You must provide a tag to delete."} end
+    for a,b in pairs(data.tags.tags) do
+      if b.name:lower() == args[4]:lower() then
+        table.remove(a,data.tags.tags)
+        return {success = true, msg = "Deleted the **"..args[4:]}
+      end
+    end
   else
     message:reply{embed = {
       title = "Moderation Settings",
