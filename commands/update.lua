@@ -76,18 +76,19 @@ command.execute = function(message,args,client)
       break
     end
   end
-  groupInfo = b[1]
+  groupInfo = body[1]
   groupInfo.Rank = 0
   groupInfo.Role = "Customer"
   local added, removed = {}, {}
   if user.roles:get(bindings[groupInfo.Rank]) == nil then added[1+#added] = groupInfo.Role user:addRole(bindings[groupInfo.Rank]) end
   for a,b in pairs(bindings) do
-    if user.roles:get(b) ~= nil and a ~= groupInfo.Rank and a ~= 0 then
+    if user.roles:get(b) ~= nil and a ~= groupInfo.Rank and a ~= 0 and b ~= "467886277749112832" then
       removed[1+#removed] = user.roles:get(b).name
       user:removeRole(b)
       require("timer").sleep(500)
     end
   end
+  if user.roles:get("515647391676891138") == nil then added[1+#added] = "Verified" user:setNickname() user:addRole("515647391676891138") end
   if groupInfo.Rank >= 30 and groupInfo.Rank <= 60 and user.roles:get("548533225958539264") == nil then
     added[1+#added] = "Low Rank"
     user:addRole("548533225958539264")
