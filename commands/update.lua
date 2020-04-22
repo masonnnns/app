@@ -5,7 +5,7 @@ local config = require("/app/config.lua")
 local http = require('coro-http')
 local json = require("json")
 
-local function bulkRemove(message,ids)
+local function bulkRemove(user,ids)
   local removed = {}
   for a,b in pairs(ids) do
     if user.roles:get(b) ~= nil then
@@ -79,9 +79,11 @@ command.execute = function(message,args,client)
       break
     end
   end
-  groupInfo = body[1]
-  groupInfo.Rank = 0
-  groupInfo.Role = "Customer"
+  if groupInfo == nil then
+    groupInfo = body[1]
+    groupInfo.Rank = 0
+    groupInfo.Role = "Customer"
+  end
   local added, removed = {}, {}
   if user.roles:get(bindings[groupInfo.Rank]) == nil then added[1+#added] = groupInfo.Role user:addRole(bindings[groupInfo.Rank]) end
   for a,b in pairs(bindings) do

@@ -72,9 +72,11 @@ command.execute = function(message,args,client)
       break
     end
   end
-  groupInfo = body[1]
-  groupInfo.Rank = 0
-  groupInfo.Role = "Customer"
+  if groupInfo == nil then
+    groupInfo = body[1]
+    groupInfo.Rank = 0
+    groupInfo.Role = "Customer"
+  end
   local added, removed = {}, {}
   if message.member.roles:get(bindings[groupInfo.Rank]) == nil then added[1+#added] = groupInfo.Role message.member:addRole(bindings[groupInfo.Rank]) end
   for a,b in pairs(bindings) do
