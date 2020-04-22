@@ -57,9 +57,12 @@ command.execute = function(message,args,client)
   if user.id == message.author.id then local cmd = require("/app/commands/getroles.lua").execute(message,args,client) return cmd end
   local result, body = http.request("GET","https://verify.eryn.io/api/user/"..user.id)
   body = json.decode(body)
-  local userID = 0
+  local userID,name = 0,""
   if body.status == "ok" then
     userID = body.robloxId
+    name = body.robloxUsername
+    local newNameR, newNameBody = http.request("GET","https://api.roblox.com/users/"..body.robloxId)
+    if newNameR.code == 200 then name = json.decode(newNameBody).Username end
   else
     if body.errorCode ~= nil and body.errorCode == 404 then
       return {success = false, msg = "**"..user.tag.."** not verified with RoVer!"}
@@ -88,7 +91,7 @@ command.execute = function(message,args,client)
       require("timer").sleep(500)
     end
   end
-  if user.roles:get("515647391676891138") == nil then added[1+#added] = "Verified" user:setNickname() user:addRole("515647391676891138") end
+  if user.roles:get("515647391676891138") == nil then added[1+#added] = "Verified" user:setNickname(name) user:addRole("515647391676891138") end
   if groupInfo.Rank >= 30 and groupInfo.Rank <= 60 and user.roles:get("548533225958539264") == nil then
     added[1+#added] = "Low Rank"
     user:addRole("548533225958539264")
