@@ -126,6 +126,8 @@ command.execute = function(message,args,client)
         {name = "Amount of Tags", value = #data.tags.tags, inline = true},
         {name = "Delete Command", value = (data.tags.delete and "Enabled." or "Disabled."), inline = true},
       },
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }
     if data.tags.enabled == false then pages[5].description = "This plugin is disabled, say  **"..data.general.prefix..args[1].." tags toggle** to enable it." pages[5].fields = nil pages[5].color = 15158332 end
     require("/app/pages.lua").addDictionary(message,pages,message.author.id)

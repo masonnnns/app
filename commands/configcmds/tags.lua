@@ -16,6 +16,7 @@ command = function(message,args,client,data)
     end
     embed.description = table.concat(tble,", ")
     message:reply{embed = embed}
+    return {success = "stfu"}
   elseif args[3] == "delete" then
     if args[4] == nil then return {success = false, msg = "You must provide a tag to delete."} end
     for a,b in pairs(data.tags.tags) do
@@ -50,12 +51,18 @@ command = function(message,args,client,data)
       end
     end
     return {success = false, msg = "No tags by that name were found."}
+  elseif args[3] == "delcmd" then
+    data.tags.delete = not data.tags.delete
+    return {success = true, msg = "**"..(data.tags.delete and "Enabled" or "Disabled").."** deleting the tag invocation message."}
+  elseif args[3] == "toggle" then
+    data.tags.enabled = not data.tags.enabled
+    return {success = true, msg = "**"..(data.tags.enabled and "Enabled" or "Disabled").."** the tags plugin."}
   else
     message:reply{embed = {
       title = "Tags Settings",
       description = "To edit a setting in the tag plugin, say **"..data.general.prefix..args[1].." "..args[2].." <setting name> <new value>**",
       fields = {
-        {name = "Settings", value = "**Modonly -** Toggles wither or not commands are restricted to server moderators.\n**Modlog -** Sets the modlog channel.\n**Muted -** Sets the muted role.\n**Modrole -** Adds or removes a role from the list of moderator roles.", inline = true},
+        {name = "Settings", value = "**View -** View all the existing tags.\n**Create -** Make a new tag.\n**Edit -** Edit an existing tag.\n**Delete -** Delete a tag.\n**DelCmd -** Delete the command invocation message.", inline = true},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
