@@ -20,14 +20,40 @@ command = function(message,args,client,data)
     if args[4] == nil then return {success = false, msg = "You must provide a tag to delete."} end
     for a,b in pairs(data.tags.tags) do
       if b.name:lower() == args[4]:lower() then
-        table.remove(a,data.tags.tags)
-        return {success = true, msg = "Deleted the **"..args[4:]}
+        table.remove(data.tags.tags,a)
+        return {success = true, msg = "Deleted the **"..args[4]:lower().."** tag."}
       end
     end
+    return {success = false, msg = "No tags by that name were found."}
+  elseif args[3] == "create" then
+    if args[4] == nil then return {success = false, msg = "You must provide a title for the tag."} end
+    for a,b in pairs(data.tags.tags) do
+      if b.name:lower() == args[4]:lower() then
+        return {success = false, msg = "A tag with this name already exists."}
+      end
+    end
+    if args[5] == nil then return {success = false, msg = "You must provide content for the tag."} end
+    if not data.vip and #data.tags.tags + 1 > 100 then return {success = false, msg = "Non-VIP guilds have a limit of 100 tags."} end
+    local content = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+string.len(args[4])+5))
+    if string.len(content) >= 1500 then return {success = false, msg = "Your tag content must be under 1,500 characters."} end
+    data.tags.tags[1+#data.tags.tags] = {name = args[4]:lower(), content = content}
+    return {success = true, msg = "Created the **"..args[4]:lower().."** tag."}
+  elseif args[3] == "edit" then
+    if args[4] == nil then return {success = false, msg = "You must provide a tag to edit."} end
+    for a,b in pairs(data.tags.tags) do
+      if b.name:lower() == args[4]:lower() then
+        if args[5] == nil then return {success = false, msg = "You must provide new content for the tag."} end
+        local content = string.sub(message.content,(string.len(args[1])+string.len(args[2])+string.len(args[3])+string.len(args[4])+5))
+        if string.len(content) >= 1500 then return {success = false, msg = "Your tag content must be under 1,500 characters."} end
+        b.content = content
+        return {success = true, msg = "Edited the **"..b.name.."** tag."}
+      end
+    end
+    return {success = false, msg = "No tags by that name were found."}
   else
     message:reply{embed = {
-      title = "Moderation Settings",
-      description = "To edit a setting in the general plugin, say **"..data.general.prefix..args[1].." "..args[2].." <setting name> <new value>**",
+      title = "Tags Settings",
+      description = "To edit a setting in the tag plugin, say **"..data.general.prefix..args[1].." "..args[2].." <setting name> <new value>**",
       fields = {
         {name = "Settings", value = "**Modonly -** Toggles wither or not commands are restricted to server moderators.\n**Modlog -** Sets the modlog channel.\n**Muted -** Sets the muted role.\n**Modrole -** Adds or removes a role from the list of moderator roles.", inline = true},
       },
