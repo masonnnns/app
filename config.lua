@@ -10,6 +10,7 @@ local function addConfig(id)
     flags = {enabled = false, log = "nil", threshold = 5, autoflag = false},
     starboard = {enabled = false, channel = "nil", threshold = 5, self = false, blacklist = {roles = {}, messages = {}}, messages = {}},
 	  welcome = {enabled = false, join = {channel = "nil", msg = "nil"}, leave = {channel = "nil", msg = "nil"}, autorole = {}},
+    tags = {enabled = false, tags = {}, delete = false}
   }
 end
 

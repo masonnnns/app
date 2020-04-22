@@ -62,7 +62,7 @@ command = function(message,args,client,data)
         {name = "Variables", value = "`{user}` - Mentions the user.\n`{tag}` - Displays the user's tag.\n`{username}` - Displays the user's username.\n`{discrim}` - Displays the user's discriminator.\n`{server}` - Displays the server name.\n`{members}` - Displays the member count.", inline = false}
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }}
     return {success = "stfu"}
   end

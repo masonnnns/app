@@ -75,7 +75,7 @@ command = function(message,args,client,data)
         {name = "Settings", value = "**Toggle -** Toggles the automod plugin.\n**Log -** Sets the automod log.\n**Spam -** Toggles the anti-spam filter.\n**Words -** Toggles the words filter.\n**Invites -** Toggles the invites filter.\n**Newlines -** Toggles the newlines filter.\n**Spoilers -** Toggles the spoilers filter.\n**Mentions -** Toggles the mass-mentions filter.\n**Filter -** Add or remove a word from the words filter.", inline = true},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }}
     return {success = "stfu"}
   end

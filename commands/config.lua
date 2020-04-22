@@ -33,6 +33,10 @@ command.execute = function(message,args,client)
     if data.automod.enabled == false and args[3]:lower() ~= "toggle" then return {success = false, msg = "This plugin is disabled, enable it to edit it's settings."} end
     local xd = require("/app/commands/configcmds/automod.lua")(message,args,client,data)
     return xd
+  elseif args[2] == "tags" then
+    if data.tags.enabled == false and args[3]:lower() ~= "toggle" then return {success = false, msg = "This plugin is disabled, enable it to edit it's settings."} end
+    local xd = require("/app/commands/configcmds/tags.lua")(message,args,client,data)
+    return xd
   elseif args[2] == "nolock" then
     data.general.funlock = not data.general.funlock
     return {success = true, msg = "**"..(data.general.funlock and "Enabled" or "Disabled").."** the NSFW Channel lock on fun commands."}
@@ -115,6 +119,15 @@ command.execute = function(message,args,client)
     if data.welcome.join.msg == "nil" or pages[4].fields[1].value == "Not Configured." then table.remove(pages[4].fields,3) end
     if data.welcome.leave.msg == "nil" or pages[4].fields[2].value == "Not Configured." then table.remove(pages[4].fields,#pages[4].fields-1) end
     if data.welcome.enabled == false then pages[4].description = "This plugin is disabled, say  **"..data.general.prefix..args[1].." welcome toggle** to enable it." pages[4].fields = nil pages[4].color = 15158332 end
+    pages[5] = {
+      title = "Tags Settings",
+      description = "To edit a setting in this plugin, say **"..data.general.prefix..args[1].." tags**.",
+      fields = {
+        {name = "Amount of Tags", value = #data.tags.tags, inline = true},
+        {name = "Delete Command", value = (data.tags.delete and "Enabled." or "Disabled."), inline = true},
+      },
+    }
+    if data.tags.enabled == false then pages[5].description = "This plugin is disabled, say  **"..data.general.prefix..args[1].." tags toggle** to enable it." pages[5].fields = nil pages[5].color = 15158332 end
     require("/app/pages.lua").addDictionary(message,pages,message.author.id)
   end
   return {success = "stfu"}
