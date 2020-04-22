@@ -20,7 +20,7 @@ command.execute = function(message,args,client)
       description = "[Click here]("..user:getAvatarURL()..") to download.",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       image = {url = user:getAvatarURL().."?size=256"},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor():toHex()),
     }}
   return {success = "stfu", msg = ""}
 end

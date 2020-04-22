@@ -128,6 +128,7 @@ command.execute = function(message,args,client)
   sandbox.utils = require("/app/utils.lua")
   sandbox.http = require("coro-http")
   sandbox.date = require("discordia").Date
+  sandbox.color = require("discordia").Color
   sandbox.timer = require("timer")
   local code = exec(table.concat(args," ",2),message)
   message:reply{embed = {
