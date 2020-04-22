@@ -27,7 +27,7 @@ command.execute = function(message,args,client)
     embed.title = user.tag
     embed.thumbnail = {url = (user.avatarURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or user.avatarURL)}
     embed.footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag}
-    embed.color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color)
+    embed.color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value)
     if inGuild == true then
       embed.fields = {
         {name = "Mention", value = user.mentionString, inline = true},

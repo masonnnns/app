@@ -14,7 +14,7 @@ command.execute = function(message,args,client)
       title = "Invite",
       description = "[Click here](https://discordapp.com/oauth2/authorize?client_id=414030463792054282&scope=bot&permissions=502787319) to invite me to your server.",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }}
   return {success = "stfu", msg = ""}
 end

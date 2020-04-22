@@ -19,7 +19,7 @@ command.execute = function(message,args,client)
       title = "Members of "..message.guild.name,
       description = "We have **"..utils.addCommas(#message.guild.members).."** members!",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color), 
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value), 
     }}
     return {success = 'stfu'}
   else
@@ -32,7 +32,7 @@ command.execute = function(message,args,client)
           title = "Members of "..role.name.." ["..#role.members.."]",
           description = (page[num] == nil and "**"..items.tag.."** (`"..items.id.."`)" or page[num].description.."\n**"..items.tag.."** (`"..items.id.."`)"),
           footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-          color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color), 
+          color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value), 
         }
         if string.len(page[num].description) >= 1000 then num = num + 1 end
       end

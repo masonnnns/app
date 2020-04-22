@@ -52,7 +52,7 @@ command.execute = function(message,args,client)
       {name = "Examples", value = "", inline = false},
     },
     footer = {icon_url = message.author:getAvatarURL(), text = "By Oxford Dictionary • Responding to "..message.author.tag},
-    color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
   }
   local num = 0
   if body.results[1].lexicalEntries[1].entries[1].senses[1].synonyms == nil or #body.results[1].lexicalEntries[1].entries[1].senses[1].synonyms == 0 then

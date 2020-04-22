@@ -48,7 +48,7 @@ command.execute = function(message,args,client)
         {name = "Audit Ignored Channels [0]", value = "", inline = false},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }
     local num = 0
     for _,items in pairs(data.general.auditignore) do local role = message.guild:getChannel(items) if role then num = num + 1 if pages[1].fields[4].value == "" then pages[1].fields[4].value = role.mentionString else pages[1].fields[4].value = pages[1].fields[4].value..", "..role.mentionString end end end
@@ -64,7 +64,7 @@ command.execute = function(message,args,client)
         {name = "Moderator Roles", value = "Not Configured.", inline = false},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }
     if data.general.modlog ~= "nil" and message.guild:getChannel(data.general.modlog) ~= nil then pages[2].fields[3].value = message.guild:getChannel(data.general.modlog).mentionString end
     if data.general.mutedrole ~= "nil" and message.guild:getRole(data.general.mutedrole) ~= nil then pages[2].fields[2].value = message.guild:getRole(data.general.mutedrole).mentionString end
@@ -86,7 +86,7 @@ command.execute = function(message,args,client)
         {name = "Filtered Terms ["..#data.automod.words.terms.."]", value = "||"..table.concat(data.automod.words.terms,", ").."||", inline = false}
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }
     if data.automod.log ~= "nil" and message.guild:getChannel(data.automod.log) ~= nil then pages[3].fields[1].value = message.guild:getChannel(data.automod.log).mentionString end
     if data.automod.enabled == false then pages[3].description = "This plugin is disabled, say  **"..data.general.prefix..args[1].." automod toggle** to enable it." pages[3].fields = nil pages[3].color = 15158332 end
@@ -101,7 +101,7 @@ command.execute = function(message,args,client)
         {name = "Autorole [0]", value = "Not Configured.", inline = false},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }
     if data.welcome.join.channel ~= "nil" and message.guild:getChannel(data.welcome.join.channel) ~= nil then pages[4].fields[1].value = message.guild:getChannel(data.welcome.join.channel).mentionString end
     if data.welcome.leave.channel ~= "nil" and message.guild:getChannel(data.welcome.leave.channel) ~= nil then pages[4].fields[2].value = message.guild:getChannel(data.welcome.leave.channel).mentionString end

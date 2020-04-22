@@ -23,7 +23,7 @@ command.execute = function(message,args,client)
     description = "Having trouble viewing the image? [Click here]("..body.message..")",
     image = {url = body.message},
     footer = {icon_url = message.author:getAvatarURL(), text = "By dog.ceo • Responding to "..message.author.tag},
-    color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
   }}
   return {success = "stfu"}
 end

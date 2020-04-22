@@ -37,7 +37,7 @@ command.execute = function(message,args,client)
     title = "Server Staff",
     fields = {},
     footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-    color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
   }}
   if #users >= 1 then
     data.embed.fields[1+#data.embed.fields] = {name = "Moderators ["..#users.."]", value = table.concat(users," "), inline = true}

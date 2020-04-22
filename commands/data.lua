@@ -63,7 +63,7 @@ command.execute = function(message,args,client)
     title = guild.name.." Config",
     description = "```lua\n"..tableToString(data).."\n```",
     footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-    color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
   }}
   return {success = "stfu"}
 end

@@ -19,7 +19,7 @@ command.execute = function(message,args,client)
       title = "Uptime",
       description = utils.getTimeString(os.time() - start)..".",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }}
   return {success = "stfu", msg = "PONG!!", emote = ":ping_pong:"}
 end

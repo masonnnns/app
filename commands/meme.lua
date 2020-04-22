@@ -27,7 +27,7 @@ command.execute = function(message,args,client)
     title = title,
     image = {url = image},
     footer = {icon_url = message.author:getAvatarURL(), text = "By Reddit • Responding to "..message.author.tag},
-    color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
   }}
   return {success = "stfu"}
 end

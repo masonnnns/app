@@ -43,7 +43,7 @@ command.execute = function(message,args,client)
       description = "Say **"..data.general.prefix.."<command name>** to use a command.\nSay **"..data.general.prefix.."help <command name>** to view information about a command.\n**[Support Server](https://discordapp.com/invite/PjKaAXx) - [Bot Invite](https://discordapp.com/oauth2/authorize?client_id=414030463792054282&scope=bot&permissions=502787319)**",
       fields = {},
       footer = {icon_url = message.author:getAvatarURL(), text = "From "..message.guild.name},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }
     for file, _type in fs.scandirSync("/app/commands") do
 	    if _type ~= "directory" then
@@ -77,7 +77,7 @@ command.execute = function(message,args,client)
         {name = "Permission", value = "Member", inline = true},
       },
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }
     if #cmdFound.info.Alias ~= 0 then embed.fields[1+#embed.fields] = {name = "Alias"..(#cmdFound.info.Alias == 1 and "" or "es"), value = table.concat(cmdFound.info.Alias,", "), inline = false} end
     if cmdFound.info.PermLvl > utils.Permlvl(message,client) and cmdFound.info.PermLvl <= 3 then embed.description = "You don't have permissions to run this command." end

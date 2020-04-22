@@ -14,7 +14,7 @@ command.execute = function(message,args,client)
       title = "Support Server",
       description = "[Click here](https://discord.gg/PjKaAXx) to join the server.",
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }}
   return {success = "stfu", msg = ""}
 end

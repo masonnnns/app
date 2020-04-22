@@ -20,7 +20,7 @@ command.execute = function(message,args,client)
     title = "Archiving Messages",
     description = "<a:AARONLOADING:552079960022581248> Please wait, the archive will be available shortly.",
     footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-    color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+    color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
   }
   local getMessages = message.channel:getMessages(tonumber(args[2])+1)
   local botReply = message:reply{embed = embed}

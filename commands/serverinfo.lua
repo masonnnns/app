@@ -123,7 +123,7 @@ command.execute = function(message,args,client)
       },
       thumbnail = {url = (message.guild.iconURL == nil and "https://cdn.discordapp.com/embed/avatars/"..math.random(1,4)..".png" or message.guild.iconURL)},
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-      color = (message.guild:getMember(message.author.id).highestRole.color == 0 and 3066993 or message.guild:getMember(message.author.id).highestRole.color),
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
   }
   if require("/app/config.lua").getConfig(message.guild.id).vip == true then embed.description = ":tada: This is a **VIP Guild**." end
   message:reply{embed = embed}
