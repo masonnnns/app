@@ -8,20 +8,20 @@ local json = require("json")
 local function bulkRemove(message,ids)
   local removed = {}
   for a,b in pairs(ids) do
-    if message.member.roles:get(b) then
-      removed[1+#removed] = message.member.roles:get(b).name
-      message.member:removeRole(b)
+    if user.roles:get(b) ~= nil then
+      removed[1+#removed] = user.roles:get(b).name
+      user:removeRole(b)
     end
   end
   return removed
 end
 
 command.info = {
-  Name = "getroles",
+  Name = "update",
   Alias = {},
-  Usage = "getroles",
+  Usage = "update <user>",
   Category = "Private",
-  Description = "Get the roles that corrospond with your rank.",
+  Description = "Update the roles of a user.",
   PermLvl = 0,
 }
 
@@ -51,14 +51,18 @@ local bindings = {
 
 command.execute = function(message,args,client)
   if message.guild.id ~= "467880413981966347" then return {success = "stfu"} end
-  local result, body = http.request("GET","https://verify.eryn.io/api/user/"..message.author.id)
+  if args[2] == nil then return {success = false, msg = "You must specify a member."} end
+  local user = utils.resolveUser(message,table.concat(args," ",2))
+  if user == false then return {success = false, msg = "I couldn't find the user you mentioned."} end
+  if user.id == message.author.id then local cmd = require("/app/commands/getroles.lua").execute(message,args,client) return cmd end
+  local result, body = http.request("GET","https://verify.eryn.io/api/user/"..user.id)
   body = json.decode(body)
   local userID = 0
   if body.status == "ok" then
     userID = body.robloxId
   else
     if body.errorCode ~= nil and body.errorCode == 404 then
-      return {success = false, msg = "You're not verified with RoVer! Verify here: <https://verify.eryn.io/>"}
+      return {success = false, msg = "**"..user.tag.."** not verified with RoVer!"}
     else
       return {success = false, msg = "Verification Failed!```ERR: "..body.error:upper().."```"}
     end
@@ -73,38 +77,39 @@ command.execute = function(message,args,client)
     end
   end
   local added, removed = {}, {}
-  if message.member.roles:get(bindings[groupInfo.Rank]) == nil then added[1+#added] = groupInfo.Role message.member:addRole(bindings[groupInfo.Rank]) end
+  if user.roles:get(bindings[groupInfo.Rank]) == nil then added[1+#added] = groupInfo.Role user:addRole(bindings[groupInfo.Rank]) end
   for a,b in pairs(bindings) do
-    if message.member.roles:get(b) ~= nil and a ~= groupInfo.Rank then
-      removed[1+#removed] = message.member.roles:get(b).name
-      message.member:removeRole(b)
+    if user.roles:get(b) ~= nil and a ~= groupInfo.Rank and a ~= 0 then
+      removed[1+#removed] = user.roles:get(b).name
+      user:removeRole(b)
       require("timer").sleep(500)
     end
   end
-  if groupInfo.Rank >= 30 and groupInfo.Rank <= 60 and message.member.roles:get("548533225958539264") == nil then
+  if groupInfo.Rank >= 30 and groupInfo.Rank <= 60 and user.roles:get("548533225958539264") == nil then
     added[1+#added] = "Low Rank"
-    message.member:addRole("548533225958539264")
-    local remove = bulkRemove(message,{"515695801356386305", "515696031174754310", "515696023994105876"})
+    user:addRole("548533225958539264")
+    local remove = bulkRemove(user,{"515695801356386305", "515696031174754310", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
-  elseif groupInfo.Rank >= 69 and groupInfo.Rank <= 110 and message.member.roles:get("515695801356386305") == nil then
+  elseif groupInfo.Rank >= 69 and groupInfo.Rank <= 110 and user.roles:get("515695801356386305") == nil then
     added[1+#added] = "Middle Rank"
-    message.member:addRole("515695801356386305")
-    local remove = bulkRemove(message,{"548533225958539264", "515696031174754310", "515696023994105876"})
+    user:addRole("515695801356386305")
+    local remove = bulkRemove(user,{"548533225958539264", "515696031174754310", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
-  elseif groupInfo.Rank >= 120 and groupInfo.Rank <= 140 and message.member.roles:get("515696031174754310") == nil then
+  elseif groupInfo.Rank >= 120 and groupInfo.Rank <= 140 and user.roles:get("515696031174754310") == nil then
     added[1+#added] = "Corporate Rank"
-    message.member:addRole("515696031174754310")
-    local remove = bulkRemove(message,{"515695801356386305", "548533225958539264", "515696023994105876"})
+    user:addRole("515696031174754310")
+    local remove = bulkRemove(user,{"515695801356386305", "548533225958539264", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
-  elseif groupInfo.Rank >= 150 and message.member.roles:get("515696023994105876") == nil then
+  elseif groupInfo.Rank >= 150 and user.roles:get("515696023994105876") == nil then
     added[1+#added] = "Executive Rank"
-    message.member:addRole("515696023994105876")
+    user:addRole("515696023994105876")
     local remove = bulkRemove(message,{"515695801356386305", "515696031174754310", "548533225958539264"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
   end
-  if #added + #removed == 0 then return {success = false, msg = "No changes were made."} end
+  if #added + #removed == 0 then return {success = false, msg = "No changes were made to **"..user.tag.."**."} end
   local embed = {
     title = "Roles Changed ["..#added + #removed.."]",
+    description = "I've made the following changes to **"..user.tag.."'s** roles.",
     fields = {
       {name = "Added ["..#added.."]", value = (#added == 0 and "None!" or table.concat(added,", ")), inline = true},
       {name = "Removed ["..#removed.."]", value = (#removed == 0 and "None!" or table.concat(removed,", ")), inline = true},
