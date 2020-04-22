@@ -17,7 +17,7 @@ local function bulkRemove(user,ids)
 end
 
 command.info = {
-  Name = "update",
+  Name = "Update",
   Alias = {},
   Usage = "update <user>",
   Category = "Private",

@@ -6,7 +6,7 @@ local http = require('coro-http')
 local json = require("json")
 
 command.info = {
-  Name = "verify",
+  Name = "Verify",
   Alias = {},
   Usage = "verify",
   Category = "Private",

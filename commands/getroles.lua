@@ -17,7 +17,7 @@ local function bulkRemove(message,ids)
 end
 
 command.info = {
-  Name = "getroles",
+  Name = "Getroles",
   Alias = {},
   Usage = "getroles",
   Category = "Private",
