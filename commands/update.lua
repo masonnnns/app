@@ -22,7 +22,7 @@ command.info = {
   Usage = "update <user>",
   Category = "Private",
   Description = "Update the roles of a user.",
-  PermLvl = 0,
+  PermLvl = 1,
 }
 
 local bindings = {
@@ -76,6 +76,9 @@ command.execute = function(message,args,client)
       break
     end
   end
+  groupInfo = b[1]
+  groupInfo.Rank = 0
+  groupInfo.Role = "Customer"
   local added, removed = {}, {}
   if user.roles:get(bindings[groupInfo.Rank]) == nil then added[1+#added] = groupInfo.Role user:addRole(bindings[groupInfo.Rank]) end
   for a,b in pairs(bindings) do
