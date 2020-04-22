@@ -5,6 +5,17 @@ local config = require("/app/config.lua")
 local http = require('coro-http')
 local json = require("json")
 
+local function bulkRemove(message,ids)
+  local removed = {}
+  for a,b in pairs(ids) do
+    if message.member.roles:get(b) then
+      removed[1+#removed] = message.member.roles:get(b).name
+      message.member:removeRole(b)
+    end
+  end
+  return removed
+end
+
 command.info = {
   Name = "getroles",
   Alias = {},
@@ -21,7 +32,7 @@ local bindings = {
   [150] = "468831154787581955",
   [140] = "468831165122347038",
   [130] = "468831168804945921",
-  [120] = "468831168804945921",
+  [120] = "468830890651287563",
   [110] = "468108245714731028",
   [100] = "468833667578331157",
   [90] = "468108495833530408",
@@ -70,20 +81,30 @@ command.execute = function(message,args,client)
       require("timer").sleep(500)
     end
   end
-  if groupInfo.Rank >= 30 and groupInfo.Rank <= 60 then
+  if groupInfo.Rank >= 30 and groupInfo.Rank <= 60 and message.member.roles:get("548533225958539264") == nil then
     added[1+#added] = "Low Rank"
     message.member:addRole("548533225958539264")
-  elseif groupInfo.Rank >= 69 and groupInfo.Rank <= 110 then
+    local remove = bulkRemove(message,{"515695801356386305", "515696031174754310", "515696023994105876"})
+    for a,b in pairs(remove) do removed[1+#removed] = b end
+  elseif groupInfo.Rank >= 69 and groupInfo.Rank <= 110 and message.member.roles:get("515695801356386305") == nil then
     added[1+#added] = "Middle Rank"
     message.member:addRole("515695801356386305")
-  elseif groupInfo.Rank >= 120 and groupInfo.Rank <= 140 then
-    added[1+#added] = "Low Rank"
+    bulkRemove(message,{"548533225958539264", "515696031174754310", "515696023994105876"})
+    for a,b in pairs(remove) do removed[1+#removed] = b end
+  elseif groupInfo.Rank >= 120 and groupInfo.Rank <= 140 and message.member.roles:get("515696031174754310") == nil then
+    added[1+#added] = "Corporate Rank"
     message.member:addRole("515696031174754310")
-  elseif groupInfo.Rank >= 
+    local remove = bulkRemove(message,{"515695801356386305", "548533225958539264", "515696023994105876"})
+    for a,b in pairs(remove) do removed[1+#removed] = b end
+  elseif groupInfo.Rank >= 150 and message.member.roles:get("515696023994105876") == nil then
+    added[1+#added] = "Executive Rank"
+    message.member:addRole("515696023994105876")
+    local remove = bulkRemove(message,{"515695801356386305", "515696031174754310", "548533225958539264"})
+    for a,b in pairs(remove) do removed[1+#removed] = b end
   end
   if #added + #removed == 0 then return {success = false, msg = "No changes were made."} end
   local embed = {
-    title = "Roles Changed",
+    title = "Roles Changed ["..#added + #removed.."]",
     fields = {
       {name = "Added ["..#added.."]", value = (#added == 0 and "None!" or table.concat(added,", ")), inline = true},
       {name = "Removed ["..#removed.."]", value = (#removed == 0 and "None!" or table.concat(removed,", ")), inline = true},
