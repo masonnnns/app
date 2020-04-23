@@ -6,10 +6,11 @@ local http = require('coro-http')
 local json = require("json")
 
 local function bulkRemove(user,ids)
+  local roles = user.roles
   local removed = {}
   for a,b in pairs(ids) do
-    if user.roles:get(b) ~= nil then
-      removed[1+#removed] = user.roles:get(b).name
+    if roles:get(b) ~= nil then
+      removed[1+#removed] = roles:get(b).name
       user:removeRole(b)
     end
   end
@@ -54,6 +55,7 @@ command.execute = function(message,args,client)
   local user = utils.resolveUser(message,table.concat(args," ",2))
   if user == false then return {success = false, msg = "I couldn't find the user you mentioned."} end
   if user.id == message.author.id then local cmd = require("/app/commands/getroles.lua").execute(message,args,client) return cmd end
+  local roles = user.roles
   local result, body = http.request("GET","https://verify.eryn.io/api/user/"..user.id)
   body = json.decode(body)
   local userID,name = 0,""
@@ -85,38 +87,38 @@ command.execute = function(message,args,client)
     groupInfo.Role = "Customer"
   end
   local added, removed = {}, {}
-  if bindings[groupInfo.Rank] ~= nil and user.roles:get(bindings[groupInfo.Rank]) == nil then added[1+#added] = groupInfo.Role user:addRole(bindings[groupInfo.Rank]) end
+  if bindings[groupInfo.Rank] ~= nil and roles:get(bindings[groupInfo.Rank]) == nil then added[1+#added] = groupInfo.Role user:addRole(bindings[groupInfo.Rank]) end
   for a,b in pairs(bindings) do
-    if user.roles:get(b) ~= nil and a ~= groupInfo.Rank then
-      removed[1+#removed] = user.roles:get(b).name
+    if roles:get(b) ~= nil and a ~= groupInfo.Rank then
+      removed[1+#removed] = roles:get(b).name
       user:removeRole(b)
       require("timer").sleep(500)
     end
   end
-  if user.roles:get("515647391676891138") == nil then added[1+#added] = "Verified" user:setNickname(name) user:addRole("515647391676891138") end
+  if roles:get("515647391676891138") == nil then added[1+#added] = "Verified" user:setNickname(name) user:addRole("515647391676891138") end
   if groupInfo.Rank >= 30 and groupInfo.Rank <= 69 then
-    if user.roles:get("548533225958539264") == nil then
+    if roles:get("548533225958539264") == nil then
       added[1+#added] = "Low Rank"
       user:addRole("548533225958539264")
     end
     local remove = bulkRemove(user,{"515695801356386305", "515696031174754310", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
   elseif groupInfo.Rank >= 80 and groupInfo.Rank <= 110 then
-    if user.roles:get("515695801356386305") == nil then
+    if roles:get("515695801356386305") == nil then
       added[1+#added] = "Middle Rank"
       user:addRole("515695801356386305")
     end
     local remove = bulkRemove(user,{"548533225958539264", "515696031174754310", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
   elseif groupInfo.Rank >= 120 and groupInfo.Rank <= 140 then
-    if user.roles:get("515696031174754310") == nil then
+    if roles:get("515696031174754310") == nil then
       added[1+#added] = "Corporate Rank"
       user:addRole("515696031174754310")
     end
     local remove = bulkRemove(user,{"515695801356386305", "548533225958539264", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
   elseif groupInfo.Rank >= 150 then
-    if user.roles:get("515696023994105876") == nil then
+    if roles:get("515696023994105876") == nil then
       added[1+#added] = "Executive Rank"
       user:addRole("515696023994105876")
     end
