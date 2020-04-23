@@ -108,15 +108,22 @@ command.execute = function(message,args,client)
     end
     local remove = bulkRemove(user,{"548533225958539264", "515696031174754310", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
-  elseif groupInfo.Rank >= 120 and groupInfo.Rank <= 140 and user.roles:get("515696031174754310") == nil then
-    added[1+#added] = "Corporate Rank"
-    user:addRole("515696031174754310")
+  elseif groupInfo.Rank >= 120 and groupInfo.Rank <= 140 then
+    if user.roles:get("515696031174754310") == nil then
+      added[1+#added] = "Corporate Rank"
+      user:addRole("515696031174754310")
+    end
     local remove = bulkRemove(user,{"515695801356386305", "548533225958539264", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
-  elseif groupInfo.Rank >= 150 and user.roles:get("515696023994105876") == nil then
-    added[1+#added] = "Executive Rank"
-    user:addRole("515696023994105876")
+  elseif groupInfo.Rank >= 150 then
+    if user.roles:get("515696023994105876") == nil then
+      added[1+#added] = "Executive Rank"
+      user:addRole("515696023994105876")
+    end
     local remove = bulkRemove(message,{"515695801356386305", "515696031174754310", "548533225958539264"})
+    for a,b in pairs(remove) do removed[1+#removed] = b end
+  else
+    local remove = bulkRemove(user,{"515695801356386305", "515696031174754310", "515696023994105876", "548533225958539264"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
   end
   if #added + #removed == 0 then return {success = false, msg = "No changes were made to **"..user.tag.."**."} end

@@ -114,10 +114,14 @@ command.execute = function(message,args,client)
     end
     local remove = bulkRemove(message,{"515695801356386305", "515696031174754310", "548533225958539264"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
+  else
+    local remove = bulkRemove(user,{"515695801356386305", "515696031174754310", "515696023994105876", "548533225958539264"})
+    for a,b in pairs(remove) do removed[1+#removed] = b end
   end
   if #added + #removed == 0 then return {success = false, msg = "No changes were made."} end
   local embed = {
     title = "Roles Changed ["..#added + #removed.."]",
+    description = "Roles just changed? Please allow us up to **10 minutes** to update your roles.",
     fields = {
       {name = "Added ["..#added.."]", value = (#added == 0 and "None!" or table.concat(added,", ")), inline = true},
       {name = "Removed ["..#removed.."]", value = (#removed == 0 and "None!" or table.concat(removed,", ")), inline = true},
