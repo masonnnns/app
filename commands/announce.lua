@@ -33,7 +33,7 @@ command.execute = function(message,args,client)
       }
     }
   }
-  webhook:setAvatar(message.guild.iconURL)
+  --webhook:setAvatar(require("./assets/97aa8818700b473012159d01e1e55d71"))
   if args[#args]:lower() == "here" or args[#args]:lower() == "everyone" then
     text = string.sub(text,1,string.len(text) - string.len(args[#args]))
     embed.embeds[1].description = text
