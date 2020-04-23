@@ -122,11 +122,26 @@ command.execute = function(message,args,client)
       added[1+#added] = "Executive Rank"
       user:addRole("515696023994105876")
     end
-    local remove = bulkRemove(message,{"515695801356386305", "515696031174754310", "548533225958539264"})
+    local remove = bulkRemove(user,{"515695801356386305", "515696031174754310", "548533225958539264"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
   else
     local remove = bulkRemove(user,{"515695801356386305", "515696031174754310", "515696023994105876", "548533225958539264"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
+  end
+  local gresponse, gbody = http.request("GET","https://inventory.roblox.com/v1/users/"..userID.."/items/GamePass/5440334")
+  if gresponse.code == 200 then
+    gbody = json.decode(gbody)
+    if #gbody.data == 0 then
+      if roles:get("514613763068919818") then
+        removed[1+#removed] = "Teacana Premium"
+        user:removeRole("514613763068919818")
+      end
+    else
+      if roles:get("514613763068919818") == nil then
+        added[1+#added] = "Teacana Premium"
+        user:addRole("514613763068919818")
+      end
+    end
   end
   if #added + #removed == 0 then return {success = false, msg = "No changes were made to **"..user.tag.."**."} end
   local embed = {

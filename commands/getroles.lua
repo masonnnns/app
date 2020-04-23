@@ -123,14 +123,18 @@ command.execute = function(message,args,client)
     if #gbody.data == 0 then
       if message.member.roles:get("514613763068919818") then
         removed[1+#removed] = "Teacana Premium"
-        message.member:removeRole()
+        message.member:removeRole("514613763068919818")
+      end
+    else
+      if message.member.roles:get("514613763068919818") == nil then
+        added[1+#added] = "Teacana Premium"
+        message.member:addRole("514613763068919818")
       end
     end
   end
   if #added + #removed == 0 then return {success = false, msg = "No changes were made."} end
   local embed = {
     title = "Roles Changed ["..#added + #removed.."]",
-    description = "Roles just changed? Please allow us up to **10 minutes** to update your roles.",
     fields = {
       {name = "Added ["..#added.."]", value = (#added == 0 and "None!" or table.concat(added,", ")), inline = true},
       {name = "Removed ["..#removed.."]", value = (#removed == 0 and "None!" or table.concat(removed,", ")), inline = true},
