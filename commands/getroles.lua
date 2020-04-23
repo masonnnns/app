@@ -115,7 +115,7 @@ command.execute = function(message,args,client)
     local remove = bulkRemove(message,{"515695801356386305", "515696031174754310", "548533225958539264"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
   else
-    local remove = bulkRemove(user,{"515695801356386305", "515696031174754310", "515696023994105876", "548533225958539264"})
+    local remove = bulkRemove(message,{"515695801356386305", "515696031174754310", "515696023994105876", "548533225958539264"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
   end
   if #added + #removed == 0 then return {success = false, msg = "No changes were made."} end
