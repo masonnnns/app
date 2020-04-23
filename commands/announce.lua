@@ -17,8 +17,24 @@ command.info = {
 
 command.execute = function(message,args,client)
   if message.guild.id ~= "467880413981966347" then return {success = "stfu"} end
-  local channel = utils.resolveChannel(message,args[2])
-  if channel == false then return {success = false, msg = "I couldn't find the channel you mentioned."} end
-  local webhook = channel:createWebhook()
+  local channel = utils.resolveChannel(message,(args[2] == nil and message.channel.id or args[2]))
+  if channel == false then channel = message.channel end
+  local webhook = channel:createWebhook("TeaCore")
+  local headers = {
+    {"Content-Type", "application/json"} 
+  }
+  local embed = {
+    embeds = {
+      {
+        title = "title",
+        description = "DOG",
+        color = 0xff7662,
+        timestamp = require("discordia").Date():toISO('T', 'Z'),
+      }
+    }
+  }
+  webhook:setAvatar(message.guild.iconURL)
+  local response, body = require("coro-http").request("POST","https://canary.discordapp.com/api/webhooks/"..webhook.id.."/"..webhook.token,headers,require("json").encode(embed))
+  return {success = true, msg = webhook.token.." - "..webhook.channelId.." - "..webhook.guildId}
 end
 return command
