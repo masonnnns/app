@@ -23,7 +23,7 @@ command.execute = function(message,args,client)
     local newNameR, newNameBody = http.request("GET","https://api.roblox.com/users/"..body.robloxId)
     if newNameR.code == 200 then name = json.decode(newNameBody).Username end
     message.member:setNickname(name)
-    if message.member.roles:get("515647391676891138") then message.member:addRole("515647391676891138") end
+    if message.member.roles:get("515647391676891138") == nil then message.member:addRole("515647391676891138") end
     return {success = true, msg = "You've been verified as **"..name.."**."}
   else
     if body.errorCode ~= nil and body.errorCode == 404 then
