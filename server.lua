@@ -2,8 +2,9 @@ local discordia = require('discordia')
 
 local client = discordia.Client {
 	logFile = 'mybot.log',
-	cacheAllMembers = false,
+	cacheAllMembers = true,
 	autoReconnect = true,
+  largeThreshold = 500,
 }
 
 local config = require("/app/config.lua")
@@ -328,7 +329,6 @@ client:on("messageDelete", function(message)
 end)
 
 client:on("messageUpdate", function(message) 
-  require("timer").sleep(250)
   if message.author.bot ~= false then return end
   if message.guild == nil then return end
   local data = require("/app/config.lua").getConfig(message.guild.id)
