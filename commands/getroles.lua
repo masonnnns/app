@@ -117,6 +117,16 @@ command.execute = function(message,args,client)
     local remove = bulkRemove(message,{"515695801356386305", "515696031174754310", "515696023994105876", "548533225958539264"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
   end
+  local gresponse, gbody = http.request("GET","https://inventory.roblox.com/v1/users/"..userID.."/items/GamePass/5440334")
+  if gresponse.code == 200 then
+    gbody = json.decode(gbody)
+    if #gbody.data == 0 then
+      if message.member.roles:get("514613763068919818") then
+        removed[1+#removed] = "Teacana Premium"
+        message.member:removeRole()
+      end
+    end
+  end
   if #added + #removed == 0 then return {success = false, msg = "No changes were made."} end
   local embed = {
     title = "Roles Changed ["..#added + #removed.."]",
