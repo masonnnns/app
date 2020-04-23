@@ -46,7 +46,6 @@ local bindings = {
   [30] = "467887348978417703",
   [20] = "469034307294330891",
   [10] = "467886277749112832",
-  [0] = "467886277749112832",
 }
 
 command.execute = function(message,args,client)
@@ -81,6 +80,7 @@ command.execute = function(message,args,client)
   end
   if groupInfo == nil then
     groupInfo = body[1]
+    if groupInfo == nil then groupInfo = {} end
     groupInfo.Rank = 0
     groupInfo.Role = "Customer"
   end

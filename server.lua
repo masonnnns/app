@@ -2,7 +2,7 @@ local discordia = require('discordia')
 
 local client = discordia.Client {
 	logFile = 'mybot.log',
-	cacheAllMembers = true,
+	cacheAllMembers = false,
 	autoReconnect = true,
 }
 
