@@ -127,6 +127,7 @@ command.execute = function(message,args,client)
   sandbox.data = require("/app/config.lua").getConfig(message.guild.id)
   sandbox.utils = require("/app/utils.lua")
   sandbox.http = require("coro-http")
+  sandbox.json = require('json')
   sandbox.date = require("discordia").Date
   sandbox.color = require("discordia").Color
   sandbox.timer = require("timer")
