@@ -94,14 +94,18 @@ command.execute = function(message,args,client)
     end
   end
   if user.roles:get("515647391676891138") == nil then added[1+#added] = "Verified" user:setNickname(name) user:addRole("515647391676891138") end
-  if groupInfo.Rank >= 30 and groupInfo.Rank <= 69 and user.roles:get("548533225958539264") == nil then
-    added[1+#added] = "Low Rank"
-    user:addRole("548533225958539264")
+  if groupInfo.Rank >= 30 and groupInfo.Rank <= 69 then
+    if user.roles:get("548533225958539264") == nil then
+      added[1+#added] = "Low Rank"
+      user:addRole("548533225958539264")
+    end
     local remove = bulkRemove(user,{"515695801356386305", "515696031174754310", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
-  elseif groupInfo.Rank >= 80 and groupInfo.Rank <= 110 and user.roles:get("515695801356386305") == nil then
-    added[1+#added] = "Middle Rank"
-    user:addRole("515695801356386305")
+  elseif groupInfo.Rank >= 80 and groupInfo.Rank <= 110 then
+    if user.roles:get("515695801356386305") == nil then
+      added[1+#added] = "Middle Rank"
+      user:addRole("515695801356386305")
+    end
     local remove = bulkRemove(user,{"548533225958539264", "515696031174754310", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
   elseif groupInfo.Rank >= 120 and groupInfo.Rank <= 140 and user.roles:get("515696031174754310") == nil then
