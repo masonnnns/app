@@ -25,6 +25,7 @@ command.execute = function(message,args,client)
   }
   local text = string.sub(message.content,string.len(args[1])+string.len(args[2])+4)
   local embed = {
+    avatar_url = message.guild.iconURL,
     embeds = {
       {
         description = text,
