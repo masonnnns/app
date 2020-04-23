@@ -4,9 +4,9 @@ local utils = require("/app/utils.lua")
 local config = require("/app/config.lua")
 
 command.info = {
-  Name = "tag",
+  Name = "Tag",
   Alias = {},
-  Usage = "addmod <name>",
+  Usage = "tag <name>",
   Category = "Utility",
   Description = "Have the bot reply with the specified tag name.",
   PermLvl = 1,
