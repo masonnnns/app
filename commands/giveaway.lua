@@ -36,7 +36,7 @@ local config = require("/app/config.lua")
 
 command.info = {
   Name = "Giveaway",
-  Alias = {""},
+  Alias = {},
   Usage = "giveaway <create/reroll/end> <time/giveaway ID> <product>",
   Category = "Fun",
   Description = "Host or manage giveaways in your server.",
@@ -64,7 +64,6 @@ command.execute = function(message,args,client)
       description = "React with :tada: to enter to win!\nEnds in **"..durationString.."**.",
       footer = {text = "GID: "..message.id.." • Host: "..message.author.tag},
       color = 16580705,
-      timestamp = require("discordia").Date():toISO('T', 'Z'),
     }
     local gmsg = message:reply{embed = embed}
     gmsg:addReaction("🎉")
@@ -139,7 +138,7 @@ command.finishGiveaway = function(guild,data,gdata)
   local tries = 0
   local reactants = {}
   for a,b in pairs(reaction:getUsers()) do
-    if guild.members:get(a) == nil or a == gdata.host or a == "414030463792054282" or giveawayCache[gdata.gid]["nowin"] ~= nil and giveawayCache[gdata.gid]["nowin"] == a then else
+    if a == gdata.host or a == "414030463792054282" or giveawayCache[gdata.gid]["nowin"] ~= nil and giveawayCache[gdata.gid]["nowin"] == a then else
       reactants[1+#reactants] = b
     end
   end
