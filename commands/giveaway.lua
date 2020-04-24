@@ -61,21 +61,39 @@ command.execute = function(message,args,client)
     }
     local gmsg = message:reply{embed = embed}
     gmsg:addReaction("🎉")
-    data.moderation.actions[1+#data.moderation.actions] = {type = "giveaway", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], host = message.author.id, channel = message.channel.id, id = gmsg.id, gid = message., product = table.concat(args," ",4)}
+    data.moderation.actions[1+#data.moderation.actions] = {type = "giveaway", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], host = message.author.id, channel = message.channel.id, id = gmsg.id, gid = message.id, product = table.concat(args," ",4)}
     return {success = "stfu"}
   end
 end
 
 command.finishGiveaway = function(guild,data,gdata)
   for a,b in pairs(data.moderation.actions) do
-    if b.type == "giveaway" and b.gid == gdata.gid then
+    if b.type == "giveaway" and b.id == gdata.id then
       table.remove(data.moderation.actions,a)
     end
   end
   if guild.channels:get(gdata.channel) == nil then return end
-  if guild.channels:get(gdata.channel):getMessage(gdata.gid) == nil then message:reply("<:atickno:678186665616998400> **Failed to end giveaway!** The origional message couldn't be found.") return end
-  local msg = guild.channels:get(gdata.channel):getMessage(gdata.gid) 
-  if #msg.reactions <= 1 then message:reply(":atickno:678186665616998400> **Failed to end giveaway!** No one entered the giveaway.") return end
+  if guild.channels:get(gdata.channel):getMessage(gdata.id) == nil then message:reply("<:atickno:678186665616998400> **Failed to end giveaway!** The origional message couldn't be found.") return end
+  local msg = guild.channels:get(gdata.channel):getMessage(gdata.id) 
+  if #msg.reactions == 0 then message:reply(":atickno:678186665616998400> **Failed to end giveaway!** I couldn't find the \:tada: reaction.") return end
+  local reaction
+  for a,b in pairs(msg.reactions) do
+    if b.emojiName == "🎉" then
+      reaction = b
+      break
+    end
+  end
+  if reaction == nil then message:reply(":atickno:678186665616998400> **Failed to end giveaway!** I couldn't find the \:tada: reaction.") return end
+  if #reaction:getUsers() <= 1 then message:reply(":atickno:678186665616998400> **Failed to end giveaway!** No one entered the giveaway.") return end
+  local winner
+  local tries = 0
+  repeat
+    winner = reaction:getUsers()[math.random(1,#reaction:getUsers())]
+    tries = tries + 1
+    require("timer").sleep(500)
+  until
+  winner.id ~= client.user.id and winner.id ~= gdata.host or tries >= 10
+  if winner == nil then message:reply(":atickno:678186665616998400> **Failed to end giveaway!** I couldn't determine a winner after "..tries.." attempts.") return end
   
 end
 
