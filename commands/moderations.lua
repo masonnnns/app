@@ -17,7 +17,7 @@ command.execute = function(message,args,client)
   if #data.moderation.actions == 0 then
     return {success = false, msg = "There are no **active moderations** to display."}
   else
-    local txt = ""
+    local txt,num = "", 0
     local page = {}
     for _,items in pairs(data.moderation.actions) do
       if tostring(items.duration):lower() == "permanent" or items.type == "giveaway" then
@@ -30,17 +30,22 @@ command.execute = function(message,args,client)
           color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
         }
         txt = ""
+        num = num + 1
       else
         txt = txt.."\n**"..client:getUser(items.id).tag.." `["..items.type:upper().."]` - **"..utils.getTimeString(items.duration - os.time()) 
+        num = num + 1
       end
     end
     if txt == "" then return {success = false, msg = "There are no **active moderations** to display."} end
     if #page == 0 then page[1] = {
-      title = "Moderations ["..#data.moderation.actions.."]",
+      title = "Moderations ["..num.."]",
       description = txt,
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
       color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }
+    end
+    for a,b in pairs(page) do
+      b.title = "Moderations ["..num.."]"
     end
     require("/app/pages.lua").addDictionary(message,page,message.author.id)
     return {success = "stfu"}

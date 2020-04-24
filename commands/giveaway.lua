@@ -67,6 +67,7 @@ command.execute = function(message,args,client)
     }
     local gmsg = message:reply{embed = embed}
     gmsg:addReaction("🎉")
+    print("[GIVEAWAYS]: Started giveaway "..message.id)
     data.moderation.actions[1+#data.moderation.actions] = {type = "giveaway", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], host = message.author.id, channel = message.channel.id, id = gmsg.id, gid = message.id, product = table.concat(args," ",4)}
     return {success = "stfu"}
   elseif args[2] == "end" then
@@ -80,6 +81,7 @@ command.execute = function(message,args,client)
       end
     end
     if giveaway == nil then return {success = false, msg = "I couldn't find an active giveaway with that ID."} end
+    print("[GIVEAWAYS]: Giveaway "..giveaway.gid.." is being forcefully ended.")
     command.finishGiveaway(message.guild,data,giveaway)
     if message.guild.textChannels:get(giveaway.channel) == nil then
       return {success = false, msg = "The channel this giveaway originiated in was deleted."}
@@ -93,12 +95,13 @@ command.execute = function(message,args,client)
     if tonumber(args[3]) == nil then return {success = false, msg = "The giveaway ID must be a number."} end
     local giveaway
     for a,b in pairs(giveawayCache) do
-      if tostring(a) == args[3] then
+      if tostring(a) == args[3] and b.guild == message.guild.id then
         giveaway = b
         break
       end
     end
     if giveaway == nil then return {success = false, msg = "I couldn't find an ended giveaway with that ID."} end
+    print("[GIVEAWAYS]: Giveaway "..giveaway.gid.." is being rerolled.")
     command.finishGiveaway(message.guild,data,giveaway)
     if message.guild.textChannels:get(giveaway.channel) == nil then
       return {success = false, msg = "The channel this giveaway originiated in was deleted."}
@@ -113,6 +116,7 @@ command.execute = function(message,args,client)
 end
 
 command.finishGiveaway = function(guild,data,gdata)
+  print("[GIVEAWAYS]: Giveaway "..gdata.gid.." is ending or being rerolled.")
   for a,b in pairs(data.moderation.actions) do
     if b.type == "giveaway" and b.id == gdata.id then
       giveawayCache[b.gid] = b
@@ -165,6 +169,7 @@ command.finishGiveaway = function(guild,data,gdata)
     channel:send(":tdata: The new winner is "..winner.mentionString..". Congratulations!")
   end
   giveawayCache[gdata.gid]["nowin"] = winner.id
+  giveawayCache[gdata.gid].guild = guild.id
   return
 end
 
