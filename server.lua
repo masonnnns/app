@@ -724,12 +724,22 @@ client:on("infoCmd",function(cmd,message)
     local embed = {
       title = "Bot Information",
       fields = {
-        {name = "Guilds", value = utils.addCommas(#client.guilds), inline = true}
-        {name = "Users", value = utils.addCommas(#client.users), inline = true}
-        {name = "Shards", value = utils.addCommas(client.shardCount), inline = true}
-        {name = "Messages Seen", value = utils.addCommas(statistics.messages), inline = true}
-        {name = "Commands Ran"}
+        {name = "Guilds", value = utils.addCommas(#client.guilds), inline = true},
+        {name = "Users", value = utils.addCommas(#client.users), inline = true},
+        {name = "Shards", value = utils.addCommas(client.shardCount), inline = true},
+        {name = "Messages Seen", value = utils.addCommas(statistics.messages), inline = true},
+        {name = "Commands Ran", value = utils.addCommas(statistics.cmds), inline = true},
+        {name = "Actions Logged", value = utils.addCommas(statistics.logged), inline = true},
+        {name = "Uptime", value = utils.getTimeString(os.time() - startOS)}
       },
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
+    }
+    message:reply{embed = embed}
+  elseif cmd == "uptime" then
+    local embed = {
+      title = "Uptime",
+      description = utils.getTimeString(os.time() - startOS),
       footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
       color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
     }

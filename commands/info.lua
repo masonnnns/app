@@ -4,18 +4,16 @@ local utils = require("/app/utils.lua")
 local cache = require("/app/server.lua")
 
 command.info = {
-  Name = "Uptime",
-  Alias = {"up"},
-  Usage = "uptime",
+  Name = "Info",
+  Alias = {"stats"},
+  Usage = "info",
   Category = "Information",
-  Description = "Shows how long the bot has been online.",
+  Description = "Shows information about AA-R0N.",
   PermLvl = 0,
 }
 
-local start = os.time()
-
 command.execute = function(message,args,client)
-  client:emit("infoCmd","uptime",message)
+  client:emit("infoCmd","info",message)
   return {success = "stfu", msg = "PONG!!", emote = ":ping_pong:"}
 end
 
