@@ -12,6 +12,8 @@ config.setupConfigs("xd")
 local Utopia = require('utopia')
 local app = Utopia:new()
 
+local statistics = {messsages = 0, modcmds = 0, cmds = 0}
+
 --[[app:use(function (req, res)
   local api = require("/app/api.lua").request(res, req, client)
   res:finish(api)
@@ -86,7 +88,7 @@ client:on("messageCreate",function(message)
     if found ~= nil and command.info.Category == "Private" and message.author.id == client.owner.id then permLvl = 6 end
     if found == nil or permLvl == 0 and data.general.modonly == true or permLvl < command.info.PermLvl then
       if data.automod.enabled and require("/app/utils.lua").Permlvl(message,client) == 0 then require("/app/automod.lua")(message,data,client) end
-      if found ~= nil and permLvl >= 1 then 
+      if found ~= nil and permLvl >= 1 and command.info.Category ~= "Private" then 
         local m = message:reply("<:aforbidden:678187354242023434> You **don't have permissions** to use this command!")
         require("timer").sleep(5000)
         m:delete()
@@ -668,26 +670,6 @@ end)
 
 -- [[ PRIVATE LOGS ]]
 
---[[client:on("error", function(message)
-  client:getGuild("551017079797579795"):getChannel("678756836349968415"):send{embed = {
-    title = "Runtime Error",
-    description = "```lua\n"..string.upper(message).."\n```",
-    timestamp = require("discordia").Date():toISO('T', 'Z'),
-    footer = {txt = "Fatal error."},
-    color = 15158332,
-  }}
-end)
-
-client:on("warning", function(message)
-  client:getGuild("551017079797579795"):getChannel("678756836349968415"):send{embed = {
-    title = "Runtime Warning",
-    description = "```lua\n"..string.upper(message).."\n```",
-    timestamp = require("discordia").Date():toISO('T', 'Z'),
-    footer = {txt = "Non-fatal error."},
-    color = 15105570,
-  }}
-end)--]]
-
 client:on("guildCreate", function(guild)
   if require("/app/blacklist.lua").getBlacklist("guilds_"..guild.id) then guild:leave() return end
   local data = require("/app/config.lua").getConfig(guild.id)
@@ -719,6 +701,12 @@ client:on("guildDelete", function(guild)
     timestamp = require("discordia").Date():toISO('T', 'Z'),
     color = 15158332,
   }}
+end)
+
+client:on("infoCmd",function(cmd,message)
+  if cmd == "info" then
+    
+  end
 end)
 
 client:run("Bot NDE0MDMwNDYzNzkyMDU0Mjgy.Xl4MvA.VSNimdDDRzNnA1gwHiOjB_6i6PI")
