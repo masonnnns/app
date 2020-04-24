@@ -70,12 +70,14 @@ command.finishGiveaway = function(guild,data,gdata)
   for a,b in pairs(data.moderation.actions) do
     if b.type == "giveaway" and b.id == gdata.id then
       table.remove(data.moderation.actions,a)
+      break
     end
   end
-  if guild.channels:get(gdata.channel) == nil then return end
-  if guild.channels:get(gdata.channel):getMessage(gdata.id) == nil then message:reply("<:atickno:678186665616998400> **Failed to end giveaway!** The origional message couldn't be found.") return end
-  local msg = guild.channels:get(gdata.channel):getMessage(gdata.id) 
-  if #msg.reactions == 0 then message:reply(":atickno:678186665616998400> **Failed to end giveaway!** I couldn't find the \:tada: reaction.") return end
+  if guild.textChannels:get(gdata.channel) == nil then return end
+  local channel = guild.textChannels:get(gdata.channel)
+  if guild.textChannels:get(gdata.channel):getMessage(gdata.id) == nil then channel:send("<:atickno:678186665616998400> **Failed to end giveaway!** The origional message couldn't be found.") return end
+  local msg = guild.textChannels:get(gdata.channel):getMessage(gdata.id) 
+  if #msg.reactions == 0 then channel:send(":atickno:678186665616998400> **Failed to end giveaway!** I couldn't find the giveaway reaction.") return end
   local reaction
   for a,b in pairs(msg.reactions) do
     if b.emojiName == "🎉" then
@@ -83,8 +85,8 @@ command.finishGiveaway = function(guild,data,gdata)
       break
     end
   end
-  if reaction == nil then message:reply(":atickno:678186665616998400> **Failed to end giveaway!** I couldn't find the \:tada: reaction.") return end
-  if #reaction:getUsers() <= 1 then message:reply(":atickno:678186665616998400> **Failed to end giveaway!** No one entered the giveaway.") return end
+  if reaction == nil then channel:send(":atickno:678186665616998400> **Failed to end giveaway!** I couldn't find the giveaway reaction.") return end
+  if #reaction:getUsers() <= 1 then channel:send(":atickno:678186665616998400> **Failed to end giveaway!** No one entered the giveaway.") return end
   local winner
   local tries = 0
   repeat
@@ -92,9 +94,15 @@ command.finishGiveaway = function(guild,data,gdata)
     tries = tries + 1
     require("timer").sleep(500)
   until
-  winner.id ~= client.user.id and winner.id ~= gdata.host or tries >= 10
-  if winner == nil then message:reply(":atickno:678186665616998400> **Failed to end giveaway!** I couldn't determine a winner after "..tries.." attempts.") return end
-  
+  tostring(winner) ~= "414030463792054282" and tostring(winner) ~= gdata.host or tries >= 10
+  if winner == nil then channel:send(":atickno:678186665616998400> **Failed to end giveaway!** I couldn't determine a winner after "..tries.." attempts.") return end
+  winner = guild:getMember(tostring(winner))
+  local embeds = msg.embed
+  embeds.title = "[ENDED] "..embeds.title
+  embeds.description = ":tada: **"..winner.tag.."** has won this giveaway!"
+  msg:setEmbed(embeds)
+  channel:send(":tada: Congratulations "..winner.mentionString..", you've won **"..gdata.product.."**! (There was a 1 in "..#reaction:getUsers().." chance)")
+  return
 end
 
 return command
