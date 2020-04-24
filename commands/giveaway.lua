@@ -50,10 +50,18 @@ command.execute = function(message,args,client)
     if tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1] <= 0 then return {success = false, msg = "Invalid duration."} end
     if tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1] > 1209600 then return {success = false, msg = "You cannot host giveaways for longer than 2 weeks."} end
     if args[4] == nil then return {success = false, msg = "You must provide a product to giveaway!"} end
+    local durationString = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s")
     local embed = {
-      title = ":tada: Giveaway",
-      description = table.concat(args," ",4).."\n\n--\nReact with :tada: to enter to win!",
+      title = table.concat(args," ",4),
+      description = "React with :tada: to enter to win!\nEnds in **"..durationString.."**.",
+      footer = {text = "GID: "..message.id.." • Host: "..message.author.tag},
+      color = 16580705,
+      timestamp = require("discordia").Date():toISO('T', 'Z'),
     }
+    local gmsg = message:reply{embed = embed}
+    gmsg:addReaction("🎉")
+    data.moderation.actions[1+#data.moderation.actions] = {type = "giveaway", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], host = message.author.id, channel = message.channel.id, gid = gmsg.id, product = table.concat(args," ",4)}
+    return {success = "stfu"}
   end
 end
 

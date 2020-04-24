@@ -20,7 +20,7 @@ command.execute = function(message,args,client)
     local txt = ""
     local page = {}
     for _,items in pairs(data.moderation.actions) do
-      if tostring(items.duration):lower() == "permanent" then
+      if tostring(items.duration):lower() == "permanent" or items.type == "giveaway" then
         --txt = txt.."\n**"..client:getUser(items.id).tag.." `["..items.type:upper().."]` - **"..utils.getTimeString(items.duration - os.time())  
       elseif string.len(txt.."\n**"..client:getUser(items.id).tag.." `["..items.type:upper().."]` - **"..utils.getTimeString(items.duration - os.time())) >= 1500 then
         page[1+#page] = {
@@ -34,6 +34,7 @@ command.execute = function(message,args,client)
         txt = txt.."\n**"..client:getUser(items.id).tag.." `["..items.type:upper().."]` - **"..utils.getTimeString(items.duration - os.time()) 
       end
     end
+    if txt == "" then return {success = false, msg = "There are no **active moderations** to display."} end
     if #page == 0 then page[1] = {
       title = "Moderations ["..#data.moderation.actions.."]",
       description = txt,

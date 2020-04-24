@@ -156,7 +156,9 @@ client:on("ready", function()
           if items.duration <= os.time() then
             local guilds = client:getGuild(id)
             if guilds ~= nil then
-              if items.type == "ban" then
+              if items.type == "giveaway" then
+                require("/app/commands/giveaway.lua").finishGiveaway(guilds,data)
+              elseif items.type == "ban" then
                 if guilds:getMember("414030463792054282"):getPermissions():has("banMembers") or guilds:getMember("414030463792054282"):getPermissions():has("administrator") then guilds:unbanUser(items.id, "Ban duration expired.") end
                 data.moderation.cases[1+#data.moderation.cases] = {type = "unban", user = items.id, moderator = client.user.id, reason = "Ban duration expired. (Case "..items.case..")", modlog = "nil"}
                 if data.general.modlog ~= "nil" and guilds:getChannel(data.general.modlog) ~= nil then
