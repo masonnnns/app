@@ -1,7 +1,8 @@
 command = {}
 
 local durationTable = {
-	["min"] = {60, "Minute"},
+	["s"] = {1, "Second"},
+  ["min"] = {60, "Minute"},
 	["mi"] = {60, "Minute"},
 	["m"] = {60, "Minute"},
 	["h"] = {3600, "Hour"},
@@ -60,12 +61,21 @@ command.execute = function(message,args,client)
     }
     local gmsg = message:reply{embed = embed}
     gmsg:addReaction("🎉")
-    data.moderation.actions[1+#data.moderation.actions] = {type = "giveaway", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], host = message.author.id, channel = message.channel.id, gid = gmsg.id, product = table.concat(args," ",4)}
+    data.moderation.actions[1+#data.moderation.actions] = {type = "giveaway", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], host = message.author.id, channel = message.channel.id, id = gmsg.id, gid = message., product = table.concat(args," ",4)}
     return {success = "stfu"}
   end
 end
 
-command.finishGiveaway = function(guild,data)
+command.finishGiveaway = function(guild,data,gdata)
+  for a,b in pairs(data.moderation.actions) do
+    if b.type == "giveaway" and b.gid == gdata.gid then
+      table.remove(data.moderation.actions,a)
+    end
+  end
+  if guild.channels:get(gdata.channel) == nil then return end
+  if guild.channels:get(gdata.channel):getMessage(gdata.gid) == nil then message:reply("<:atickno:678186665616998400> **Failed to end giveaway!** The origional message couldn't be found.") return end
+  local msg = guild.channels:get(gdata.channel):getMessage(gdata.gid) 
+  if #msg.reactions <= 1 then message:reply(":atickno:678186665616998400> **Failed to end giveaway!** No one entered the giveaway.") return end
   
 end
 
