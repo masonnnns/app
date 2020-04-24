@@ -84,6 +84,8 @@ command.execute = function(message,args,client)
     command.finishGiveaway(message.guild,data,giveaway)
     if message.guild.textChannels:get(giveaway.channel) == nil then
       return {success = false, msg = "The channel this giveaway originiated in was deleted."}
+    elseif giveaway.channel == message.channel.id then
+      return {success = "stfu"}
     else
       return {success = true, msg = "Managing the giveaway in **"..message.guild.textChannels:get(giveaway.channel).name.."**!"}
     end
@@ -101,6 +103,8 @@ command.execute = function(message,args,client)
     command.finishGiveaway(message.guild,data,giveaway)
     if message.guild.textChannels:get(giveaway.channel) == nil then
       return {success = false, msg = "The channel this giveaway originiated in was deleted."}
+    elseif giveaway.channel == message.channel.id then
+      return {success = "stfu"}
     else
       return {success = true, msg = "Rerolling the giveaway in **"..message.guild.textChannels:get(giveaway.channel).name.."**!"}
     end
@@ -119,9 +123,9 @@ command.finishGiveaway = function(guild,data,gdata)
   end
   if guild.textChannels:get(gdata.channel) == nil then return end
   local channel = guild.textChannels:get(gdata.channel)
-  if guild.textChannels:get(gdata.channel):getMessage(gdata.id) == nil then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[b.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** The origional message couldn't be found.") return end
+  if guild.textChannels:get(gdata.channel):getMessage(gdata.id) == nil then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[gdata.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** The origional message couldn't be found.") return end
   local msg = guild.textChannels:get(gdata.channel):getMessage(gdata.id) 
-  if #msg.reactions == 0 then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[b.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** I couldn't find the giveaway reaction.") return end
+  if #msg.reactions == 0 then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[gdata.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** I couldn't find the giveaway reaction.") return end
   local reaction
   for a,b in pairs(msg.reactions) do
     if b.emojiName == "🎉" then
@@ -129,35 +133,39 @@ command.finishGiveaway = function(guild,data,gdata)
       break
     end
   end
-  if reaction == nil then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[b.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** I couldn't find the giveaway reaction.") return end
-  if #reaction:getUsers() <= 1 then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[b.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** No one entered the giveaway.") return end
+  if reaction == nil then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[gdata.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** I couldn't find the giveaway reaction.") return end
+  if #reaction:getUsers() <= 1 then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[gdata.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** No one entered the giveaway.") return end
   local winner
   local tries = 0
   local reactants = {}
   for a,b in pairs(reaction:getUsers()) do
-    if a == gdata.host or a == "414030463792054282" or gdata.nowin ~= nil and gdata.nowin ~= a then else
+    if guild.members:get(a) == nil or a == gdata.host or a == "414030463792054282" or giveawayCache[gdata.gid]["nowin"] ~= nil and giveawayCache[gdata.gid]["nowin"] == a then else
       reactants[1+#reactants] = b
     end
   end
-  if #reactants == 0 then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[b.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** No one entered the giveaway.") return end
+  if #reactants == 0 then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[gdata.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** "..(giveawayCache[gdata.gid]["nowin"] == nil and "No one entered the giveaway." or "There are no other possible winners.")) return end
   repeat
     winner = reactants[math.random(1,#reactants)]
     tries = tries + 1
     require("timer").sleep(500)
   until
   winner ~= nil or tries >= 10
-  if winner == nil then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[b.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** I couldn't determine a winner after "..tries.." attempts.") return end
+  if winner == nil then channel:send("<:atickno:678186665616998400>  **Failed to "..(giveawayCache[gdata.gid]["nowin"] == nil and "end giveaway" or "reroll").."!** I couldn't determine a winner after "..tries.." attempts.") return end
   local embeds = msg.embed
-  embeds.title = "[ENDED] "..embeds.title
+  if giveawayCache[gdata.gid]["nowin"] == nil then
+    embeds.title = "[ENDED]: "..embeds.title
+  elseif string.sub(embeds.title,1,7) == "[ENDED]" then
+    embeds.title = "[RE-ROLLED]: "..string.sub(embeds.title,8)
+  end
   embeds.description = ":tada: **"..winner.tag.."** has won this giveaway!"
   embeds.color = 3066993
   msg:setEmbed(embeds)
-  if giveawayCache[b.gid]["nowin"] == nil then
+  if giveawayCache[gdata.gid]["nowin"] == nil then
     channel:send(":tada: Congratulations "..winner.mentionString..", you've won **"..gdata.product.."**!")
   else
-    channel:send(":data: The new winner is "..winner.mentionString..". Congratulations!")
+    channel:send(":tdata: The new winner is "..winner.mentionString..". Congratulations!")
   end
-  giveawayCache[b.gid]["nowin"] = winner.id
+  giveawayCache[gdata.gid]["nowin"] = winner.id
   return
 end
 
