@@ -28,20 +28,23 @@ local function getDuration(Args)
 	return argData
 end
 
+local giveawayCache = {}
+--[GID] = dataSaved
+
 local utils = require("/app/utils.lua")
 local config = require("/app/config.lua")
 
 command.info = {
   Name = "Giveaway",
   Alias = {""},
-  Usage = "giveaway <create/reroll/list/end> <time/giveaway ID> <product>",
+  Usage = "giveaway <create/end> <time/giveaway ID> <product>",
   Category = "Fun",
   Description = "Host or manage giveaways in your server.",
   PermLvl = 2,
 } 
 
 command.execute = function(message,args,client)
-  if args[2] == nil then return {success = false, msg = "You must specify create, reroll, list or end."} end
+  if args[2] == nil then return {success = false, msg = "You must specify create or end."} end
   args[2] = args[2]:lower()
   local data = config.getConfig(message.guild.id)
   if args[2] == "create" then
@@ -51,6 +54,9 @@ command.execute = function(message,args,client)
     if tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1] <= 0 then return {success = false, msg = "Invalid duration."} end
     if tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1] > 1209600 then return {success = false, msg = "You cannot host giveaways for longer than 2 weeks."} end
     if args[4] == nil then return {success = false, msg = "You must provide a product to giveaway!"} end
+    local activeGiveaways = 0
+    for a,b in pairs(data.moderation.actions) do if b.type == "giveaway" then activeGiveaways = 1+activeGiveaways if activeGiveaways > 10 then break end end
+    if 
     local durationString = table.concat(duration.numb,"").." "..durationTable[table.concat(duration.char,"")][2]..(tonumber(table.concat(duration.numb,"")) == 1 and "" or "s")
     local embed = {
       title = table.concat(args," ",4),
@@ -63,12 +69,30 @@ command.execute = function(message,args,client)
     gmsg:addReaction("🎉")
     data.moderation.actions[1+#data.moderation.actions] = {type = "giveaway", duration = os.time() + tonumber(table.concat(duration.numb,"")) * durationTable[table.concat(duration.char,"")][1], host = message.author.id, channel = message.channel.id, id = gmsg.id, gid = message.id, product = table.concat(args," ",4)}
     return {success = "stfu"}
-  end
+  elseif args[2] == "end" then
+    if args[3] == nil then return {success = false, msg = "You must provide a giveaway ID to end."} end
+    if tonumber(args[3]) == nil then return {success = false, msg = "The giveaway ID must be a number."} end
+    local giveaway
+    for a,b in pairs(data.moderation.actions) do
+      if b.gid == args[3] then
+        giveaway = b
+        break
+      end
+    end
+    if giveaway == nil then return {success = false, msg = "I couldn't find an active giveaway with that ID."} end
+    command.finishGiveaway(message.guild,data,giveaway)
+    if message.guild.textChannels:get(giveaway.channel) == nil then
+      return {success = false, msg = "The channel this giveaway originiated in was deleted."}
+    else
+      return {success = true, msg = "Managing the giveaway in **"..message.guild.textChannels:get(giveaway.channel).name.."**!"}
+    end
+  end  
 end
 
 command.finishGiveaway = function(guild,data,gdata)
   for a,b in pairs(data.moderation.actions) do
     if b.type == "giveaway" and b.id == gdata.id then
+      giveawayCache[b.gid] = b
       table.remove(data.moderation.actions,a)
       break
     end
@@ -106,6 +130,7 @@ command.finishGiveaway = function(guild,data,gdata)
   local embeds = msg.embed
   embeds.title = "[ENDED] "..embeds.title
   embeds.description = ":tada: **"..winner.tag.."** has won this giveaway!"
+  embeds.color = 3066993
   msg:setEmbed(embeds)
   channel:send(":tada: Congratulations "..winner.mentionString..", you've won **"..gdata.product.."**!")
   return
