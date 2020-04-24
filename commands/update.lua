@@ -103,7 +103,7 @@ command.execute = function(message,args,client)
     end
     local remove = bulkRemove(user,{"515695801356386305", "515696031174754310", "515696023994105876"})
     for a,b in pairs(remove) do removed[1+#removed] = b end
-  elseif groupInfo.Rank >= 80 and groupInfo.Rank <= 110 then
+  elseif groupInfo.Rank >= 70 and groupInfo.Rank <= 110 then
     if roles:get("515695801356386305") == nil then
       added[1+#added] = "Middle Rank"
       user:addRole("515695801356386305")
