@@ -12,7 +12,7 @@ config.setupConfigs("xd")
 local Utopia = require('utopia')
 local app = Utopia:new()
 
-local statistics = {messsages = 0, modcmds = 0, cmds = 0}
+local statistics = {messages = 0, cmds = 0, logged = 0}
 
 --[[app:use(function (req, res)
   local api = require("/app/api.lua").request(res, req, client)
@@ -55,6 +55,7 @@ local cooldown = {}
 --userid..guildid = {time = os.time(), strike = num}
 
 client:on("messageCreate",function(message)
+  statistics.messages = statistics.messages + 1
   if message.content == nil then return end
   if message.guild == nil then return end
   if message.author.bot or message.guild.id == nil then return false end
@@ -113,6 +114,7 @@ client:on("messageCreate",function(message)
       cooldown[message.author.id..message.guild.id].time = os.time() + (command.info.Cooldown == nil and 2 or command.info.Cooldown)
       local cmdSuccess, cmdMsg = pcall(function() execute = command.execute(message,args,client) end)
       print("[CMD]: "..message.author.tag.." ("..message.author.id..") has ran the "..command.info.Name.." command in "..message.guild.name.." ("..message.guild.id..").\nMSG: "..message.content)
+      statistics.cmds = statistics.cmds + 1
       if not (cmdSuccess) then
         message:reply(":rotating_light: **An error occured!** Please report this to our support team.")
         client:getGuild("551017079797579795"):getChannel("678756836349968415"):send{embed = {
@@ -328,6 +330,7 @@ client:on("messageDelete", function(message)
   message.guild:getChannel(data.general.auditlog):send{embed = log}
   bulkDeletes[message.guild.id..message.channel.id] = {}
   debounceBulk[message.guild.id..message.channel.id] = 0
+  statistics.logged = statistics.logged + 1
 end)
 
 client:on("messageUpdate", function(message) 
@@ -350,6 +353,7 @@ client:on("messageUpdate", function(message)
     },
   }
   message.guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
   if data.automod.enabled and require("/app/utils.lua").Permlvl(message,client) == 0 then require("/app/automod.lua")(message,data,client) end
 end)
 
@@ -370,6 +374,7 @@ client:on("voiceChannelJoin", function(member,channel)
     },
   }
   channel.guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
 end)
 
 client:on("voiceChannelLeave", function(member,channel) 
@@ -389,6 +394,7 @@ client:on("voiceChannelLeave", function(member,channel)
     },
   }
   channel.guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
 end)
 
 client:on("memberUpdate", function(member)
@@ -455,6 +461,7 @@ client:on("memberUpdate", function(member)
     if auditlog.changes["$add"] == nil and auditlog.changes["$remove"] == nil then return end
   end
   member.guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
 end)
 
 client:on("memberJoin", function(member) 
@@ -498,6 +505,7 @@ client:on("memberJoin", function(member)
   print(os.time() + 3600,discordia.Date.fromSnowflake(member.id):toSeconds())
   if os.time() - 3600 <= discordia.Date.fromSnowflake(member.id):toSeconds() then log.description = ":warning: **New Account**" end
   member.guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
 end)
 
 client:on("memberLeave", function(member) 
@@ -528,6 +536,7 @@ client:on("memberLeave", function(member)
   if #roles == 1 then log.fields[3].name = "Role" end
   if #roles == 0 then log.fields[3] = nil end
   member.guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
 end)
 
 client:on("channelCreate", function(channel) 
@@ -553,6 +562,7 @@ client:on("channelCreate", function(channel)
   if channel.type == 2 then log.title = "Voice Channel Created" log.fields[1].value = channel.name.." (`"..channel.id.."`)" end
   if channel.type == 4 then log.title = "Category Created" log.fields[1].value = channel.name.." (`"..channel.id.."`)" table.remove(log.fields,2) end
   channel.guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
 end)
 
 client:on("channelDelete", function(channel) 
@@ -579,6 +589,7 @@ client:on("channelDelete", function(channel)
   if channel.type == 2 then log.title = "Voice Channel Deleted" log.fields[1].value = channel.name.." (`"..channel.id.."`)" end
   if channel.type == 4 then log.title = "Category Deleted" log.fields[1].value = channel.name.." (`"..channel.id.."`)" table.remove(log.fields,2) end
   channel.guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
 end)
 
 client:on("roleCreate", function(role) 
@@ -601,6 +612,7 @@ client:on("roleCreate", function(role)
     },
   }
   role.guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
 end)
 
 client:on("roleDelete", function(role) 
@@ -623,6 +635,7 @@ client:on("roleDelete", function(role)
     },
   }
   role.guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
 end)
 
 client:on("userBan", function(member, guild)
@@ -645,6 +658,7 @@ client:on("userBan", function(member, guild)
     },
   }
   guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
 end)
 
 client:on("userUnban", function(member, guild)
@@ -666,6 +680,7 @@ client:on("userUnban", function(member, guild)
     },
   }
   guild:getChannel(data.general.auditlog):send{embed = log}
+  statistics.logged = statistics.logged + 1
 end)
 
 -- [[ PRIVATE LOGS ]]
@@ -704,8 +719,21 @@ client:on("guildDelete", function(guild)
 end)
 
 client:on("infoCmd",function(cmd,message)
+  local utils = require("/app/utils.lua")
   if cmd == "info" then
-    
+    local embed = {
+      title = "Bot Information",
+      fields = {
+        {name = "Guilds", value = utils.addCommas(#client.guilds), inline = true}
+        {name = "Users", value = utils.addCommas(#client.users), inline = true}
+        {name = "Shards", value = utils.addCommas(client.shardCount), inline = true}
+        {name = "Messages Seen", value = utils.addCommas(statistics.messages), inline = true}
+        {name = "Commands Ran"}
+      },
+      footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.name},
+      color = (message.member:getColor() == 0 and 3066993 or message.member:getColor().value),
+    }
+    message:reply{embed = embed}
   end
 end)
 
