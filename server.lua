@@ -38,17 +38,31 @@ end
 local cooldown = {}
 --userid..guildid = {time = os.time(), strike = num}
 
-local function messageCreate(message)
-  print('xd')
-  if conifg == nil then return end --// The config table returned nil?
-  print('1')
+client:on("messageCreate",function(message)
   if message.content == nil then return end --// The message recieved was an embed, there's no command here.
-  print('2')
   if message.guild == nil then return end --// The message was sent via DM, no need to verify in DMs.
-  print('3')
   if message.author.bot or message.guild.id == nil then return end --// The message was by a bot, we won't allow that.
-  print(config.prefix)
-end
+  if string.sub(message.content),1,string.len(config.prefix)) == config.prefix then --// Message contains prefix.
+    local args = sepMsg(string.sub(message.content,string.len(data.general.prefix)+1)) --// Remove the prefix, seperate the string
+    local command
+    for file, _type in require("fs").scandirSync("app/commands") do
+      if _type ~= "directory" then
+        if string.lower(args[1]) == string.lower(require("/app/commands/"..file).info.Name) then
+          command = require("/app/commands/"..file)
+          break
+        elseif require("/app/commands/"..file).info.Alias >= 1 then
+          for _,alias in pairs(require("/app/commands/"..file).info.Alias) do
+            if alias ~= "" and string.lower(alias) == string.lower(args[1]) then
+              command = require("/app/commands/"..file)
+              break
+            end
+          end
+        end
+      end  
+    end
+    local permLvl = 
+  end
+end)
 
 if (config) then
   if config.token ~= nil then
@@ -56,7 +70,6 @@ if (config) then
       print("Bot failed to start: No token provided.")
     else
       client:run("Bot "..config.token)
-      client:on("messageCreate",function(message) messageCreate(message) end)
     end
   else
     print("Bot failed to start: config.token is nil.")
