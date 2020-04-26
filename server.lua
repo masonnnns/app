@@ -39,13 +39,14 @@ local cooldown = {}
 --userid..guildid = {time = os.time(), strike = num}
 
 client:on("messageCreate",function(message)
-  if message.content == nil then return end --// The message recieved was an embed, there's no command here.
+ --[[ if message.content == nil then return end --// The message recieved was an embed, there's no command here.
   if message.guild == nil then return end --// The message was sent via DM, no need to verify in DMs.
-  if message.author.bot or message.guild.id == nil then return end --// The message was by a bot, we won't allow that.
-  if string.sub(message.content),1,string.len(config.prefix)) == config.prefix then --// Message contains prefix.
-    local args = sepMsg(string.sub(message.content,string.len(data.general.prefix)+1)) --// Remove the prefix, seperate the string
+  if message.author.bot or message.guild.id == nil then return end --// The message was by a bot, we won't allow that.--]]
+  -- this fuckingt hing
+  if string.sub(message.content,1,string.len(config.prefix)) == config.prefix then --// Message contains prefix.
+    local args = sepMsg(string.sub(message.content,string.len(config.prefix)+1)) --// Remove the prefix, seperate the string
     local command
-    for file, _type in require("fs").scandirSync("app/commands") do
+    for file, _type in require("fs").scandirSync("./commands") do
       if _type ~= "directory" then
         if string.lower(args[1]) == string.lower(require("/app/commands/"..file).info.Name) then
           command = require("/app/commands/"..file)
@@ -79,8 +80,12 @@ client:on("messageCreate",function(message)
     local cmdSuccess, cmdMsg = pcall(function() execute = command.execute(message,args,client) end)
     if not (cmdSuccess) then
       message:reply(":rotating_light: **An error occured!**```lua\n"..cmdMsg.."\n```")
-    elseif execute == nil type(execute) ~= "table" then
-      message:reply(":rotating")
+    elseif execute == nil or type(execute) ~= "table" then
+      message:reply(":rotating_light: **An error occured.```lua\nBROKEN COMMAND\n```")
+    elseif execute.success == nil or execute.success == false then
+      message:reply("❎ "..(execute.msg and execute.msg or "Command failed."))
+    elseif execute.success == true then
+      message:reply("✅ "..(execute.msg and execute.msg or "Command successful."))
     end
   end
 end)
