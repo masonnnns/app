@@ -22,7 +22,7 @@ command.execute = function(message,args,client)
     for _,items in pairs(data.moderation.actions) do
       if tostring(items.duration):lower() == "permanent" or items.type == "giveaway" then
         --txt = txt.."\n**"..client:getUser(items.id).tag.." `["..items.type:upper().."]` - **"..utils.getTimeString(items.duration - os.time())  
-      elseif string.len(txt.."\n**"..client:getUser(items.id).tag.." ("..items.id..") `["..items.type:upper().."]` - **"..utils.getTimeString(items.duration - os.time())) >= 1500 then
+      elseif string.len(txt.."\n**"..client:getUser(items.id).tag.." `["..items.type:upper().."]` - **"..utils.getTimeString(items.duration - os.time())) >= 1500 then
         page[1+#page] = {
           title = "Moderations ["..#data.moderation.actions.."]",
           description = txt,
@@ -32,7 +32,7 @@ command.execute = function(message,args,client)
         txt = ""
         num = num + 1
       else
-        txt = txt.."\n**"..client:getUser(items.id).tag.." ("..items.id..") `["..items.type:upper().."]` - **"..utils.getTimeString(items.duration - os.time()) 
+        txt = txt.."\n**"..client:getUser(items.id).tag.." `["..items.type:upper().."]` - **"..utils.getTimeString(items.duration - os.time()) 
         num = num + 1
       end
     end
