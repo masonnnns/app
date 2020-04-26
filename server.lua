@@ -38,16 +38,29 @@ end
 local cooldown = {}
 --userid..guildid = {time = os.time(), strike = num}
 
-client:on("messageCreate",function(message)
+local function messageCreate(message)
+  print('xd')
   if conifg == nil then return end --// The config table returned nil?
+  print('1')
   if message.content == nil then return end --// The message recieved was an embed, there's no command here.
+  print('2')
   if message.guild == nil then return end --// The message was sent via DM, no need to verify in DMs.
-  if message.author.bot or message.guild.id == nil then --// The message was by a bot, we won't allow that.
-  print(config.verifiedrole)
-end)
+  print('3')
+  if message.author.bot or message.guild.id == nil then return end --// The message was by a bot, we won't allow that.
+  print(config.prefix)
+end
 
-if (config) and config.token ~= nil and client.token ~= "" and client.token ~= "YOUR_TOKEN_HERE" --[[Don't edit that.]] then
-  client:run("Bot "..config.token)
+if (config) then
+  if config.token ~= nil then
+    if config.token == "" or config.token == "YOUR_TOKEN_HERE" then
+      print("Bot failed to start: No token provided.")
+    else
+      client:run("Bot "..config.token)
+      client:on("messageCreate",function(message) messageCreate(message) end)
+    end
+  else
+    print("Bot failed to start: config.token is nil.")
+  end
 else
-    print("")
+  print("Bot failed to start: Config table is nil.")
 end
