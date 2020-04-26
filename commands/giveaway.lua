@@ -166,7 +166,7 @@ command.finishGiveaway = function(guild,data,gdata)
   if giveawayCache[gdata.gid]["nowin"] == nil then
     channel:send(":tada: Congratulations "..winner.mentionString..", you've won **"..gdata.product.."**!")
   else
-    channel:send(":tdata: The new winner is "..winner.mentionString..". Congratulations!")
+    channel:send(":tata: The new winner is "..winner.mentionString..". Congratulations!")
   end
   giveawayCache[gdata.gid]["nowin"] = winner.id
   giveawayCache[gdata.gid].guild = guild.id
