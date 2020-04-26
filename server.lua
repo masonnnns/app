@@ -60,7 +60,28 @@ client:on("messageCreate",function(message)
         end
       end  
     end
-    local permLvl = 
+    if cooldown[message.author.id..message.guild.id] ~= nil and cooldown[message.author.id..message.guild.id].time > os.time() then
+      cooldown[message.author.id..message.guild.id].strike = cooldown[message.author.id..message.guild.id].strike + 1
+      if cooldown[message.author.id..message.guild.id].strike >= 3 then
+        print("[CMD COOLDOWN]: "..message.author.tag.." ("..message.author.id..") has been put on cooldown in "..message.guild.name.." ("..message.guild.id.."). [STRIKES: "..cooldown[message.author.id..message.guild.id].strike.."]")
+        if cooldown[message.author.id..message.guild.id].strike == 3 then
+          local reply = message:reply("⚠️ **Too spicy!** Try running another command in "..cooldown[message.author.id..message.guild.id].time-os.time().." seconds.")
+          require("timer").sleep(5000)
+          reply:delete()
+        end
+        return
+      end
+    else
+        cooldown[message.author.id..message.guild.id] = {time = 0, strike = 0}
+    end
+    local execute
+    cooldown[message.author.id..message.guild.id].time = os.time() + (command.info.Cooldown == nil and 2 or command.info.Cooldown)
+    local cmdSuccess, cmdMsg = pcall(function() execute = command.execute(message,args,client) end)
+    if not (cmdSuccess) then
+      message:reply(":rotating_light: **An error occured!**```lua\n"..cmdMsg.."\n```")
+    elseif execute == nil type(execute) ~= "table" then
+      message:reply(":rotating")
+    end
   end
 end)
 
