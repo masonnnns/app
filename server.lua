@@ -39,10 +39,9 @@ local cooldown = {}
 --userid..guildid = {time = os.time(), strike = num}
 
 client:on("messageCreate",function(message)
- --[[ if message.content == nil then return end --// The message recieved was an embed, there's no command here.
+  if message.content == nil then return end --// The message recieved was an embed, there's no command here.
   if message.guild == nil then return end --// The message was sent via DM, no need to verify in DMs.
-  if message.author.bot or message.guild.id == nil then return end --// The message was by a bot, we won't allow that.--]]
-  -- this fuckingt hing
+  if message.author.bot or message.guild.id == nil then return end --// The message was by a bot, we won't allow that.
   if string.sub(message.content,1,string.len(config.prefix)) == config.prefix then --// Message contains prefix.
     local args = sepMsg(string.sub(message.content,string.len(config.prefix)+1)) --// Remove the prefix, seperate the string
     local command
