@@ -21,7 +21,7 @@ module.getPerm = function(message,id)
 end
 
 module.getRoles = function(message,reply,member)
-  if member == nil then member = message.member.id end
+  if member == nil then member = message.member end
   if config.groupId == nil or conifg.groupId == 0 then return "no_group" end
   if #config.bindings == 0 then return "no_binds" end
   local robloxId
@@ -41,7 +41,27 @@ module.getRoles = function(message,reply,member)
     end
   end
   if groupInfo == nil then groupInfo = {Rank = 0, Role = "Guest"} end
-  local changes = {added = {}, }
+  local changes = {added = {}, removed = {}}
+  local bindings = config.bindings
+  for a,b in pairs(bindings) do
+    local role = message.guild.roles:get(b)
+    if role then
+      if a == groupInfo.Rank and member.roles:get(b) == nil then
+        local success, msg = member:addRole(b)
+        if (success) then changes.added[1+#changes.added] = role.name end
+      elseif a ~= groupInfo.Rank and member.roles:get(b) ~= nil then
+        local success, msg = member:removeRole(b)
+        if (success) then changes.removed[1+#changes.removed] = role.name end
+      end
+      require("timer").sleep(250)
+    end
+  end
+  if memeber.roles:get(config.verifiedRole) == nil and message.guild.roles:get(config.verifiedRole) ~= nil then
+    local success, msg = member:addRole(config.verifiedRole)
+    if (success) then changes.added[1+#changes.added] = message.guild.roles:get(config.verifiedRole).name
+  end
+  if #changes.added + #changes.removed == 0 then return "no_changes" end
+  return changes
 end
 
 return module
