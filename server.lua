@@ -39,6 +39,7 @@ local cooldown = {}
 --userid..guildid = {time = os.time(), strike = num}
 
 client:on("messageCreate",function(message)
+  print(require("json").encode(process.env.PROJET_DOMAIN))
   if message.content == nil then return end --// The message recieved was an embed, there's no command here.
   if message.guild == nil then return end --// The message was sent via DM, no need to verify in DMs.
   if message.author.bot or message.guild.id == nil then return end --// The message was by a bot, we won't allow that.
