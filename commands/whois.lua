@@ -16,7 +16,12 @@ command.execute = function(message,args,client)
   local res, body = require("coro-http").request("GET","https://verify.eryn.io/api/user/"..member.id)
   if res.code == 404 then return {success = false, msg = (member.id == message.author.id and "You're not verified with RoVer. Verify here: <https://verify.eryn.io" or "**"..member.tag.."** isn't verified with RoVer.")} end
   if res.code ~= 200 then return {success = false, msg = "There was a problem checking the verification registry. Try again."} end
-  if 
+  local embed = {
+    title = require("json").decode(body).robloxUsername,
+    url = "https://www.roblox.com/users/"..require("json").decode(body).robloxId.."/profile",
+  }
+  res, body = require("coro-http").request("GET","https://api.roblox.com/users/"..require("json").decode(body).robloxId)
+  if res ~= 200 then return {success = false, msg = "There was a problem with the Roblox API. Try again."}
   return {success = "stfu"}
 end
 
