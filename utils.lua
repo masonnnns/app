@@ -1,5 +1,4 @@
 local module = {}
-local verifyCache = {}
 local config = require("/app/config.lua")
 
 module.getPerm = function(message,id)
@@ -19,6 +18,19 @@ module.getPerm = function(message,id)
     end
     return 0
   end
+end
+
+local function manageRoles(member)
+  if member == nil then member = message.member end
+  local robloxId
+  local res, body = require("coro-http").request("GET","https://verify.eryn.io/user/"..member.id)
+  if res.code ~= 200 then return (res.code == 404 and "not_verifed" or "verify")
+end
+
+module.getRoles = function(message,reply,member)
+  if member == nil then member = message.member end
+  local getRoles = manageRoles(member)
+  
 end
 
 return module
