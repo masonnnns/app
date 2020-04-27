@@ -20,15 +20,15 @@ module.getPerm = function(message,id)
   end
 end
 
-module.getRoles = function(message,reply,member)
+module.getRoles = function(message,member)
   if member == nil then member = message.member end
-  if config.groupId == nil or conifg.groupId == 0 then return "no_group" end
-  if #config.bindings == 0 then return "no_binds" end
-  local robloxId
+  local config = require("/app/config.lua")
+  if config.groupId == nil or config.groupId == 0 then return "no_group" end
   local res, body = require("coro-http").request("GET","https://verify.eryn.io/user/"..member.id)
+  print(res.code,member.id)
   if res.code ~= 200 then return (res.code == 404 and "not_verifed" or "verify_err") end
   body = require("json").decode(body)
-  local userId = body.robloxId
+  local userId, name = body.robloxId, body.robloxUsername
   res, body = http.request("GET","https://api.roblox.com/users/"..userId.."/groups")
   if res.code ~= 200 then return "api_down" else body = require("json").decode(body) end
   local groupInfo
@@ -58,7 +58,10 @@ module.getRoles = function(message,reply,member)
   end
   if memeber.roles:get(config.verifiedRole) == nil and message.guild.roles:get(config.verifiedRole) ~= nil then
     local success, msg = member:addRole(config.verifiedRole)
-    if (success) then changes.added[1+#changes.added] = message.guild.roles:get(config.verifiedRole).name
+    if (success) then changes.added[1+#changes.added] = message.guild.roles:get(config.verifiedRole).name end
+  end
+  if member.name:lower() ~= name:lower() then
+    member:setNickname(name)
   end
   if #changes.added + #changes.removed == 0 then return "no_changes" end
   return changes
