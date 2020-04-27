@@ -21,20 +21,4 @@ module.getPerm = function(message,id)
   end
 end
 
-module.verifyUser = function(message,id)
-  if id == nil then id = message.author.id end
-  if verifyCache[id] ~= nil then return verifyCache[id] end
-  local verifyRes, verifyBody
-  verifyRes, verifyBody = require("http").request("GET","https://verify.eryn.io/api/user/"..id)
-  if verifyRes.code == 200 then
-    verifyBody = require('json').decode(verifyBody)
-    verifyCache[id] = {id = verifyBody.robloxId, username = verifyBody.robloxUsername}
-    return {success = true, msg = verifyCahce[id]}
-  elseif verifyRes.code == 404 then
-    return {success = false, msg = "not_verified"}
-  else
-    return {success = false, msg = verifyRes.code}
-  end
-end
-
 return module
