@@ -28,11 +28,21 @@ command.execute = function(message,args,client)
   embed.fields[1] = {name = "Description", value = string.sub(body.description,1,1500)..(string.len(body.description) > 1500 and "..." or ""), inline = false}
   if body.isBanned then embed.description = "🔨 **This user is banned from Roblox.**" end
   embed.thumbnail = {url = "https://assetgame.roblox.com/Thumbs/Avatar.ashx?username="..embed.title}
-  embed.footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag},
-  embed.timestamp = require("discordia").Date():toISO('T', 'Z'),
-  if conifg.group 
-  res, body = require("coro-http").request("GET","https://api.roblox.com/users/"..userId.."/groups")
-  if res.code ~= 200 then return {success = false, msg = "There was a problem with the Roblox API. Try again."} end
+  embed.footer = {icon_url = message.author:getAvatarURL(), text = "Responding to "..message.author.tag}
+  embed.timestamp = require("discordia").Date():toISO('T', 'Z')
+  if config.groupId and config.groupId ~= 0 and config.groupId ~= "" then
+    res, body = require("coro-http").request("GET","https://api.roblox.com/users/"..userId.."/groups")
+    if res.code ~= 200 then return {success = false, msg = "There was a problem with the Roblox API. Try again."} end
+    body = require('json').decode(body)
+    embed.fields[1+#embed.fields] = {name = "Rank in Group", value = "Guest", inline = false}
+    for a,b in pairs(body) do
+      if b.Id == config.groupId then
+        embed.fields[#embed.fields] = {name = "Rank in Group", value = b.Role, inline = false}
+        break
+      end 
+    end
+  end
+  embed.color = (message.member:getColor().value == 0 and 1752220 or message.member:getColor().value)
   message:reply{embed = embed}
   return {success = "stfu"}
 end
