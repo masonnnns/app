@@ -50,7 +50,7 @@ client:on("messageCreate",function(message)
         if string.lower(args[1]) == string.lower(require("/app/commands/"..file).info.Name) then
           command = require("/app/commands/"..file)
           break
-        elseif require("/app/commands/"..file).info.Alias >= 1 then
+        elseif #require("/app/commands/"..file).info.Alias >= 1 then
           for _,alias in pairs(require("/app/commands/"..file).info.Alias) do
             if alias ~= "" and string.lower(alias) == string.lower(args[1]) then
               command = require("/app/commands/"..file)
