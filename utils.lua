@@ -20,21 +20,28 @@ module.getPerm = function(message,id)
   end
 end
 
-local function manageRoles(member)
+module.getRoles = function(message,reply,member)
+  if member == nil then member = message.member.id end
   if config.groupId == nil or conifg.groupId == 0 then return "no_group" end
-  if member == nil then member = message.member end
+  if #config.bindings == 0 then return "no_binds" end
   local robloxId
   local res, body = require("coro-http").request("GET","https://verify.eryn.io/user/"..member.id)
   if res.code ~= 200 then return (res.code == 404 and "not_verifed" or "verify_err") end
   body = require("json").decode(body)
   local userId = body.robloxId
-  result, body = http.request("GET","https://api.roblox.com/users/"..userId.."/groups")
-  
-end
-
-module.getRoles = function(message,reply,member)
-  if member == nil then member = message.member end
-  local getRoles = manageRoles(member)
+  res, body = http.request("GET","https://api.roblox.com/users/"..userId.."/groups")
+  if res.code ~= 200 then return "api_down" else body = require("json").decode(body) end
+  local groupInfo
+  if #body >= 1 then
+    for a,b in pairs(body) do
+      if b.Id == config.groupId then
+        groupInfo = b
+        break
+      end
+    end
+  end
+  if groupInfo == nil then groupInfo = {Rank = 0, Role = "Guest"} end
+  local changes = {added = {}, }
 end
 
 return module
