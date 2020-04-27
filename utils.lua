@@ -25,7 +25,6 @@ module.getRoles = function(message,member)
   local config = require("/app/config.lua")
   if config.groupId == nil or config.groupId == 0 then return "no_group" end
   local res, body = require("coro-http").request("GET","https://verify.eryn.io/api/user/"..member.id)
-  print(res.code,member.id)
   if res.code ~= 200 then return (res.code == 404 and "not_verifed" or "verify_err") end
   body = require("json").decode(body)
   local userId, name = body.robloxId, body.robloxUsername
@@ -48,12 +47,11 @@ module.getRoles = function(message,member)
     if role then
       if a == groupInfo.Rank and member.roles:get(b) == nil then
         local success, msg = member:addRole(b)
-        if (success) then changes.added[1+#changes.added] = role.name end
+        if (success) then changes.added[1+#changes.added] = role.name require("timer").sleep(250) end
       elseif a ~= groupInfo.Rank and member.roles:get(b) ~= nil then
         local success, msg = member:removeRole(b)
-        if (success) then changes.removed[1+#changes.removed] = role.name end
+        if (success) then changes.removed[1+#changes.removed] = role.name require("timer").sleep(250) end
       end
-      require("timer").sleep(250)
     end
   end
   if member.roles:get(config.verifiedRole) == nil and message.guild.roles:get(config.verifiedRole) ~= nil then
@@ -65,6 +63,34 @@ module.getRoles = function(message,member)
   end
   if #changes.added + #changes.removed == 0 then return "no_changes" end
   return changes
+end
+
+module.resolveUser = function(message,user)
+  if #message.mentionedUsers >= 1 then
+    if user == "<@"..message.mentionedUsers[1][1]..">" then
+      return message.guild:getMember(message.mentionedUsers[1][1])
+    elseif user == "<@!"..message.mentionedUsers[1][1]..">" then
+      return message.guild:getMember(message.mentionedUsers[1][1])
+    end
+  end
+  if tonumber(user) ~= nil then
+    for _,items in pairs(message.guild.members) do
+      if items.id == user then
+        return items
+      end
+    end
+  end
+  for _,items in pairs(message.guild.members) do
+    if string.sub(items.name,1,string.len(user)):lower() == user:lower() then
+      return items
+    end
+  end
+  for _,items in pairs(message.guild.members) do
+    if string.sub(items.username,1,string.len(user)):lower() == user:lower() then
+      return items
+    end
+  end
+  return false
 end
 
 return module
