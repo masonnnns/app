@@ -18,6 +18,7 @@ local codes = {
 command.execute = function(message,args,client)
   local config = require("/app/config.lua")
   if utils.getPerm(message) < 1 then return {success = (config.permReply and false or "no"), msg = "You don't have permissions to use this command."} end
+  if args[2] == nil then return {success = false, msg = "You must mention a member to update."} end
   local member = utils.resolveUser(message,table.concat(args," ",2))
   if member == false then return {success = false, msg = "I couldn't find the member you mentioned."} end
   if member.id == message.author.id then local command = require("/app/commands/getroles.lua").execute(message,args,client) return command end
