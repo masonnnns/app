@@ -83,9 +83,9 @@ client:on("messageCreate",function(message)
     elseif execute == nil or type(execute) ~= "table" then
       message:reply(":rotating_light: **An error occured.**```lua\nBROKEN COMMAND\n```")
     elseif execute.success == nil or execute.success == false then
-      message:reply("❎ "..(execute.msg and execute.msg or "Command failed."))
+      message:reply("❎  "..(execute.msg and execute.msg or "Command failed."))
     elseif execute.success == true then
-      message:reply("✅ "..(execute.msg and execute.msg or "Command successful."))
+      message:reply("✅  "..(execute.msg and execute.msg or "Command successful."))
     end
   end
 end)
