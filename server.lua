@@ -60,6 +60,7 @@ client:on("messageCreate",function(message)
         end
       end  
     end
+    if command == nil then return end
     if cooldown[message.author.id..message.guild.id] ~= nil and cooldown[message.author.id..message.guild.id].time > os.time() then
       cooldown[message.author.id..message.guild.id].strike = cooldown[message.author.id..message.guild.id].strike + 1
       if cooldown[message.author.id..message.guild.id].strike >= 3 then
@@ -80,7 +81,7 @@ client:on("messageCreate",function(message)
     if not (cmdSuccess) then
       message:reply(":rotating_light: **An error occured!**```lua\n"..cmdMsg.."\n```")
     elseif execute == nil or type(execute) ~= "table" then
-      message:reply(":rotating_light: **An error occured.```lua\nBROKEN COMMAND\n```")
+      message:reply(":rotating_light: **An error occured.**```lua\nBROKEN COMMAND\n```")
     elseif execute.success == nil or execute.success == false then
       message:reply("❎ "..(execute.msg and execute.msg or "Command failed."))
     elseif execute.success == true then
