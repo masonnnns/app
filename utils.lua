@@ -21,16 +21,20 @@ module.getPerm = function(message,id)
 end
 
 local function manageRoles(member)
+  if config.groupId == nil or conifg.groupId == 0 then return "no_group" end
   if member == nil then member = message.member end
   local robloxId
   local res, body = require("coro-http").request("GET","https://verify.eryn.io/user/"..member.id)
-  if res.code ~= 200 then return (res.code == 404 and "not_verifed" or "verify")
+  if res.code ~= 200 then return (res.code == 404 and "not_verifed" or "verify_err") end
+  body = require("json").decode(body)
+  local userId = body.robloxId
+  result, body = http.request("GET","https://api.roblox.com/users/"..userId.."/groups")
+  
 end
 
 module.getRoles = function(message,reply,member)
   if member == nil then member = message.member end
   local getRoles = manageRoles(member)
-  
 end
 
 return module

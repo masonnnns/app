@@ -7,7 +7,7 @@ local config = {
     modRole = "", -- Role ID of the Bot Moderator role.
     users = {{"276294288529293312","admin"}}, -- User IDs of forced permissions and the type. ("admin" or "mod")
   },
-  groupID = 0,
+  groupId = 0,
   bindings = {
     --[Rank ID] = "Role ID"
   }
