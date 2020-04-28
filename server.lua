@@ -70,7 +70,7 @@ client:on("messageCreate",function(message)
       if cooldown[message.author.id..message.guild.id].strike >= 3 then
         print("[CMD COOLDOWN]: "..message.author.tag.." ("..message.author.id..") has been put on cooldown in "..message.guild.name.." ("..message.guild.id.."). [STRIKES: "..cooldown[message.author.id..message.guild.id].strike.."]")
         if cooldown[message.author.id..message.guild.id].strike == 3 then
-          local reply = message:reply("⚠️ **Too spicy!** Try running another command in "..cooldown[message.author.id..message.guild.id].time-os.time().." seconds.")
+          local reply = message:reply("⚠️ **Slow down!** Try running another command in "..cooldown[message.author.id..message.guild.id].time-os.time().." seconds.")
           require("timer").sleep(5000)
           reply:delete()
         end
