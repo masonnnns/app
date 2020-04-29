@@ -10,7 +10,7 @@ local config = {
   },
   groupId = 0,
   bindings = {
-    --[Rank ID] = "Role ID"
+    --[Rank ID] = "Role ID",
   }
 }
 
