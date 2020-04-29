@@ -41,16 +41,25 @@ module.getRoles = function(message,member)
   end
   if groupInfo == nil then groupInfo = {Rank = 0, Role = "Guest"} end
   local changes = {added = {}, removed = {}}
+  local internal = {}
   local bindings = config.bindings
-  for a,b in pairs(bindings) do
+  for a,b in pairs(bindings) do --// Give any and all roles that the user should have.
     local role = message.guild.roles:get(b)
     if role then
       if a == groupInfo.Rank and member.roles:get(b) == nil then
         local success, msg = member:addRole(b)
-        if (success) then changes.added[1+#changes.added] = role.name require("timer").sleep(250) end
-      elseif a ~= groupInfo.Rank and member.roles:get(b) ~= nil then
+        if (success) then changes.added[1+#changes.added] = role.name internal[role.id] = a require("timer").sleep(250) end
+      elseif a == groupInfo.Rank then
+        internal[role.id] = a
+      end
+    end
+  end
+  for a,b in pairs(bindings) do --// Remove roles that weren't added.
+    if internal[b] == nil then --// The role wasn't added or shouldn't have been.
+      local role = message.guild.roles:get(b)
+      if role and member.roles:get(b) ~= nil then
         local success, msg = member:removeRole(b)
-        if (success) then changes.removed[1+#changes.removed] = role.name require("timer").sleep(250) end
+        if (success) then changes.removed[1+#changes.removed] = role.name require("timer").sleep(250) end 
       end
     end
   end

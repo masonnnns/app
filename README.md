@@ -9,3 +9,7 @@ This is an open-source Roblox Verification bot for your Discord server.
 Make your way to the conifg.lua file and edit the settings.
 #
 When you're done, Tools > Terminal > enter "refresh" > press enter
+#
+#
+---
+This instance is on V1.1
