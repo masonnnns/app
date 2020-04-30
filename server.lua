@@ -11,10 +11,12 @@ local app = Utopia:new()
 
 app:listen(8080)
 
+local config = require("/app/config.lua") --// Get the config you predefined in config.lua (Read the README.md)
 local startOS = os.time()
 
 local http = require('coro-http')
 client:on("ready", function()
+  client:setGame(config.game)
   app:use(function (req, res)
     res:finish("Hi!")
   end)
@@ -23,8 +25,6 @@ client:on("ready", function()
     require("timer").sleep(60000)
   end
 end)
-
-local config = require("/app/config.lua") --// Get the config you predefined in config.lua (Read the README.md)
 
 local function sepMsg(msg)
 	local Args = {}
