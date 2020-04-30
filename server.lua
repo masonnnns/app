@@ -20,7 +20,7 @@ client:on("ready", function()
   end)
   while true do
     require("coro-http").request("GET","https://"..process.env.PROJECT_DOMAIN..".glitch.me/")
-    require("timer").sleep(160000)
+    require("timer").sleep(60000)
   end
 end)
 
