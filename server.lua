@@ -21,6 +21,7 @@ client:on("ready", function()
     res:finish("Hi!")
   end)
   while true do
+    if startOS - os.time() >= 39600 then os.exit() os.exit() os.exit() return end
     require("coro-http").request("GET","https://"..process.env.PROJECT_DOMAIN..".glitch.me/")
     require("timer").sleep(60000)
   end
