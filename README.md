@@ -1,7 +1,7 @@
 # Roblox Verification Discord Bot
 This is an open-source Roblox Verification bot for your Discord server.
 
-**By:** A_roxn (Aaron B.#5115) 
+**By:** A_roxn (Aaaaaron#5115) 
 #
 **Need Help?** PM me on the DevForum or join [this Discord Server](https://discord.gg/PjKaAXx)
 
